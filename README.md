@@ -21,3 +21,9 @@ The three-question journey and ranking function live in `journey.js`. Questions 
 Edit the catalog in `scents.js`. The names and mood words are based on the campaign art. The mood filters are browsing categories. Add confirmed `size`, `notes`, `price` (including currency), and a provider-issued HTTPS `checkoutUrl` to each fragrance when ready. The checkout button appears when both price and checkout URL are present. Until then, fragrance details link to Instagram.
 
 For GitHub Pages, choose **Deploy from a branch** in **Settings → Pages** and select `main` and `/ (root)` after merging the website.
+
+## Bottle sequence
+
+The six-stage bottle animation uses a local Three.js r180 bundle (MIT) and WebGL. The renderer loads when the exhibit enters view. Browsers without WebGL and visitors who prefer reduced motion see the painted bottle instead. The chapter copy and collection link are ordinary HTML.
+
+`atelier-model.js` defines the geometry, studio lighting, and scroll poses. `atelier.css` and `scroll-art.js` handle the page-wide art treatments.

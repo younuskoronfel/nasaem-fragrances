@@ -9,9 +9,12 @@
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
   <link rel="preload" href="assets/cormorant.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="atelier.css">
   <script src="scents.js" defer></script>
   <script src="store.js" defer></script>
   <script src="journey.js" defer></script>
+  <script type="module" src="atelier.js"></script>
+  <script src="scroll-art.js" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -21,6 +24,7 @@
       <nav aria-label="Main navigation">
         <a href="#collection">Collection</a>
         <a href="#journey">Find my scent</a>
+        <a href="#atelier">The bottle</a>
       </nav>
       <a class="header-social" aria-label="Nasaem Fragrances on Instagram" href="https://www.instagram.com/nasaem.fragrances/"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01" stroke-linecap="round" stroke-width="2.5"/></svg><span>Instagram</span></a>
     </div>
@@ -38,7 +42,7 @@
         <div class="journey-content">
           <h1 id="hero-title">Where your soul<br>finds its <em>scent.</em></h1>
           <div id="finder" hidden>
-            <div class="journey-progress"><span class="step-label"></span><div class="step-track" aria-hidden="true"><i></i><i></i><i></i></div></div>
+            <div class="journey-progress"><div class="step-track" role="img" aria-label="Fragrance finder progress"><i></i><i></i><i></i></div></div>
             <h2 class="question" tabindex="-1"></h2>
             <p class="question-hint"></p>
             <div class="answer-grid"></div>
@@ -49,27 +53,49 @@
           </div>
           <noscript><p><a class="button dark" href="https://www.instagram.com/nasaem.fragrances/">Explore Nasaem on Instagram</a></p></noscript>
         </div>
-        <p class="art-caption" aria-hidden="true">The Nasaem scent garden</p>
       </div>
     </section>
 
-    <section class="collection wrap" id="collection" aria-labelledby="collection-title">
-      <div class="section-intro">
-        <h2 id="collection-title">The collection</h2>
-        <p>Browse all 16 perfumes or filter by the scent style you like.</p>
-      </div>
-      <div class="collection-bar">
-        <div class="filters" role="group" aria-label="Filter fragrances by mood" hidden>
-          <button type="button" data-filter="all" aria-pressed="true">All scents</button>
-          <button type="button" data-filter="bright" aria-pressed="false">Bright &amp; fresh</button>
-          <button type="button" data-filter="floral" aria-pressed="false">Soft &amp; floral</button>
-          <button type="button" data-filter="warm" aria-pressed="false">Warm &amp; sweet</button>
-          <button type="button" data-filter="deep" aria-pressed="false">Deep &amp; smoky</button>
+    <section class="atelier" id="atelier" aria-labelledby="atelier-title">
+      <div class="atelier-layout wrap">
+        <div class="atelier-stage" aria-hidden="true">
+          <div class="atelier-frame">
+            <img class="atelier-poster" src="assets/atelier/bottle.webp" alt="" width="843" height="1100" loading="lazy" decoding="async">
+            <canvas class="atelier-canvas"></canvas>
+          </div>
         </div>
-        <p class="count" role="status"></p>
+        <div class="atelier-chapters">
+          <div class="atelier-chapter" id="bottle-form"><h2 id="atelier-title">Before the<br><em>first spray.</em></h2></div>
+          <div class="atelier-chapter" id="bottle-glass"><h3>Light through<br><em>glass.</em></h3></div>
+          <div class="atelier-chapter" id="bottle-cap"><h3>The cap <em>lifts.</em></h3></div>
+          <div class="atelier-chapter" id="bottle-atomizer"><h3>The <em>atomizer.</em></h3></div>
+          <div class="atelier-chapter" id="bottle-mist"><h3>A veil <em>of mist.</em></h3></div>
+          <div class="atelier-chapter" id="bottle-collection">
+            <h3>Find your<br><em>fragrance.</em></h3>
+            <a class="atelier-next" href="#collection">Explore the collection <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M12 4v15m-5-5 5 5 5-5"/></svg></a>
+          </div>
+        </div>
       </div>
-      <div class="scent-grid" id="scents"></div>
-      <noscript><p>Explore all sixteen fragrances on <a href="https://www.instagram.com/nasaem.fragrances/">Nasaem’s Instagram</a>.</p></noscript>
+    </section>
+
+    <section class="collection" id="collection" aria-labelledby="collection-title">
+      <div class="wrap">
+        <div class="section-intro">
+          <h2 id="collection-title">The collection</h2>
+        </div>
+        <div class="collection-bar">
+          <div class="filters" role="group" aria-label="Filter fragrances by mood" hidden>
+            <button type="button" data-filter="all" aria-pressed="true">All scents</button>
+            <button type="button" data-filter="bright" aria-pressed="false">Bright &amp; fresh</button>
+            <button type="button" data-filter="floral" aria-pressed="false">Soft &amp; floral</button>
+            <button type="button" data-filter="warm" aria-pressed="false">Warm &amp; sweet</button>
+            <button type="button" data-filter="deep" aria-pressed="false">Deep &amp; smoky</button>
+          </div>
+          <p class="count" role="status"></p>
+        </div>
+        <div class="scent-grid" id="scents"></div>
+        <noscript><p>Explore all sixteen fragrances on <a href="https://www.instagram.com/nasaem.fragrances/">Nasaem’s Instagram</a>.</p></noscript>
+      </div>
     </section>
 
     <section class="guide" id="guide" aria-labelledby="guide-title">
@@ -98,7 +124,7 @@
 
     <section class="contact wrap" aria-labelledby="contact-title">
       <h2 id="contact-title">Need help choosing?</h2>
-      <p>Tell us what you like to wear. We’ll help you find a place to start in the collection.</p>
+      <p>Ask us about a fragrance, availability, or ordering.</p>
       <a class="button dark" href="https://ig.me/m/nasaem.fragrances">Message us on Instagram <span aria-hidden="true">↗</span></a>
     </section>
   </main>

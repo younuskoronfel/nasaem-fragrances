@@ -194,3 +194,9 @@ A warm, translucent row opens to reveal a small illustration and explanatory tex
 
 - Don't crop the painted portraits or frame them with borders.
 - Don't make the artwork change the only indication that a finder step has advanced.
+
+## Bottle motion and luminous portraits
+
+The garden opens into a dark painted atelier. Passive scroll turns the glass, lifts the cap, closes in on the atomizer, disperses the mist, then settles the bottle. Motion is tied to the six headings and reverses when visitors scroll back. Mobile keeps the bottle above the chapter text with an opaque painted stage. A static artwork replaces the stage for reduced motion.
+
+Gallery portraits retain their full proportions. Their highlights take color from the scent families. The glow sits behind the artwork, and a restrained reflection follows the pointer. Smaller scroll effects link the garden, gallery, guide, and contact section to the same motion language.

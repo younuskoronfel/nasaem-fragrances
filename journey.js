@@ -1,7 +1,7 @@
 const scentJourney = [
   {
     question: "What kinds of scents do you like?",
-    hint: "Pick one. We’ll suggest two fragrances after three quick questions.",
+    hint: "Choose one to get started.",
     answers: [
       { id: "coast", label: "Fresh and clean", mood: "bright" },
       { id: "garden", label: "Soft and floral", mood: "floral" },
@@ -11,7 +11,7 @@ const scentJourney = [
   },
   {
     question: "What mood are you going for?",
-    hint: "Pick the one that sounds most like you.",
+    hint: "",
     answers: [
       { id: "composed", label: "Fresh and energized", mood: "bright" },
       { id: "intimate", label: "Soft and romantic", mood: "floral" },
@@ -21,7 +21,7 @@ const scentJourney = [
   },
   {
     question: "When would you wear it most?",
-    hint: "Think about the occasion you’re shopping for.",
+    hint: "",
     answers: [
       { id: "daily", label: "Every day", mood: "bright" },
       { id: "close", label: "Relaxed days", mood: "floral" },
@@ -57,24 +57,20 @@ const finder = document.querySelector("#finder");
 const question = finder.querySelector(".question");
 const hint = finder.querySelector(".question-hint");
 const choices = finder.querySelector(".answer-grid");
-const stepLabel = finder.querySelector(".step-label");
+const stepTrack = finder.querySelector(".step-track");
 const backStep = finder.querySelector(".back-step");
 const artwork = document.querySelector(".living-art");
 const moodScene = artwork.querySelector(".scene-mood");
-const artCaption = document.querySelector(".art-caption");
 const answers = [];
-const sceneNames = { bright: "The coast", floral: "The garden", warm: "The golden room", deep: "The embers" };
 
 function paintMood(mood) {
   artwork.dataset.request = mood || "";
   if (!mood) {
     moodScene.classList.remove("visible");
-    artCaption.textContent = "The Nasaem scent garden";
     return;
   }
   if (moodScene.dataset.mood === mood) {
     moodScene.classList.add("visible");
-    artCaption.textContent = sceneNames[mood];
     return;
   }
   const url = `assets/journey/${mood}.webp`;
@@ -88,7 +84,6 @@ function paintMood(mood) {
     requestAnimationFrame(() => requestAnimationFrame(() => {
       if (artwork.dataset.request === mood) moodScene.classList.add("visible");
     }));
-    artCaption.textContent = sceneNames[mood];
   };
   nextImage.src = url;
 }
@@ -105,9 +100,10 @@ function showStep(moveFocus = false) {
 
   if (step === scentJourney.length) {
     const matches = recommendScents(answers, scents);
-    stepLabel.textContent = "Fragrance finder";
+    stepTrack.setAttribute("aria-label", "Fragrance finder complete");
     question.textContent = "Your two matches";
     const preference = scentJourney[0].answers.find(answer => answer.id === answers[0]);
+    hint.hidden = false;
     hint.textContent = `You like ${preference.label.toLowerCase()} scents. These are two good places to start.`;
     for (const scent of matches) {
       const match = document.createElement("button");
@@ -126,9 +122,10 @@ function showStep(moveFocus = false) {
     paintMood(matches[0].family);
   } else {
     const current = scentJourney[step];
-    stepLabel.textContent = `Question ${step + 1} of ${scentJourney.length}`;
+    stepTrack.setAttribute("aria-label", `Question ${step + 1} of ${scentJourney.length}`);
     question.textContent = current.question;
     hint.textContent = current.hint;
+    hint.hidden = !current.hint;
     for (const answer of current.answers) {
       const button = document.createElement("button");
       button.className = "answer";

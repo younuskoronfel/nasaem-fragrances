@@ -63,7 +63,6 @@ button, summary { cursor:pointer }
 .journey h1 { font-size:clamp(4.2rem,6.45vw,6rem); color:#4e2e13; line-height:.89; font-weight:500 }
 .journey h1 em,.guide h2 em { color:var(--bronze); font-weight:600 }
 .journey-progress { margin-top:2rem; display:flex; align-items:center; gap:1rem }
-.step-label { font-size:.77rem; letter-spacing:.13em; text-transform:uppercase; font-weight:600; color:#624019 }
 .step-track { display:flex; gap:.26rem }
 .step-track i { width:.42rem; height:.42rem; background:#9e603a44; transform:rotate(45deg) }
 .step-track .filled { background:#8b4e25 }
@@ -80,7 +79,6 @@ button, summary { cursor:pointer }
 .match strong { padding:.2rem .3rem .38rem }
 .journey-nav { display:flex; align-items:center; gap:1.15rem; margin-top:1rem }
 .text-link { border:0; padding:.25rem 0; background:transparent; text-decoration:underline; font-size:.85rem; font-weight:600; min-height:2rem }
-.art-caption { position:absolute; right:0; bottom:2.1rem; background:#442813db; color:#ffe4bd; border-radius:3rem; padding:.35rem .76rem; font-size:.72rem; letter-spacing:.045em }
 @keyframes arrive { from{opacity:.75;translate:0 6px} to{opacity:1;translate:0 0} }
 
 .button { min-height:3.05rem; display:inline-flex; width:fit-content; align-items:center; gap:1.2rem; padding:.75rem 1.2rem; font-size:.89rem; font-weight:600; text-decoration:none; border-radius:3rem; transition:background .22s ease,color .22s ease }
@@ -181,7 +179,6 @@ details[open] .plus::after { transform:none }
   .match { flex-direction:column; align-items:flex-start; gap:.2rem }
   .match img { width:100%; max-height:7.25rem; object-position:left }
   .match strong { overflow-wrap:anywhere }
-  .art-caption { display:none }
   .section-intro { display:block; margin-bottom:1.1rem }
   .section-intro p { margin-top:.55rem }
   .collection-bar { align-items:start; flex-direction:column; gap:.55rem }

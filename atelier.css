@@ -1,0 +1,232 @@
+.atelier {
+  --night: #21130f;
+  --light: #ffe8c3;
+  --metal: #eebd81;
+  position: relative;
+  isolation: isolate;
+  color: var(--light);
+  background: var(--night);
+}
+.atelier::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 auto;
+  height: min(120svh, 68rem);
+  background:
+    linear-gradient(90deg, #21130ff0 5%, #21130f8a 42%, #21130f1f 77%),
+    linear-gradient(0deg, var(--night) 3%, transparent 64%),
+    url("assets/atelier/room.webp") 50% 46% / cover;
+}
+.atelier-layout {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, .78fr) minmax(0, 1.22fr);
+  gap: clamp(1.4rem, 4vw, 4rem);
+}
+.atelier-stage {
+  position: sticky;
+  top: 0;
+  grid-column: 2;
+  grid-row: 1;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  height: 100svh;
+  max-height: 64rem;
+  margin: 0;
+  align-self: start;
+  padding-block: clamp(.5rem, 2vh, 1.5rem);
+}
+.atelier-frame {
+  position: relative;
+  min-height: 0;
+  isolation: isolate;
+}
+.atelier-frame::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: radial-gradient(ellipse at 53% 52%, #ae64295e, #8d451829 44%, transparent 73%);
+}
+.atelier-poster,
+.atelier-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.atelier-poster {
+  object-fit: contain;
+  opacity: .98;
+  mask-image: radial-gradient(ellipse 51% 48%, #000 54%, #000b 72%, transparent 100%);
+  transition: opacity .65s var(--ease);
+}
+.atelier-canvas { opacity: 0; transition: opacity .65s var(--ease) }
+.atelier-stage.is-rendered .atelier-poster { opacity: 0 }
+.atelier-stage.is-rendered .atelier-canvas { opacity: 1 }
+.atelier-chapters { grid-column: 1; grid-row: 1 }
+.atelier-chapter {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 58svh;
+  padding-block: 3rem;
+}
+.atelier-chapter:first-child { min-height: 84svh }
+.atelier-chapter:last-child { min-height: 100svh }
+.atelier-chapter h2, .atelier-chapter h3 {
+  font-size: clamp(3.65rem, 7.1vw, 6rem);
+  font-weight: 500;
+  text-wrap: balance;
+}
+.atelier-chapter h2 em, .atelier-chapter h3 em { color: var(--metal) }
+.atelier-next {
+  display: inline-flex;
+  align-items: center;
+  gap: .65rem;
+  min-height: 2.75rem;
+  margin-top: 1rem;
+  font-size: .9rem;
+  font-weight: 600;
+  color: var(--light);
+}
+.atelier-next svg { color: var(--metal) }
+@media (max-width: 720px) {
+  .atelier-layout { display: block; width: 100% }
+  .atelier-stage {
+    z-index: 1;
+    height: clamp(15rem, 47svh, 28rem);
+    padding-block: .25rem .65rem;
+    background:
+      linear-gradient(0deg, var(--night) 3%, #21130fd1 45%, #21130f88 100%),
+      url("assets/atelier/room.webp") center 40% / cover var(--night);
+  }
+  .atelier-chapters { padding-inline: max(1.25rem, 4.5vw) }
+  .atelier-chapter {
+    justify-content: flex-start;
+    min-height: 48svh;
+    scroll-margin-top: clamp(15rem, 47svh, 28rem);
+    padding-block: 1.6rem 2.5rem;
+  }
+  .atelier-chapter:first-child { min-height: 52svh }
+  .atelier-chapter:last-child { min-height: 68svh }
+  .atelier-chapter h2, .atelier-chapter h3 { font-size: clamp(3.1rem, 11vw, 4.7rem) }
+}
+@media (max-width: 420px) {
+  .header-inner { gap: .55rem }
+  .header-inner nav { gap: .53rem }
+  .header-social { min-width: 1.2rem }
+  .header-inner nav a { font-size: .73rem }
+}
+@media (prefers-reduced-motion: reduce) {
+  .atelier-stage { position: relative; height: min(70svh, 38rem) }
+  .atelier-chapter, .atelier-chapter:first-child, .atelier-chapter:last-child { min-height: auto; padding-block: 2.2rem; scroll-margin-top: 0 }
+}
+
+/* Color is picked from the artwork, so each print casts a different light. */
+.collection {
+  position: relative;
+  isolation: isolate;
+}
+.collection::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 6% calc(12% + 12% * var(--scroll-art, .3)), #d89c6844, transparent 37%),
+    radial-gradient(ellipse at 89% calc(29% + 38% * var(--scroll-art, .3)), #c98e7b49, transparent 40%),
+    linear-gradient(180deg, #f5dfb9, #efd0a6 63%, #e8be95);
+}
+.scent-card[data-family="bright"] { --print-light: #61a2aa; --print-edge: #afccd2 }
+.scent-card[data-family="floral"] { --print-light: #d37fa0; --print-edge: #ffd0da }
+.scent-card[data-family="warm"] { --print-light: #db8837; --print-edge: #ffd094 }
+.scent-card[data-family="deep"] { --print-light: #ad643e; --print-edge: #e7ae79 }
+.card-button { perspective: 42rem }
+.card-art {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+  background: transparent;
+  box-shadow: none;
+  transition: transform .52s var(--ease);
+}
+.card-art img {
+  border-radius: inherit;
+  box-shadow: 0 .75rem 1.5rem #4c29163c;
+}
+.card-art::before,
+.card-art::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  border-radius: inherit;
+}
+.card-art::before {
+  inset: 11% -7% -6%;
+  z-index: -1;
+  background: radial-gradient(ellipse at 50% 70%, var(--print-light), transparent 71%);
+  filter: blur(1.25rem);
+  opacity: .86;
+  transition: opacity .35s ease;
+}
+.card-art::after {
+  inset: 0;
+  opacity: .24;
+  background:
+    radial-gradient(ellipse 68% 62% at var(--light-x, 62%) var(--light-y, 17%), var(--print-edge), transparent 73%),
+    linear-gradient(140deg, #fff3c544, transparent 35%);
+  mix-blend-mode: screen;
+  transition: opacity .35s ease;
+}
+.card-button:hover .card-art,
+.card-button:focus-visible .card-art {
+  transform: translateY(-4px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  box-shadow: none;
+}
+.card-button:hover .card-art::before,
+.card-button:focus-visible .card-art::before { opacity: .96 }
+.card-button:hover .card-art::after,
+.card-button:focus-visible .card-art::after { opacity: .52 }
+.card-arrow { background: color-mix(in srgb, var(--print-edge) 70%, #e5b98b); }
+@media (prefers-reduced-motion: no-preference) {
+  .journey .scene { translate: 0 calc((var(--scroll-art, .4) - .4) * -2.9rem) }
+  .guide-mark { rotate: calc((var(--scroll-art, .5) - .5) * 44deg) }
+  .guide { background: radial-gradient(ellipse at calc(var(--scroll-art, .5) * 100%) 10%, #704426, transparent 70%), #47291d }
+  .contact { background: radial-gradient(ellipse at 50% calc(20% + var(--scroll-art, .4) * 42%), #eab17f7a, transparent 72%) }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scent-card {
+      animation: print-arrival linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 62%;
+    }
+    .scent-grid.updated .scent-card {
+      animation: print-arrival linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 62%;
+    }
+    @keyframes print-arrival {
+      from { translate: 0 1.2rem; opacity: .7 }
+      to { translate: 0 0; opacity: 1 }
+    }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card-button:hover .card-art, .card-button:focus-visible .card-art { transform: none }
+}
+
+.atelier.is-static .atelier-stage { position: relative; height: min(70svh, 38rem) }
+.atelier.is-static .atelier-chapter { min-height: auto }
+.atelier.is-static .atelier-chapter:not(:first-child):not(:last-child) { display: none }
+@media (prefers-reduced-motion: no-preference) {
+  .atelier-chapter { opacity: calc(.18 + .82 * var(--film-focus, 1)) }
+}
+@media (prefers-reduced-motion: reduce) {
+  .atelier-chapter:not(:first-child):not(:last-child) { display: none }
+}

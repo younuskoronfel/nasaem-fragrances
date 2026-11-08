@@ -11,6 +11,7 @@ const messageUrl = "https://ig.me/m/nasaem.fragrances";
 function createCard(scent, index) {
   const article = document.createElement("article");
   article.className = "scent-card";
+  article.dataset.family = scent.family;
   article.innerHTML = `
     <button class="card-button" type="button" aria-haspopup="dialog">
       <span class="card-art"><img width="768" height="960" alt="" decoding="async" src="assets/scents/${scent.id}.webp"></span>
