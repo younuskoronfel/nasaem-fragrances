@@ -32,7 +32,7 @@
     linear-gradient(180deg, #1c100ab8, transparent 25%, transparent 76%, #261711e6);
 }
 .site-header { color: #ffedd3; z-index: 3 }
-.site-header .wordmark img { filter: brightness(0) saturate(100%) invert(85%) sepia(27%) saturate(565%) hue-rotate(341deg) brightness(101%) contrast(93%) }
+.site-header .wordmark img { filter: url("assets/wordmark-filter.svg?v=3#champagne-ink") }
 .film-copy {
   align-self: center;
   padding-block: 9rem 7rem;
@@ -98,7 +98,7 @@
 .journey .journey-inner { padding-block: clamp(3.8rem, 9vw, 7rem); min-height: min(44rem, 96svh) }
 @media (max-width: 700px) {
   .film-hero { min-height: min(52rem, 93svh) }
-  .film-video { object-position: 62% 36% }
+  .film-video { object-position: 81% 36% }
   .film-set::after {
     background: linear-gradient(180deg, #201209bd 0, #26160c16 26%, #27170e27 40%, #21120cda 67%, #21120cf7 96%);
   }
