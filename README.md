@@ -24,6 +24,6 @@ For GitHub Pages, choose **Deploy from a branch** in **Settings → Pages** and 
 
 ## Bottle sequence
 
-The six-stage bottle animation uses a local Three.js r180 bundle (MIT) and WebGL. The renderer loads when the exhibit enters view. Browsers without WebGL and visitors who prefer reduced motion see the painted bottle instead. The chapter copy and collection link are ordinary HTML.
+The unboxing and spray sequence uses a local Three.js r180 bundle (MIT) and WebGL. The renderer loads when the exhibit enters view. Browsers without WebGL and visitors who prefer reduced motion see the painted bottle instead. The chapter copy and collection link are ordinary HTML.
 
-`atelier-model.js` defines the geometry, studio lighting, and scroll poses. `atelier.css` and `scroll-art.js` handle the page-wide art treatments.
+`atelier-model.js` defines the bottle optics, studio lighting, and scroll poses. `atelier-packaging.js` models the bag, hinged box, and crown from the supplied reference photos. `atelier.css` and `scroll-art.js` handle the page-wide art treatments.

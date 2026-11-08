@@ -1,0 +1,239 @@
+:root {
+  --paper: #efdbbd;
+  --silk: #edcc9d;
+  --ink: #402719;
+  --muted: #62452f;
+  --bronze: #65401f;
+  --dark: #472a18;
+  --gold: #d79c52;
+  --crystal-edge: linear-gradient(135deg, #fff9e7, #efd5a96e 42%, #9a582c66 94%);
+  --crystal-fill: linear-gradient(144deg, #fff4dfab, #e9bd8444 55%, #d8985d5c);
+  --crystal-depth:
+    inset 1px 1px 2px #fff8e5ed, inset -2px -2px 6px #fff2ce65,
+    inset 0 -4px 12px #6d351a23, 0 4px 12px #42281726, 0 20px 38px -12px #b16d374d;
+  --brass-face: linear-gradient(135deg, #fff0c5 0%, #e9c689 21%, #bd834a 46%, #f3d69c 66%, #bb7d44 100%);
+  --brass-pressed: linear-gradient(150deg, #845128, #60391d 40%, #432617 78%, #784921);
+  --brass-rim: inset 0 1px 1px #fff4cfdf, inset 0 -2px 3px #42281565, 0 4px 8px #6d432c3a;
+  --engraving: 0 1px 1px #fff1d7aa, 0 -1px 1px #5d311b21;
+}
+body {
+  background:
+    url("assets/atelier/alabaster-grain.svg") 0 0 / 160px 160px repeat,
+    radial-gradient(ellipse at 82% 18%, #fff1d7a8, transparent 48%),
+    radial-gradient(ellipse at 14% 75%, #c8855638, transparent 49%),
+    linear-gradient(164deg, #efd9b7, #e9c69b 64%, #edcfac);
+}
+::selection { color: #3c2418; background: #efb872 }
+:focus-visible { outline-color: #8b4b21 }
+h1, h2, h3, .card-text strong {
+  color: var(--ink);
+  text-shadow: var(--engraving);
+}
+.journey h1 em, .atelier-chapter h2 em, .atelier-chapter h3 em, .guide h2 em {
+  color: inherit;
+  text-shadow: inherit;
+}
+.journey { background: var(--paper) }
+.art-veil { mix-blend-mode: normal }
+.header-inner nav a, .header-social { text-shadow: 0 1px #fff1d3ae }
+
+.answer, .match, .guide-list details {
+  border: 1px solid transparent;
+  background: var(--crystal-fill) padding-box, var(--crystal-edge) border-box;
+  box-shadow: var(--crystal-depth);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
+}
+.answer:hover, .match:hover {
+  background:
+    linear-gradient(145deg, #fff3d6da, #efc79675 65%, #e1a46377) padding-box,
+    var(--crystal-edge) border-box;
+  box-shadow: var(--crystal-depth), 0 10px 20px #7c401a20;
+}
+.answer img, .match img, .guide-detail img { box-shadow: 0 2px 5px #512d2038 }
+.answer img, .match img { outline: 1px solid #fff0cc65; outline-offset: -1px }
+.step-track i {
+  width: .5rem;
+  height: .5rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 29% 23%, #fff3cb, #d9ac705e 31%, #8b57296a 86%);
+  box-shadow: inset 0 1px 1px #fff4c9a9, 0 1px 3px #7745204c;
+}
+.step-track .filled {
+  background: radial-gradient(circle at 29% 23%, #fff2b9 8%, #f8c573 20%, #a65a23 64%, #72401b 92%);
+}
+
+.button.dark, .filters button, .atelier-variants button, .close {
+  color: var(--ink);
+  background: var(--brass-face);
+  box-shadow: var(--brass-rim);
+  border: 1px solid #8e562859;
+  text-shadow: 0 1px #fff4d7a8;
+  transition: filter .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.button.dark:hover, .filters button:hover, .atelier-variants button:hover, .close:hover {
+  background: var(--brass-face);
+  filter: brightness(1.11);
+}
+.filters button[aria-pressed="true"], .atelier-variants button[aria-pressed="true"] {
+  color: #fff4de;
+  background: var(--brass-pressed);
+  text-shadow: 0 1px #261207a0;
+  box-shadow: inset 0 2px 4px #32160677, inset 0 -1px 1px #f8d08c7a, 0 1px 0 #fff0c9c0;
+}
+.button.dark:active, .filters button:active, .atelier-variants button:active,
+.close:active, .answer:active, .match:active {
+  transform: translateY(2px);
+  box-shadow: inset 0 2px 5px #42211077, 0 1px 2px #64371c47;
+}
+.filters, .atelier-variants {
+  background: linear-gradient(165deg, #91603a2b, #e9bd8166 54%, #fff0d28f);
+  box-shadow: inset 0 3px 6px #4924173f, inset 0 1px 2px #4a271a38, 0 1px 0 #fff7e0ca;
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
+}
+.filters { padding: .28rem; border-radius: 1.42rem }
+.filters button { min-height: 2.55rem }
+.atelier-variants { padding: .25rem }
+
+.atelier {
+  --night: #e4c79e;
+  background: linear-gradient(180deg, var(--paper), var(--night) 13%, #e5c8a0 83%, var(--paper));
+}
+.atelier::before {
+  background:
+    linear-gradient(180deg, var(--paper), #efd7b50b 16%, #edcd9c25 72%, var(--night)),
+    linear-gradient(90deg, #e4c79ef7 6%, #e4c79e7a 46%, #e4c79e32 78%),
+    url("assets/atelier/room.webp") 50% 46% / cover;
+}
+.atelier-frame::before {
+  background: radial-gradient(ellipse at 54% 73%, #cd864c39, #f6d8a61a 48%, transparent 72%);
+}
+.atelier-transition {
+  border-radius: 1.1rem;
+  mask-image: radial-gradient(ellipse 73% 74% at 52% 50%, #000 61%, #000d 77%, transparent 100%);
+}
+.atelier-leaf, .atelier-note-scene {
+  filter: saturate(.91) sepia(.10);
+}
+.atelier-notes {
+  opacity: var(--notes, 1);
+  border: 1px solid transparent;
+  border-radius: .75rem;
+  padding: 1rem 1.15rem;
+  background:
+    url("assets/atelier/alabaster-grain.svg") padding-box,
+    linear-gradient(137deg, #fff0d5e5, #efcfa4d9) padding-box,
+    var(--crystal-edge) border-box;
+  box-shadow: var(--crystal-depth), inset 0 0 0 1px #81472720;
+}
+.atelier-notes dt, .scent-notes dt {
+  color: #784a24;
+  text-shadow: var(--engraving);
+}
+
+.collection::before {
+  background:
+    url("assets/atelier/alabaster-grain.svg"),
+    radial-gradient(ellipse at 9% calc(16% + 20% * var(--scroll-art, .3)), #d7955638, transparent 48%),
+    radial-gradient(ellipse at 95% calc(25% + 30% * var(--scroll-art, .3)), #b86c553e, transparent 48%),
+    linear-gradient(180deg, var(--paper), #e9c7a2);
+}
+.card-art {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(145deg, #ffe8bd6b, #b1694b24 60%, #f9dab5aa) padding-box,
+    var(--crystal-edge) border-box;
+  box-shadow: var(--crystal-depth);
+}
+.card-art img {
+  box-shadow: inset 0 1px 2px #fff7dbaa, 0 .36rem .86rem #5b321f31;
+}
+.card-art::before { inset: 14% -5% -5% }
+.card-art::after {
+  background:
+    radial-gradient(ellipse 68% 62% at var(--light-x, 62%) var(--light-y, 17%), var(--print-edge), transparent 73%),
+    linear-gradient(142deg, #fff4cd65, transparent 27%);
+  box-shadow: inset 1px 1px 2px #fff7e3bd, inset -2px -3px 6px #51281438;
+}
+.card-button:hover .card-art, .card-button:focus-visible .card-art { box-shadow: var(--crystal-depth) }
+.card-text {
+  margin: .48rem .16rem 0;
+  padding: .66rem .65rem .65rem .82rem;
+  border: 1px solid transparent;
+  border-radius: .51rem;
+  background:
+    url("assets/atelier/alabaster-grain.svg") padding-box,
+    linear-gradient(142deg, #fff1d4bb, #efc99ab0) padding-box,
+    var(--crystal-edge) border-box;
+  box-shadow: inset 0 0 0 1px #72452520, inset 0 1px 2px #fff8e4b5, 0 3px 8px #9a5a332b;
+}
+.card-arrow {
+  background: radial-gradient(circle at 31% 22%, #fff4dc 0 7%, var(--print-edge) 27%, var(--print-light) 76%, #85522f 100%);
+  box-shadow: inset 0 1px 2px #fff6ddbe, inset 0 -2px 3px #4e271939, 0 2px 5px #8b4f2a50;
+}
+.card-button:hover .card-arrow, .card-button:focus-visible .card-arrow {
+  background: radial-gradient(circle at 29% 22%, #f3d897, #986032 51%, #5b331d 86%);
+  color: #fff2d6;
+}
+
+.guide {
+  background:
+    url("assets/atelier/alabaster-grain.svg"),
+    radial-gradient(ellipse at calc(var(--scroll-art, .5) * 100%) 8%, #d99a70, transparent 76%),
+    #e9c7a2;
+}
+.guide-list {
+  padding: .5rem;
+  border-radius: 1.05rem;
+  background: #a5674930;
+  box-shadow: inset 0 3px 8px #69392339, 0 1px 0 #fff1d8ad;
+}
+.guide-list details { padding-inline: .85rem }
+.contact {
+  background: radial-gradient(ellipse at 50% calc(21% + var(--scroll-art, .4) * 38%), #ffe4b68f, transparent 73%);
+}
+.footer {
+  background: linear-gradient(180deg, #d5a37e12, #a6664530);
+  box-shadow: inset 0 1px 0 #fff2d46e;
+}
+.scent-dialog {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(143deg, #fff5e0ed, #e4ba87e8) padding-box,
+    var(--crystal-edge) border-box;
+  box-shadow: var(--crystal-depth), 0 24px 80px #21100973;
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
+}
+.scent-dialog::backdrop { background: #2f1a12b8 }
+.scent-art { background: #3c251c }
+.scent-copy {
+  background:
+    url("assets/atelier/alabaster-grain.svg"),
+    linear-gradient(135deg, #fff2d8a0, #efd0a199);
+}
+.scent-notes {
+  padding: .75rem .85rem;
+  border-radius: .48rem;
+  background: linear-gradient(140deg, #fff4de99, #e9c38b70);
+  box-shadow: inset 0 0 0 1px #8149252e, inset 0 2px 4px #88572d24, 0 1px 0 #fff1d6ba;
+}
+.scent-price { text-shadow: var(--engraving) }
+
+@media (max-width: 720px) {
+  .atelier-stage {
+    background:
+      linear-gradient(0deg, var(--night) 3%, #e4c79eb5 48%, #e4c79e63 100%),
+      url("assets/atelier/room.webp") center 40% / cover var(--night);
+  }
+  .atelier-notes { padding: .85rem .9rem }
+}
+@media (max-width: 620px) {
+  .filters { border-radius: 1.15rem }
+  .card-text { padding: .57rem .40rem .55rem .50rem; margin-inline: .04rem }
+}
+@media (prefers-reduced-motion: reduce) {
+  .button.dark:active, .filters button:active, .atelier-variants button:active,
+  .close:active, .answer:active, .match:active { transform: none }
+}

@@ -195,8 +195,10 @@ A warm, translucent row opens to reveal a small illustration and explanatory tex
 - Don't crop the painted portraits or frame them with borders.
 - Don't make the artwork change the only indication that a finder step has advanced.
 
-## Bottle motion and luminous portraits
+## Unboxing and luminous portraits
 
-The garden opens into a dark painted atelier. Passive scroll turns the glass, lifts the cap, closes in on the atomizer, disperses the mist, then settles the bottle. Motion is tied to the six headings and reverses when visitors scroll back. Mobile keeps the bottle above the chapter text with an opaque painted stage. A static artwork replaces the stage for reduced motion.
+Champagne alabaster and espresso type continue from the garden into the packaging sequence and the collection. The material stylesheet adds layered crystal edges, brushed brass controls, and engraved paper labels without covering the full-bleed painted prints. The bag and gold-trimmed boxes take their proportions and finishes from the supplied reference photos. The box interior uses the printed art and satin from those photos.
 
-Gallery portraits retain their full proportions. Their highlights take color from the scent families. The glow sits behind the artwork, and a restrained reflection follows the pointer. Smaller scroll effects link the garden, gallery, guide, and contact section to the same motion language.
+Scroll lifts the box, turns the lid on its hinge, raises the bottle, and rotates the crown through its screw-off motion. A closer camera frames the atomizer before the spray cuts to a leaf macro. A small drop briefly refracts the next shot, then opens into a full-bleed After Hours still life and its supplied note pyramid. Mobile keeps the product above the chapter text. The supplied bottle image serves as a still alternative.
+
+Gallery portraits retain their full proportions with color sampled from their scent families. Smaller scroll effects connect the garden, gallery, guide, and contact section.

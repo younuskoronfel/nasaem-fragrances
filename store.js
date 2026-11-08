@@ -54,16 +54,37 @@ function setOptional(selector, value) {
   element.hidden = !value;
 }
 
+function fillNotes(list, pyramid) {
+  for (const [stage, value] of Object.entries(pyramid ?? {})) {
+    const term = document.createElement("dt");
+    const notes = document.createElement("dd");
+    term.textContent = stage;
+    notes.textContent = value;
+    list.append(term, notes);
+  }
+}
+
+const featuredNotes = document.querySelector(".atelier-notes");
+if (featuredNotes) {
+  const featured = scents.find(scent => scent.id === featuredNotes.dataset.notesFor);
+  fillNotes(featuredNotes, featured?.notePyramid);
+  featuredNotes.hidden = !featured?.notePyramid;
+}
+
 function openScent(scent) {
   const art = dialog.querySelector(".scent-art");
   art.src = `assets/scents/${scent.id}.webp`;
   art.alt = `${scent.name} campaign artwork`;
   dialog.querySelector("#scent-title").textContent = scent.name;
-  dialog.querySelector(".scent-family").textContent = familyNames[scent.family];
+  dialog.querySelector(".scent-family").textContent = [scent.collection, familyNames[scent.family]].filter(Boolean).join(" · ");
   dialog.querySelector(".scent-mood").textContent = scent.mood;
   dialog.querySelector(".scent-description").textContent = scent.description;
   setOptional(".scent-format", [scent.size, scent.notes].filter(Boolean).join(" · "));
   setOptional(".scent-price", scent.price);
+  const noteList = dialog.querySelector(".scent-notes");
+  noteList.replaceChildren();
+  noteList.hidden = !scent.notePyramid;
+  fillNotes(noteList, scent.notePyramid);
 
   const canBuy = Boolean(scent.price && scent.checkoutUrl?.startsWith("https://"));
   const action = dialog.querySelector(".scent-action");

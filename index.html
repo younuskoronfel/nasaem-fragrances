@@ -10,6 +10,7 @@
   <link rel="preload" href="assets/cormorant.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="atelier.css">
+  <link rel="stylesheet" href="crystal.css">
   <script src="scents.js" defer></script>
   <script src="store.js" defer></script>
   <script src="journey.js" defer></script>
@@ -24,7 +25,7 @@
       <nav aria-label="Main navigation">
         <a href="#collection">Collection</a>
         <a href="#journey">Find my scent</a>
-        <a href="#atelier">The bottle</a>
+        <a href="#atelier">Unboxing</a>
       </nav>
       <a class="header-social" aria-label="Nasaem Fragrances on Instagram" href="https://www.instagram.com/nasaem.fragrances/"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01" stroke-linecap="round" stroke-width="2.5"/></svg><span>Instagram</span></a>
     </div>
@@ -58,20 +59,28 @@
 
     <section class="atelier" id="atelier" aria-labelledby="atelier-title">
       <div class="atelier-layout wrap">
-        <div class="atelier-stage" aria-hidden="true">
-          <div class="atelier-frame">
-            <img class="atelier-poster" src="assets/atelier/bottle.webp" alt="" width="843" height="1100" loading="lazy" decoding="async">
+        <div class="atelier-stage">
+          <div class="atelier-frame" aria-hidden="true">
+            <img class="atelier-poster" src="assets/atelier/bottle.webp" alt="" width="424" height="404" loading="lazy" decoding="async">
             <canvas class="atelier-canvas"></canvas>
+            <div class="atelier-transition">
+              <img class="atelier-leaf" src="assets/atelier/leaf-macro.webp" width="1536" height="1024" alt="" loading="lazy">
+              <img class="atelier-note-scene" src="assets/atelier/after-hours-scene.webp" width="1536" height="1024" alt="" loading="lazy">
+            </div>
+          </div>
+          <div class="atelier-variants" role="group" aria-label="Packaging" hidden>
+            <button type="button" data-packaging="brown" aria-pressed="true">Feminine</button>
+            <button type="button" data-packaging="black" aria-pressed="false">Masculine</button>
           </div>
         </div>
         <div class="atelier-chapters">
-          <div class="atelier-chapter" id="bottle-form"><h2 id="atelier-title">Before the<br><em>first spray.</em></h2></div>
-          <div class="atelier-chapter" id="bottle-glass"><h3>Light through<br><em>glass.</em></h3></div>
-          <div class="atelier-chapter" id="bottle-cap"><h3>The cap <em>lifts.</em></h3></div>
-          <div class="atelier-chapter" id="bottle-atomizer"><h3>The <em>atomizer.</em></h3></div>
-          <div class="atelier-chapter" id="bottle-mist"><h3>A veil <em>of mist.</em></h3></div>
-          <div class="atelier-chapter" id="bottle-collection">
-            <h3>Find your<br><em>fragrance.</em></h3>
+          <div class="atelier-chapter" id="bottle-form"><h2 id="atelier-title">The unboxing.</h2></div>
+          <div class="atelier-chapter" id="bottle-box"><h3>Inside the box.</h3></div>
+          <div class="atelier-chapter" id="bottle-crown"><h3>The crown.</h3></div>
+          <div class="atelier-chapter" id="bottle-mist"><h3>The first spray.</h3></div>
+          <div class="atelier-chapter" id="bottle-notes">
+            <h3>After Hours.</h3>
+            <dl class="atelier-notes" data-notes-for="after-hours" hidden></dl>
             <a class="atelier-next" href="#collection">Explore the collection <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M12 4v15m-5-5 5 5 5-5"/></svg></a>
           </div>
         </div>
@@ -147,6 +156,7 @@
         <p class="scent-mood"></p>
         <p class="scent-description"></p>
         <p class="scent-format" hidden></p>
+        <dl class="scent-notes" hidden></dl>
         <p class="scent-price" hidden></p>
         <a class="button dark scent-action"></a>
         <p class="checkout-note"></p>

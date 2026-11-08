@@ -17,7 +17,7 @@ const nearExhibit = new IntersectionObserver(async ([entry]) => {
   } finally {
     loading = false;
   }
-}, { threshold: .03 });
+}, { rootMargin: "180px 0px", threshold: .01 });
 
 nearExhibit.observe(exhibit);
 reducedMotion.addEventListener("change", () => {

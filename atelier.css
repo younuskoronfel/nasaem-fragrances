@@ -1,7 +1,7 @@
 .atelier {
-  --night: #21130f;
-  --light: #ffe8c3;
-  --metal: #eebd81;
+  --night: #ddbf9b;
+  --light: var(--ink);
+  --metal: var(--ink);
   position: relative;
   isolation: isolate;
   color: var(--light);
@@ -14,7 +14,7 @@
   inset: 0 0 auto;
   height: min(120svh, 68rem);
   background:
-    linear-gradient(90deg, #21130ff0 5%, #21130f8a 42%, #21130f1f 77%),
+    linear-gradient(90deg, #ddbf9bf7 5%, #ddbf9bb8 42%, #ddbf9b66 77%),
     linear-gradient(0deg, var(--night) 3%, transparent 64%),
     url("assets/atelier/room.webp") 50% 46% / cover;
 }
@@ -30,7 +30,7 @@
   grid-column: 2;
   grid-row: 1;
   display: grid;
-  grid-template-rows: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
   height: 100svh;
   max-height: 64rem;
   margin: 0;
@@ -47,7 +47,7 @@
   position: absolute;
   z-index: -1;
   inset: 0;
-  background: radial-gradient(ellipse at 53% 52%, #ae64295e, #8d451829 44%, transparent 73%);
+  background: radial-gradient(ellipse at 53% 52%, #dfae745e, #c0844b29 44%, transparent 73%);
 }
 .atelier-poster,
 .atelier-canvas {
@@ -60,6 +60,7 @@
 .atelier-poster {
   object-fit: contain;
   opacity: .98;
+  mix-blend-mode: multiply;
   mask-image: radial-gradient(ellipse 51% 48%, #000 54%, #000b 72%, transparent 100%);
   transition: opacity .65s var(--ease);
 }
@@ -72,10 +73,10 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  min-height: 58svh;
+  min-height: 43svh;
   padding-block: 3rem;
 }
-.atelier-chapter:first-child { min-height: 84svh }
+.atelier-chapter:first-child { min-height: 66svh }
 .atelier-chapter:last-child { min-height: 100svh }
 .atelier-chapter h2, .atelier-chapter h3 {
   font-size: clamp(3.65rem, 7.1vw, 6rem);
@@ -101,18 +102,18 @@
     height: clamp(15rem, 47svh, 28rem);
     padding-block: .25rem .65rem;
     background:
-      linear-gradient(0deg, var(--night) 3%, #21130fd1 45%, #21130f88 100%),
+      linear-gradient(0deg, var(--night) 3%, #ddbf9bd1 45%, #ddbf9b88 100%),
       url("assets/atelier/room.webp") center 40% / cover var(--night);
   }
   .atelier-chapters { padding-inline: max(1.25rem, 4.5vw) }
   .atelier-chapter {
     justify-content: flex-start;
-    min-height: 48svh;
+    min-height: 37svh;
     scroll-margin-top: clamp(15rem, 47svh, 28rem);
     padding-block: 1.6rem 2.5rem;
   }
-  .atelier-chapter:first-child { min-height: 52svh }
-  .atelier-chapter:last-child { min-height: 68svh }
+  .atelier-chapter:first-child { min-height: 47svh }
+  .atelier-chapter:last-child { min-height: 56svh }
   .atelier-chapter h2, .atelier-chapter h3 { font-size: clamp(3.1rem, 11vw, 4.7rem) }
 }
 @media (max-width: 420px) {
@@ -225,8 +226,118 @@
 .atelier.is-static .atelier-chapter { min-height: auto }
 .atelier.is-static .atelier-chapter:not(:first-child):not(:last-child) { display: none }
 @media (prefers-reduced-motion: no-preference) {
-  .atelier-chapter { opacity: calc(.18 + .82 * var(--film-focus, 1)) }
+  .atelier-chapter { opacity: calc(.08 + .92 * var(--film-focus, 1)) }
 }
 @media (prefers-reduced-motion: reduce) {
   .atelier-chapter:not(:first-child):not(:last-child) { display: none }
+}
+
+:root { --paper: #efd7b5; --ink: #493020; --muted: #5f402b; --bronze: #493020; }
+.journey h1, .journey h1 em, .question, .step-label,
+.section-intro h2, .contact h2, .guide h2, .guide h2 em,
+.scent-family, .atelier-chapter h2, .atelier-chapter h3 { color: var(--ink) }
+.collection::before {
+  background:
+    radial-gradient(ellipse at 6% calc(12% + 12% * var(--scroll-art, .3)), #d89c6844, transparent 37%),
+    radial-gradient(ellipse at 89% calc(29% + 38% * var(--scroll-art, .3)), #c98e7b39, transparent 40%),
+    linear-gradient(180deg, var(--paper), #ebcba5);
+}
+.atelier {
+  background: linear-gradient(180deg, var(--paper), var(--night) 18%, var(--night) 85%, var(--paper));
+}
+.atelier::before {
+  background:
+    linear-gradient(180deg, var(--paper), #efd7b514 18%, transparent 70%, var(--night)),
+    linear-gradient(90deg, #ddbf9bf7 5%, #ddbf9bb8 42%, #ddbf9b66 77%),
+    url("assets/atelier/room.webp") 50% 46% / cover;
+}
+.atelier-variants {
+  opacity: calc(1 - var(--handoff, 0));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .3rem;
+  align-self: end;
+  justify-self: center;
+  border-radius: 3rem;
+  padding: .22rem;
+  background: #f4dbb6cc;
+  box-shadow: 0 .25rem 1rem #65432319;
+}
+.atelier-variants button {
+  border: 0;
+  border-radius: 3rem;
+  min-height: 2.35rem;
+  padding: .25rem .8rem;
+  background: transparent;
+  font-size: .78rem;
+  font-weight: 600;
+}
+.atelier-variants button[aria-pressed="true"] { color: #fff3de; background: #553823 }
+.guide {
+  color: var(--ink);
+  background: radial-gradient(ellipse at calc(var(--scroll-art, .5) * 100%) 10%, #e1ae80, transparent 70%), #ebcba5;
+}
+.guide p, .plus { color: var(--ink) }
+.guide-mark { color: #986241 }
+.guide-list details { background: #f6dfbe99 }
+.footer { background: #e6c29b }
+.scent-notes { margin: .65rem 0; display: grid; grid-template-columns: max-content 1fr; gap: .22rem .7rem; font-size: .87rem }
+.scent-notes dt { font-weight: 600 }
+.scent-notes dd { margin: 0; color: var(--muted) }
+
+.atelier-notes {
+  display: grid;
+  grid-template-columns: 3.4rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: .65rem 1rem;
+  max-width: 27rem;
+  margin: 1.35rem 0 .45rem;
+  color: var(--ink);
+}
+.atelier-notes dt { font: 700 1.23rem/1 var(--display) }
+.atelier-notes dd { margin: 0; font-size: .91rem }
+@media (prefers-reduced-motion: no-preference) {
+  .atelier-notes > * { opacity: var(--notes, 1); translate: 0 calc((1 - var(--notes, 1)) * .7rem) }
+}
+@media (max-width: 720px) {
+  .atelier-notes { margin-top: 1rem; gap: .5rem .55rem }
+}
+
+.atelier-canvas {
+  mask-image: linear-gradient(0deg, transparent, #000 4%, #000 98%, transparent);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .atelier-notes > * { --note-in: clamp(0, calc(var(--notes, 1) * 1.65 - var(--note-delay, 0)), 1); opacity: var(--note-in); translate: 0 calc((1 - var(--note-in)) * .7rem) }
+  .atelier-notes > :nth-child(n + 3) { --note-delay: .26 }
+  .atelier-notes > :nth-child(n + 5) { --note-delay: .52 }
+}
+
+.atelier-stage.is-rendered .atelier-canvas { opacity: calc(1 - var(--handoff, 0)) }
+@media (max-width: 720px) {
+  .atelier { background: linear-gradient(180deg, var(--night) 0 86%, var(--paper)) }
+  .atelier::before { display: none }
+}
+
+.atelier-transition {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: .85rem;
+  mask-image: radial-gradient(ellipse at center, #000 64%, #000d 85%, transparent 100%);
+}
+.atelier-leaf, .atelier-note-scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 48.4% 53.3%;
+  transform-origin: 48.4% 53.3%;
+}
+.atelier-leaf { opacity: var(--leaf, 0); scale: calc(1 + .28 * var(--lens, 0)); }
+.atelier-note-scene {
+  opacity: var(--scene-in, 0);
+  clip-path: ellipse(calc(2% + 99% * var(--lens, 0)) calc(3% + 94% * var(--lens, 0)) at 48.4% 53.3%);
 }
