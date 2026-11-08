@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f0d4a7">
+  <meta name="description" content="Discover the Nasaem Fragrances collection. Browse sixteen perfumes by mood, from bright and floral to deep and smoky.">
+  <title>Nasaem Fragrances — Where your soul finds its scent</title>
+  <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/cormorant.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+  <script src="scents.js" defer></script>
+  <script src="store.js" defer></script>
+  <script src="journey.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header" id="top">
+    <div class="header-inner wrap">
+      <a class="wordmark" href="#top" aria-label="Nasaem Fragrances home"><img src="assets/nasaem-wordmark.webp" width="175" height="228" alt=""></a>
+      <nav aria-label="Main navigation">
+        <a href="#collection">Collection</a>
+        <a href="#journey">Find my scent</a>
+      </nav>
+      <a class="header-social" aria-label="Nasaem Fragrances on Instagram" href="https://www.instagram.com/nasaem.fragrances/"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01" stroke-linecap="round" stroke-width="2.5"/></svg><span>Instagram</span></a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="journey" id="journey" aria-labelledby="hero-title">
+      <div class="living-art" aria-hidden="true">
+        <img class="scene scene-base" src="assets/journey/garden.webp" width="1536" height="1024" fetchpriority="high" alt="">
+        <img class="scene scene-mood" src="assets/journey/garden.webp" alt="" hidden>
+        <div class="art-veil"></div>
+        <div class="drift"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+      <div class="journey-inner wrap">
+        <div class="journey-content">
+          <h1 id="hero-title">Where your soul<br>finds its <em>scent.</em></h1>
+          <div id="finder" hidden>
+            <div class="journey-progress"><span class="step-label"></span><div class="step-track" aria-hidden="true"><i></i><i></i><i></i></div></div>
+            <h2 class="question" tabindex="-1"></h2>
+            <p class="question-hint"></p>
+            <div class="answer-grid"></div>
+            <div class="journey-nav">
+              <button class="back-step text-link" type="button" hidden>Back</button>
+              <a class="text-link" href="#collection">Browse all perfumes</a>
+            </div>
+          </div>
+          <noscript><p><a class="button dark" href="https://www.instagram.com/nasaem.fragrances/">Explore Nasaem on Instagram</a></p></noscript>
+        </div>
+        <p class="art-caption" aria-hidden="true">The Nasaem scent garden</p>
+      </div>
+    </section>
+
+    <section class="collection wrap" id="collection" aria-labelledby="collection-title">
+      <div class="section-intro">
+        <h2 id="collection-title">The collection</h2>
+        <p>Browse all 16 perfumes or filter by the scent style you like.</p>
+      </div>
+      <div class="collection-bar">
+        <div class="filters" role="group" aria-label="Filter fragrances by mood" hidden>
+          <button type="button" data-filter="all" aria-pressed="true">All scents</button>
+          <button type="button" data-filter="bright" aria-pressed="false">Bright &amp; fresh</button>
+          <button type="button" data-filter="floral" aria-pressed="false">Soft &amp; floral</button>
+          <button type="button" data-filter="warm" aria-pressed="false">Warm &amp; sweet</button>
+          <button type="button" data-filter="deep" aria-pressed="false">Deep &amp; smoky</button>
+        </div>
+        <p class="count" role="status"></p>
+      </div>
+      <div class="scent-grid" id="scents"></div>
+      <noscript><p>Explore all sixteen fragrances on <a href="https://www.instagram.com/nasaem.fragrances/">Nasaem’s Instagram</a>.</p></noscript>
+    </section>
+
+    <section class="guide" id="guide" aria-labelledby="guide-title">
+      <div class="guide-inner wrap">
+        <div class="guide-intro">
+          <svg class="guide-mark" viewBox="0 0 96 96" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="48" cy="48" r="32"/><circle cx="48" cy="48" r="42" stroke-dasharray="1 5"/><path d="M48 11C51 34 62 45 85 48C62 51 51 62 48 85C45 62 34 51 11 48C34 45 45 34 48 11Z"/><path d="M48 26v44M26 48h44"/></svg>
+          <h2 id="guide-title">How perfume<br><em>develops.</em></h2>
+          <p>A perfume can smell different an hour after you put it on. Here’s what to pay attention to when you try one.</p>
+        </div>
+        <div class="guide-list">
+          <details open>
+            <summary><span>First impression</span><span class="plus" aria-hidden="true"></span></summary>
+            <div class="guide-detail"><img src="assets/journey/floral.webp" width="160" height="160" loading="lazy" alt=""><p>Notice the first few minutes. Bright citrus, green, or airy notes often speak first.</p></div>
+          </details>
+          <details>
+            <summary><span>The heart</span><span class="plus" aria-hidden="true"></span></summary>
+            <div class="guide-detail"><img src="assets/journey/warm.webp" width="160" height="160" loading="lazy" alt=""><p>Once the opening settles, see which character emerges. It might feel floral, fruity, or spiced.</p></div>
+          </details>
+          <details>
+            <summary><span>The dry-down</span><span class="plus" aria-hidden="true"></span></summary>
+            <div class="guide-detail"><img src="assets/journey/deep.webp" width="160" height="160" loading="lazy" alt=""><p>Come back to it later. Woods, amber, and musk are examples of notes you may notice as the scent fades.</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact wrap" aria-labelledby="contact-title">
+      <h2 id="contact-title">Need help choosing?</h2>
+      <p>Tell us what you like to wear. We’ll help you find a place to start in the collection.</p>
+      <a class="button dark" href="https://ig.me/m/nasaem.fragrances">Message us on Instagram <span aria-hidden="true">↗</span></a>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner wrap">
+      <a class="wordmark" href="#top" aria-label="Nasaem Fragrances, back to top"><img src="assets/nasaem-wordmark.webp" width="175" height="228" alt=""></a>
+      <a href="#collection">Collection</a>
+      <a href="https://www.instagram.com/nasaem.fragrances/">@nasaem.fragrances</a>
+    </div>
+  </footer>
+
+  <dialog class="scent-dialog" aria-labelledby="scent-title">
+    <div class="dialog-shell">
+      <button type="button" class="close" aria-label="Close fragrance details" autofocus><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+      <img class="scent-art" src="assets/scents/static.webp" width="768" height="960" alt="">
+      <div class="scent-copy">
+        <p class="scent-family"></p>
+        <h2 id="scent-title"></h2>
+        <p class="scent-mood"></p>
+        <p class="scent-description"></p>
+        <p class="scent-format" hidden></p>
+        <p class="scent-price" hidden></p>
+        <a class="button dark scent-action"></a>
+        <p class="checkout-note"></p>
+      </div>
+    </div>
+  </dialog>
+</body>
+</html>
