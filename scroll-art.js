@@ -1,5 +1,5 @@
 const scrollMotion = matchMedia("(prefers-reduced-motion: no-preference)");
-const scrollScenes = [...document.querySelectorAll(".journey, .collection, .guide, .contact")];
+const scrollScenes = [...document.querySelectorAll(".film-hero, .journey, .collection, .guide, .contact")];
 const visibleScenes = new Set();
 let scrollFrame = 0;
 

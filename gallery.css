@@ -1,0 +1,121 @@
+.scent-grid {
+  gap: clamp(1.25rem, 3vw, 2.7rem) clamp(.65rem, 2vw, 1.65rem);
+}
+
+.card-button {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: .85rem .85rem .4rem .4rem;
+  background:
+    url("assets/atelier/alabaster-grain.svg"),
+    linear-gradient(155deg, #faecd4, #efcfaa);
+  box-shadow: 0 2px 3px #5b351f21, 0 .9rem 1.8rem -.65rem #79491e3d;
+}
+
+.card-button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+}
+
+.card-art {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background: var(--paper);
+}
+
+.card-button .card-art,
+.card-button:hover .card-art,
+.card-button:focus-visible .card-art,
+.card-art img {
+  box-shadow: none;
+}
+
+.card-button:hover .card-art,
+.card-button:focus-visible .card-art {
+  transform: none;
+}
+
+.card-art::before,
+.card-art::after {
+  content: none;
+}
+
+.card-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(125deg, #ffefd019, transparent 36%, transparent 70%, #2816090d);
+  box-shadow: inset 0 1px 1px #fff0d84d;
+}
+
+.card-text {
+  display: grid;
+  flex: 1;
+  width: 100%;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto 1fr;
+  align-items: center;
+  gap: .32rem .38rem;
+  margin: 0;
+  padding: 1rem clamp(.75rem, 1.4vw, 1.2rem) 1.1rem;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.card-text strong {
+  grid-column: 1 / -1;
+  font: 600 clamp(1.55rem, 2.3vw, 2.25rem)/1 var(--display);
+  letter-spacing: -.025em;
+  text-shadow: none;
+}
+
+.card-mood {
+  grid-row: 2;
+  font: 400 clamp(.75rem, 1.3vw, .86rem)/1.35 var(--text);
+  text-wrap: pretty;
+}
+
+.card-arrow {
+  grid-row: 2;
+  width: 1.85rem;
+  height: 1.85rem;
+  color: var(--ink);
+  background: var(--brass-face);
+  box-shadow: inset 0 1px 1px #fff4cfdf, inset 0 -1px 2px #42281542;
+}
+
+.card-button:hover .card-arrow,
+.card-button:focus-visible .card-arrow {
+  color: var(--paper);
+  background: var(--brass-pressed);
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .card-button {
+    transition: transform .35s var(--ease), box-shadow .35s var(--ease);
+  }
+
+  .card-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 .7rem 1.35rem #51301930;
+  }
+
+  .card-button:hover .card-art {
+    transform: rotateX(calc(var(--tilt-x, 0deg) * .35)) rotateY(calc(var(--tilt-y, 0deg) * .35));
+  }
+}
+
+@media (max-width: 620px) {
+  .card-text strong { font-size: clamp(1.2rem, 5.6vw, 1.75rem) }
+  .card-arrow { width: 1.55rem; height: 1.55rem }
+}

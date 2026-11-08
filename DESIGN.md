@@ -199,6 +199,12 @@ A warm, translucent row opens to reveal a small illustration and explanatory tex
 
 Champagne alabaster and espresso type continue from the garden into the packaging sequence and the collection. The material stylesheet adds layered crystal edges, brushed brass controls, and engraved paper labels without covering the full-bleed painted prints. The bag and gold-trimmed boxes take their proportions and finishes from the supplied reference photos. The box interior uses the printed art and satin from those photos.
 
-Scroll lifts the box, turns the lid on its hinge, raises the bottle, and rotates the crown through its screw-off motion. A closer camera frames the atomizer before the spray cuts to a leaf macro. A small drop briefly refracts the next shot, then opens into a full-bleed After Hours still life and its supplied note pyramid. Mobile keeps the product above the chapter text. The supplied bottle image serves as a still alternative.
+Scroll lifts the box, turns the lid on its hinge, raises the bottle, and rotates the crown through its screw-off motion. A closer camera frames the atomizer as the spray lands on a leaf, gathers on its vein, and falls from the tip. The camera follows the drop into a refracted view of the selected campaign artwork.
+
+The packaging switch pairs the brown box with the Feminine collection and the black box with the Masculine collection. A native selector lists every fragrance in the chosen collection. Golden Hour Bloom and Midnight Spice are the initial choices. The animation and still alternative show the selected fragrance's campaign card with its Cormorant title lettering in full, at its 4:5 proportions. The final chapter pairs it with the catalog mood and verified notes where supplied. Mobile keeps the product above the chapter text, with headings that stay visible through their beats.
 
 Gallery portraits retain their full proportions with color sampled from their scent families. Smaller scroll effects connect the garden, gallery, guide, and contact section.
+
+The physical props leave the frame through movement and occlusion. The box rises clear of the bag before turning, the bottle clears the satin tray before rotating, and the printed insert lifts off the lid before it slides. The leaf holds a transparent droplet; the camera passes through its refracted view and follows the rectangular print into the rail.
+
+The front page opens in espresso and champagne with a silent product film. The video, warm light, and text move at separate depths on scroll. The poster remains available without motion. The gallery pairs the full paintings with textured paper captions, preserving the campaign colors and marks.

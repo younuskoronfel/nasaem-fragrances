@@ -62,11 +62,10 @@
   opacity: .98;
   mix-blend-mode: multiply;
   mask-image: radial-gradient(ellipse 51% 48%, #000 54%, #000b 72%, transparent 100%);
-  transition: opacity .65s var(--ease);
 }
-.atelier-canvas { opacity: 0; transition: opacity .65s var(--ease) }
-.atelier-stage.is-rendered .atelier-poster { opacity: 0 }
-.atelier-stage.is-rendered .atelier-canvas { opacity: 1 }
+.atelier-canvas { visibility: hidden }
+.atelier-stage.is-rendered .atelier-poster { visibility: hidden }
+.atelier-stage.is-rendered .atelier-canvas { visibility: visible }
 .atelier-chapters { grid-column: 1; grid-row: 1 }
 .atelier-chapter {
   display: flex;
@@ -78,12 +77,30 @@
 }
 .atelier-chapter:first-child { min-height: 66svh }
 .atelier-chapter:last-child { min-height: 100svh }
+#bottle-mist { min-height: 27svh; padding-block: 1.75rem }
+#bottle-leaf { min-height: 31svh }
 .atelier-chapter h2, .atelier-chapter h3 {
   font-size: clamp(3.65rem, 7.1vw, 6rem);
   font-weight: 500;
   text-wrap: balance;
 }
 .atelier-chapter h2 em, .atelier-chapter h3 em { color: var(--metal) }
+#bottle-notes h3 { font-size: clamp(3rem, 6vw, 5.35rem) }
+.atelier-mood {
+  margin-top: .6rem;
+  color: var(--muted);
+  font-size: .95rem;
+}
+.atelier-liner {
+  display: none;
+  width: min(10.4rem, 100%);
+  height: auto;
+  aspect-ratio: 4 / 5;
+  margin-top: .75rem;
+  border-radius: .7rem;
+  object-fit: contain;
+}
+.atelier.is-static .atelier-liner { display: block }
 .atelier-next {
   display: inline-flex;
   align-items: center;
@@ -95,11 +112,14 @@
   color: var(--light);
 }
 .atelier-next svg { color: var(--metal) }
+.atelier-links { display: flex; flex-wrap: wrap; column-gap: 1rem }
+.atelier-detail { padding: 0; border: 0; background: none; text-decoration: underline }
 @media (max-width: 720px) {
+  .atelier { --atelier-stage-height: clamp(15rem, 47svh, 28rem) }
   .atelier-layout { display: block; width: 100% }
   .atelier-stage {
     z-index: 1;
-    height: clamp(15rem, 47svh, 28rem);
+    height: var(--atelier-stage-height);
     padding-block: .25rem .65rem;
     background:
       linear-gradient(0deg, var(--night) 3%, #ddbf9bd1 45%, #ddbf9b88 100%),
@@ -109,12 +129,24 @@
   .atelier-chapter {
     justify-content: flex-start;
     min-height: 37svh;
-    scroll-margin-top: clamp(15rem, 47svh, 28rem);
+    scroll-margin-top: var(--atelier-stage-height);
     padding-block: 1.6rem 2.5rem;
   }
   .atelier-chapter:first-child { min-height: 47svh }
-  .atelier-chapter:last-child { min-height: 56svh }
+  .atelier-chapter:last-child { min-height: calc(100svh - var(--atelier-stage-height) + 1rem) }
+  #bottle-mist { padding-block: 1.6rem 1.2rem }
+  #bottle-leaf { min-height: 28svh; padding-block: 1.6rem 1.2rem }
   .atelier-chapter h2, .atelier-chapter h3 { font-size: clamp(3.1rem, 11vw, 4.7rem) }
+}
+@media (max-width: 720px) and (prefers-reduced-motion: no-preference) {
+  .atelier:not(.is-static) .atelier-chapter:not(:last-child) :is(h2, h3) {
+    position: sticky;
+    top: calc(var(--atelier-stage-height) + 1rem);
+  }
+}
+@media (max-width: 720px) and (max-height: 500px) {
+  .atelier-chapter:not(:last-child) :is(h2, h3) { font-size: clamp(2.4rem, 8svh, 3rem) }
+  #bottle-mist, #bottle-leaf { padding-bottom: .8rem }
 }
 @media (max-width: 420px) {
   .header-inner { gap: .55rem }
@@ -125,6 +157,7 @@
 @media (prefers-reduced-motion: reduce) {
   .atelier-stage { position: relative; height: min(70svh, 38rem) }
   .atelier-chapter, .atelier-chapter:first-child, .atelier-chapter:last-child { min-height: auto; padding-block: 2.2rem; scroll-margin-top: 0 }
+  .atelier-liner { display: block }
 }
 
 /* Color is picked from the artwork, so each print casts a different light. */
@@ -223,10 +256,11 @@
 }
 
 .atelier.is-static .atelier-stage { position: relative; height: min(70svh, 38rem) }
-.atelier.is-static .atelier-chapter { min-height: auto }
+.atelier.is-static .atelier-chapter { min-height: auto; scroll-margin-top: 0 }
 .atelier.is-static .atelier-chapter:not(:first-child):not(:last-child) { display: none }
 @media (prefers-reduced-motion: no-preference) {
-  .atelier-chapter { opacity: calc(.08 + .92 * var(--film-focus, 1)) }
+  .atelier-chapter { opacity: var(--film-focus, 1) }
+  .atelier-chapter:focus-within { opacity: 1 }
 }
 @media (prefers-reduced-motion: reduce) {
   .atelier-chapter:not(:first-child):not(:last-child) { display: none }
@@ -251,14 +285,19 @@
     linear-gradient(90deg, #ddbf9bf7 5%, #ddbf9bb8 42%, #ddbf9b66 77%),
     url("assets/atelier/room.webp") 50% 46% / cover;
 }
+.atelier-controls {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  align-items: center;
+  gap: .55rem;
+  justify-self: center;
+  width: min(100% - 1.5rem, 25rem);
+}
 .atelier-variants {
-  opacity: calc(1 - var(--handoff, 0));
   display: flex;
   align-items: center;
   justify-content: center;
   gap: .3rem;
-  align-self: end;
-  justify-self: center;
   border-radius: 3rem;
   padding: .22rem;
   background: #f4dbb6cc;
@@ -274,6 +313,26 @@
   font-weight: 600;
 }
 .atelier-variants button[aria-pressed="true"] { color: #fff3de; background: #553823 }
+.atelier-scent {
+  min-width: 0;
+  min-height: 2.75rem;
+  padding-inline: .55rem;
+  border-radius: .65rem;
+  font: 600 .82rem/1.15 var(--text);
+}
+@media (max-width: 420px) {
+  .atelier-controls { gap: .35rem }
+  .atelier-variants { gap: .2rem }
+  .atelier-variants button { padding-inline: .56rem }
+}
+@media (max-width: 355px) {
+  .atelier-controls {
+    grid-template-columns: minmax(0, 1fr);
+    width: 13.75rem;
+    max-width: calc(100% - 1.5rem);
+  }
+  .atelier-variants button { flex: 1 }
+}
 .guide {
   color: var(--ink);
   background: radial-gradient(ellipse at calc(var(--scroll-art, .5) * 100%) 10%, #e1ae80, transparent 70%), #ebcba5;
@@ -297,47 +356,17 @@
 }
 .atelier-notes dt { font: 700 1.23rem/1 var(--display) }
 .atelier-notes dd { margin: 0; font-size: .91rem }
-@media (prefers-reduced-motion: no-preference) {
-  .atelier-notes > * { opacity: var(--notes, 1); translate: 0 calc((1 - var(--notes, 1)) * .7rem) }
-}
 @media (max-width: 720px) {
   .atelier-notes { margin-top: 1rem; gap: .5rem .55rem }
 }
 
-.atelier-canvas {
-  mask-image: linear-gradient(0deg, transparent, #000 4%, #000 98%, transparent);
-}
 @media (prefers-reduced-motion: no-preference) {
   .atelier-notes > * { --note-in: clamp(0, calc(var(--notes, 1) * 1.65 - var(--note-delay, 0)), 1); opacity: var(--note-in); translate: 0 calc((1 - var(--note-in)) * .7rem) }
   .atelier-notes > :nth-child(n + 3) { --note-delay: .26 }
   .atelier-notes > :nth-child(n + 5) { --note-delay: .52 }
 }
 
-.atelier-stage.is-rendered .atelier-canvas { opacity: calc(1 - var(--handoff, 0)) }
 @media (max-width: 720px) {
   .atelier { background: linear-gradient(180deg, var(--night) 0 86%, var(--paper)) }
   .atelier::before { display: none }
-}
-
-.atelier-transition {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-  border-radius: .85rem;
-  mask-image: radial-gradient(ellipse at center, #000 64%, #000d 85%, transparent 100%);
-}
-.atelier-leaf, .atelier-note-scene {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 48.4% 53.3%;
-  transform-origin: 48.4% 53.3%;
-}
-.atelier-leaf { opacity: var(--leaf, 0); scale: calc(1 + .28 * var(--lens, 0)); }
-.atelier-note-scene {
-  opacity: var(--scene-in, 0);
-  clip-path: ellipse(calc(2% + 99% * var(--lens, 0)) calc(3% + 94% * var(--lens, 0)) at 48.4% 53.3%);
 }

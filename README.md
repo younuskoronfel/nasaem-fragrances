@@ -20,10 +20,12 @@ The three-question journey and ranking function live in `journey.js`. Questions 
 
 Edit the catalog in `scents.js`. The names and mood words are based on the campaign art. The mood filters are browsing categories. Add confirmed `size`, `notes`, `price` (including currency), and a provider-issued HTTPS `checkoutUrl` to each fragrance when ready. The checkout button appears when both price and checkout URL are present. Until then, fragrance details link to Instagram.
 
-For GitHub Pages, choose **Deploy from a branch** in **Settings → Pages** and select `main` and `/ (root)` after merging the website.
+The site publishes through GitHub Pages. The source branch is selected in **Settings → Pages**, with `/ (root)` as the folder.
 
 ## Bottle sequence
 
-The unboxing and spray sequence uses a local Three.js r180 bundle (MIT) and WebGL. The renderer loads when the exhibit enters view. Browsers without WebGL and visitors who prefer reduced motion see the painted bottle instead. The chapter copy and collection link are ordinary HTML.
+The scroll sequence uses a local Three.js r180 bundle (MIT) and WebGL. The renderer loads near the exhibit. Visitors who prefer reduced motion or use a browser without WebGL can still select a fragrance and see its artwork and details.
 
-`atelier-model.js` defines the bottle optics, studio lighting, and scroll poses. `atelier-packaging.js` models the bag, hinged box, and crown from the supplied reference photos. `atelier.css` and `scroll-art.js` handle the page-wide art treatments.
+`atelier-model.js` defines the bottle optics, lighting, and scroll poses. `atelier-packaging.js` builds the bag, hinged box, crown, and printed insert. `atelier-macro.js` handles the camera move through the droplet and the insert landing. The insert uses the selected fragrance’s 1080 × 1350 campaign artwork with Cormorant title lettering from `assets/atelier/cards/`. Keep the filenames in sync with `scents.js`; the smaller `assets/scents/` images serve the collection grid.
+
+The hero’s silent 1080p loop and poster live in `assets/hero/`. `hero-film.js` pauses the video offscreen and respects reduced motion. `scroll-art.js` drives the video, light, and text parallax.

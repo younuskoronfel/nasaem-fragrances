@@ -14,11 +14,11 @@ function createCard(scent, index) {
   article.dataset.family = scent.family;
   article.innerHTML = `
     <button class="card-button" type="button" aria-haspopup="dialog">
-      <span class="card-art"><img width="768" height="960" alt="" decoding="async" src="assets/scents/${scent.id}.webp"></span>
+      <span class="card-art"><img width="768" height="960" alt="" loading="lazy" decoding="async" src="assets/scents/${scent.id}.webp"></span>
       <span class="card-text"><strong></strong><span class="card-mood"></span><span class="card-arrow">${arrows}</span></span>
     </button>`;
   const art = article.querySelector("img");
-  art.loading = index < 4 ? "eager" : "lazy";
+  art.loading = "lazy";
   article.querySelector("strong").textContent = scent.name;
   article.querySelector(".card-mood").textContent = scent.mood;
   article.querySelector("button").addEventListener("click", () => openScent(scent));
@@ -64,12 +64,61 @@ function fillNotes(list, pyramid) {
   }
 }
 
-const featuredNotes = document.querySelector(".atelier-notes");
-if (featuredNotes) {
-  const featured = scents.find(scent => scent.id === featuredNotes.dataset.notesFor);
-  fillNotes(featuredNotes, featured?.notePyramid);
-  featuredNotes.hidden = !featured?.notePyramid;
+const atelier = document.querySelector(".atelier");
+const atelierControls = atelier.querySelector(".atelier-controls");
+const packagingButtons = atelierControls.querySelectorAll("button[data-packaging]");
+const scentSelect = atelierControls.querySelector(".atelier-scent");
+const featuredChapter = atelier.querySelector("#bottle-notes");
+const featuredTitle = featuredChapter.querySelector("h3");
+const featuredMood = featuredChapter.querySelector(".atelier-mood");
+const featuredNotes = featuredChapter.querySelector(".atelier-notes");
+const featuredLiner = featuredChapter.querySelector(".atelier-liner");
+const featuredDetail = featuredChapter.querySelector(".atelier-detail");
+const selectedScents = { brown: "golden-hour-bloom", black: "midnight-spice" };
+let featuredScent;
+
+function showFeaturedScent() {
+  const packaging = atelier.dataset.packaging;
+  featuredScent = scents.find(scent => scent.id === scentSelect.value);
+  selectedScents[packaging] = featuredScent.id;
+  atelier.dataset.scent = featuredScent.id;
+  featuredTitle.textContent = `${featuredScent.name}.`;
+  featuredMood.textContent = featuredScent.mood;
+  featuredNotes.replaceChildren();
+  fillNotes(featuredNotes, featuredScent.notePyramid);
+  featuredNotes.hidden = !featuredScent.notePyramid;
+  featuredLiner.src = `assets/atelier/cards/${featuredScent.id}.jpg`;
+  featuredLiner.alt = `${featuredScent.name} campaign card`;
+  atelier.dispatchEvent(new CustomEvent("atelier:scent", {
+    detail: { masculine: packaging === "black", scent: featuredScent }
+  }));
 }
+
+function showAtelierPackaging(packaging) {
+  atelier.dataset.packaging = packaging;
+  const classification = packaging === "black" ? "Masculine" : "Feminine";
+  for (const button of packagingButtons) {
+    button.setAttribute("aria-pressed", String(button.dataset.packaging === packaging));
+  }
+  scentSelect.replaceChildren(...scents
+    .filter(scent => scent.collection === classification)
+    .map(scent => new Option(scent.name, scent.id)));
+  scentSelect.value = selectedScents[packaging];
+  showFeaturedScent();
+}
+
+for (const button of packagingButtons) {
+  button.addEventListener("click", () => {
+    if (button.dataset.packaging !== atelier.dataset.packaging) {
+      showAtelierPackaging(button.dataset.packaging);
+    }
+  });
+}
+scentSelect.addEventListener("change", showFeaturedScent);
+featuredDetail.addEventListener("click", () => openScent(featuredScent));
+showAtelierPackaging(atelier.dataset.packaging);
+atelierControls.hidden = false;
+featuredDetail.hidden = false;
 
 function openScent(scent) {
   const art = dialog.querySelector(".scent-art");

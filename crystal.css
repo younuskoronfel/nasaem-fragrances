@@ -95,6 +95,12 @@ h1, h2, h3, .card-text strong {
 .filters { padding: .28rem; border-radius: 1.42rem }
 .filters button { min-height: 2.55rem }
 .atelier-variants { padding: .25rem }
+.atelier-scent {
+  color: var(--ink);
+  border: 1px solid #8e562859;
+  background: var(--crystal-fill) padding-box, var(--crystal-edge) border-box;
+  box-shadow: var(--crystal-depth);
+}
 
 .atelier {
   --night: #e4c79e;
@@ -109,15 +115,7 @@ h1, h2, h3, .card-text strong {
 .atelier-frame::before {
   background: radial-gradient(ellipse at 54% 73%, #cd864c39, #f6d8a61a 48%, transparent 72%);
 }
-.atelier-transition {
-  border-radius: 1.1rem;
-  mask-image: radial-gradient(ellipse 73% 74% at 52% 50%, #000 61%, #000d 77%, transparent 100%);
-}
-.atelier-leaf, .atelier-note-scene {
-  filter: saturate(.91) sepia(.10);
-}
 .atelier-notes {
-  opacity: var(--notes, 1);
   border: 1px solid transparent;
   border-radius: .75rem;
   padding: 1rem 1.15rem;
