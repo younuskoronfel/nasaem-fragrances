@@ -1,70 +1,68 @@
 import {
-  BoxGeometry, CanvasTexture, CatmullRomCurve3, DoubleSide, Group, MeshStandardMaterial, PlaneGeometry,
+  BoxGeometry, CanvasTexture, CatmullRomCurve3, Group, MeshStandardMaterial, PlaneGeometry,
   Quaternion, ShaderMaterial, SphereGeometry, SRGBColorSpace, Vector3
 } from "./assets/atelier/three.js";
 
 const foliageLighting = `
-  vec3 litFoliage(vec3 photograph, vec2 point, vec3 eye, vec2 relief) {
+  vec3 litFoliage(vec3 photograph, vec3 eye, vec2 relief) {
     float luminance = dot(photograph, vec3(.2126, .7152, .0722));
-    float alongVein = max(0., point.x - .483);
-    float midrib = .537 + .80 * alongVein + .118 * (1. - exp(-19. * alongVein));
-    float acrossVein = point.y - midrib;
-    float curl = clamp(acrossVein * 6., -.64, .75);
-    vec3 normal = normalize(vec3(.04 - .48 * curl + relief.x, .12 + .76 * curl + relief.y, 1.));
+    vec3 normal = normalize(vec3(.12 + relief.x, .20 + relief.y, 1.));
     vec3 key = normalize(vec3(-.39, .53, .74));
     vec3 fill = normalize(vec3(.67, .28, .56));
-    vec3 olive = photograph * vec3(.89, .97, 1.15);
+    vec3 olive = photograph * vec3(.98, .91, .83);
     vec3 parchment = vec3(.95, .88, .68) * luminance;
-    vec3 body = mix(olive, parchment, .21 + .39 * smoothstep(.19, .70, luminance));
+    vec3 body = mix(olive, parchment, .09 + .12 * smoothstep(.19, .70, luminance));
     float diffuse = .60 + .35 * max(0., dot(normal, key)) + .18 * max(0., dot(normal, fill));
     vec3 viewRay = normalize(eye);
     float angle = max(0., dot(normal, viewRay));
     float roughness = mix(13., 22., smoothstep(.12, .50, luminance));
     float softbox = pow(max(0., dot(normal, normalize(key + viewRay))), roughness);
     float fresnel = .07 + .19 * pow(1. - angle, 3.);
-    float vein = exp(-105. * abs(acrossVein)) * smoothstep(.11, .34, luminance);
-    vec3 sheen = vec3(1., .90, .72) * (softbox * fresnel + .042 * vein);
+    vec3 sheen = vec3(1., .90, .72) * softbox * fresnel;
     return body * diffuse + sheen;
   }
 `;
 
-export function buildMacro(scene, part, refresh, smooth, backdrop) {
+export function buildMacro(scene, part, refresh, smooth, backdrop, card) {
   const leafCanvas = document.createElement("canvas");
-  leafCanvas.width = 1536;
-  leafCanvas.height = 1024;
+  leafCanvas.width = 1672;
+  leafCanvas.height = 941;
   const leafPrint = new CanvasTexture(leafCanvas);
   leafPrint.colorSpace = SRGBColorSpace;
+  leafPrint.anisotropy = 8;
   let active = true;
   const photo = new Image();
   photo.onload = () => {
     if (!active) return;
     const ink = leafCanvas.getContext("2d");
-    // Trace the photographed leaf itself, excluding the baked drop.
-    ink.beginPath();
-    ink.moveTo(906, -3);
-    ink.bezierCurveTo(880, 18, 853, 65, 827, 107);
-    ink.bezierCurveTo(806, 138, 786, 169, 772, 203);
-    ink.bezierCurveTo(747, 233, 731, 270, 723, 309);
-    ink.bezierCurveTo(706, 353, 706, 412, 716, 444);
-    ink.bezierCurveTo(722, 464, 731, 478, 741, 478);
-    ink.bezierCurveTo(748, 479, 750, 468, 748, 455);
-    ink.bezierCurveTo(752, 417, 784, 386, 827, 360);
-    ink.bezierCurveTo(913, 314, 979, 296, 1095, 278);
-    ink.bezierCurveTo(1273, 254, 1400, 220, 1538, 138);
-    ink.lineTo(1538, -3);
-    ink.closePath();
-    ink.clip();
     ink.drawImage(photo, 0, 0, leafCanvas.width, leafCanvas.height);
     leafPrint.needsUpdate = true;
     refresh();
   };
-  photo.src = new URL("./assets/atelier/leaf-macro.webp", import.meta.url);
+  photo.src = new URL("./assets/atelier/citrus-leaf.webp", import.meta.url);
+
+  const leafWidth = 2.5;
+  const leafHeight = leafWidth * 941 / 1672;
+  const aperture = { value: 2 };
+  for (const mesh of card.children) {
+    mesh.material.alphaToCoverage = true;
+    mesh.material.onBeforeCompile = shader => {
+      shader.uniforms.lensAperture = aperture;
+      shader.uniforms.lensResolution = backdrop.uniforms.resolution;
+      shader.fragmentShader = `uniform float lensAperture;
+        uniform vec2 lensResolution;
+        ${shader.fragmentShader}`.replace("#include <opaque_fragment>", `#include <opaque_fragment>
+        vec2 lensPoint = (gl_FragCoord.xy - .5 * lensResolution) / lensResolution.y;
+        gl_FragColor.a *= 1. - smoothstep(lensAperture - .035, lensAperture, length(lensPoint));
+        if (gl_FragColor.a < .001) discard;`);
+    };
+  }
 
   const twig = new Group();
   scene.add(twig);
-  const leaf = part(twig, new PlaneGeometry(5.2, 3.465), new ShaderMaterial({
+  const leaf = part(twig, new PlaneGeometry(leafWidth, leafHeight), new ShaderMaterial({
     uniforms: { leafMap: { value: leafPrint } },
-    toneMapped: false,
+    toneMapped: false, alphaToCoverage: true,
     vertexShader: `
       varying vec2 surfaceUv;
       varying vec3 surfaceEye;
@@ -86,21 +84,20 @@ export function buildMacro(scene, part, refresh, smooth, backdrop) {
         vec4 photograph = texture2D(leafMap, surfaceUv);
         float luminance = dot(photograph.rgb, vec3(.2126, .7152, .0722));
         vec2 relief = clamp(vec2(dFdx(luminance), dFdy(luminance)) * .34, -.13, .13);
-        if (photograph.a < .45) discard;
-        gl_FragColor = vec4(litFoliage(photograph.rgb, surfaceUv, surfaceEye, relief), 1.);
+        if (photograph.a < .01) discard;
+        gl_FragColor = vec4(litFoliage(photograph.rgb, surfaceEye, relief), photograph.a);
         #include <colorspace_fragment>
       }
     `
-  }), .096, -.097, -.045);
+  }), 1.215, .67, -.065);
   leaf.rotation.x = .06;
   leaf.updateMatrix();
-  const leafTip = new Vector3(.009, .014, -.046);
-  // Follow the midrib in the source photograph, including its bend at the tip.
+  // Register the runoff path to the actual midrib and tip in the photograph.
   const vein = new CatmullRomCurve3([
-    [900, 290], [845, 329], [795, 368], [758, 409], [742, 452]
-  ].map(([x, y]) => new Vector3((x / 1536 - .5) * 5.2, (.5 - y / 1024) * 3.465, 0)
-    .applyMatrix4(leaf.matrix)).concat(leafTip));
-  const dropShape = new SphereGeometry(1, 64, 40);
+    [590, 568], [420, 663], [275, 757], [116, 858], [24, 914]
+  ].map(([x, y]) => new Vector3((x / 1672 - .5) * leafWidth, (.5 - y / 941) * leafHeight, 0)
+    .applyMatrix4(leaf.matrix)));
+  const dropShape = new SphereGeometry(1, 96, 64);
   dropShape.computeBoundingSphere();
   dropShape.boundingSphere.radius = 1.25;
   const optics = {
@@ -117,10 +114,12 @@ export function buildMacro(scene, part, refresh, smooth, backdrop) {
     projectionScale: { value: [1, 1] },
     radius: { value: .14 },
     neckTension: { value: 0 },
-    passage: { value: 0 }
+    passage: { value: 0 },
+    exitWater: { value: 0 },
+    leafSize: { value: [leafWidth, leafHeight] }
   };
   const drop = part(twig, dropShape, new ShaderMaterial({
-    uniforms: optics, side: DoubleSide, toneMapped: false, transparent: true, depthWrite: false, forceSinglePass: true,
+    uniforms: optics, toneMapped: false, transparent: true, depthWrite: false, forceSinglePass: true,
     vertexShader: `
       uniform float neckTension;
       varying vec3 viewNormal;
@@ -146,7 +145,8 @@ export function buildMacro(scene, part, refresh, smooth, backdrop) {
       uniform sampler2D printMap, leafMap;
       uniform vec3 printCenter, printAcross, printUp, leafCenter, leafAcross, leafUp;
       uniform vec2 printSize, projectionScale;
-      uniform float radius, passage;
+      uniform float radius, passage, exitWater;
+      uniform vec2 leafSize;
       varying vec3 viewNormal;
       varying vec3 surfacePoint;
 
@@ -162,22 +162,14 @@ export function buildMacro(scene, part, refresh, smooth, backdrop) {
       }
 
       void main() {
-        if (!gl_FrontFacing && passage < .66) discard;
         vec3 n = normalize(viewNormal);
         vec3 incident = normalize(surfacePoint);
-        vec3 origin = surfacePoint;
-        vec3 ray;
         const float water = 1.333;
-        if (gl_FrontFacing) {
-          vec3 inWater = refract(incident, n, 1. / water);
-          float chord = max(0., -2. * dot(n, inWater));
-          origin += inWater * chord * radius;
-          vec3 exitNormal = normalize(n + inWater * chord);
-          ray = refract(inWater, -exitNormal, water);
-        } else {
-          n = -n;
-          ray = refract(incident, n, water);
-        }
+        vec3 inWater = refract(incident, n, 1. / water);
+        float chord = max(0., -2. * dot(n, inWater));
+        vec3 origin = surfacePoint + inWater * chord * radius;
+        vec3 exitNormal = normalize(n + inWater * chord);
+        vec3 ray = refract(inWater, -exitNormal, water);
         if (dot(ray, ray) < .01) ray = reflect(incident, n);
         // At macro scale the exiting ray meets the same print plane as the main camera.
         origin = mix(origin, surfacePoint, passage);
@@ -192,14 +184,15 @@ export function buildMacro(scene, part, refresh, smooth, backdrop) {
         vec3 printHit = hitPlane(origin, ray, printCenter, printAcross, printUp, printSize);
         if (printHit.z > 0.) {
           vec3 printColor = texture2D(printMap, 1. - printHit.xy).rgb;
-          transmitted = mix(transmitted, printColor, passage);
-          opticalCoverage = mix(opticalCoverage, 1., passage);
+          vec3 firstImage = texture2D(printMap, 1. - printHit.xy, 1.7 * (1. - passage)).rgb;
+          transmitted = mix(transmitted, mix(firstImage, printColor, passage), smoothstep(.01, .70, passage));
+          opticalCoverage = mix(opticalCoverage, 1., smoothstep(.02, .75, passage));
         }
-        vec3 leafHit = hitPlane(origin, ray, leafCenter, leafAcross, leafUp, vec2(5.2, 3.465));
+        vec3 leafHit = hitPlane(origin, ray, leafCenter, leafAcross, leafUp, leafSize);
         if (leafHit.z > 0. && (printHit.z <= 0. || leafHit.z < printHit.z)) {
           vec4 foliage = texture2D(leafMap, leafHit.xy);
           vec3 leafEye = -vec3(dot(ray, leafAcross), dot(ray, leafUp), dot(ray, cross(leafAcross, leafUp)));
-          vec3 leafColor = litFoliage(foliage.rgb, leafHit.xy, leafEye, vec2(0.));
+          vec3 leafColor = litFoliage(foliage.rgb, leafEye, vec2(0.));
           vec3 leafLuma = vec3(dot(leafColor, vec3(.2126, .7152, .0722)));
           float leafCoverage = smoothstep(.40, .67, foliage.a);
           transmitted = mix(transmitted, mix(leafLuma, leafColor, .63), leafCoverage);
@@ -220,7 +213,7 @@ export function buildMacro(scene, part, refresh, smooth, backdrop) {
         vec3 color = mix(transmitted, environment, fresnel * (1. - passage)) + sparkle * (1. - passage);
         float highlightCoverage = clamp(strip + glint * 1.8 + rim + upperWindow * .36, 0., 1.);
         float alpha = mix(opticalCoverage, 1., max(highlightCoverage, fresnel * .88));
-        gl_FragColor = vec4(color, max(alpha, passage));
+        gl_FragColor = vec4(color, alpha * (1. - exitWater));
         #include <colorspace_fragment>
       }
     `
@@ -248,7 +241,7 @@ export function buildMacro(scene, part, refresh, smooth, backdrop) {
   const stageTurn = new Quaternion();
   const cardPoint = new Vector3();
   const cardTurn = new Quaternion();
-  const lensOrigin = new Vector3(.75, 1.54, 2.40);
+  const lensOrigin = new Vector3(.68, 1.40, 2.34);
   const impactPoint = vein.getPoint(0);
 
   function poseLeaf(progress) {
@@ -265,67 +258,63 @@ export function buildMacro(scene, part, refresh, smooth, backdrop) {
       poseLeaf(progress);
       return twig.localToWorld(target.copy(impactPoint));
     },
-    update(progress, camera, card, texture) {
+    update(progress, camera, texture) {
+      const settle = smooth(.957, .982, progress);
+      const seat = smooth(.969, .985, progress);
+      const railLift = smooth(.963, .981, progress);
+      const maxRadius = Math.hypot(.5 * camera.aspect, .5) + .05;
+      aperture.value = progress < .918 ? maxRadius : maxRadius * smooth(.940, .970, progress);
       twig.visible = progress > .777;
-      dock.visible = progress > .962;
+      dock.visible = railLift > 0;
       if (progress <= .777) return;
       poseLeaf(progress);
-      const bead = Math.sqrt(smooth(.842, .880, progress));
-      const slide = smooth(.844, .889, progress);
-      const hang = smooth(.876, .889, progress);
-      const stretch = smooth(.897, .912, progress) * (1 - smooth(.912, .93, progress));
-      const release = Math.max(0, (progress - .912) / .055);
-      const approach = smooth(.812, .914, progress);
-      const immerse = smooth(.921, .961, progress);
-      const emerge = smooth(.950, .979, progress);
-      const seat = smooth(.974, 1, progress);
-      const roll = Math.PI * smooth(.917, .990, progress);
-      const settle = smooth(.974, 1, progress);
-      const railLift = smooth(.962, .991, progress);
 
-      drop.visible = bead > 0;
-      const size = Math.max(.001, .14 * bead);
-      const height = size * (1.03 + .18 * stretch);
-      const depthScale = size * (.61 + .39 * hang);
-      const tension = hang * (1 - smooth(.912, .928, progress));
-      drop.scale.set(size * (1 + .15 * Math.sin(slide * Math.PI)), height, depthScale);
+      const bead = smooth(.838, .876, progress);
+      const slide = smooth(.841, .899, progress);
+      const hang = smooth(.883, .902, progress);
+      const tension = hang * (1 - smooth(.920, .941, progress));
+      const release = Math.max(0, (progress - .920) / .065);
+      const size = Math.max(.001, .125 * bead);
+      const height = size * (1.01 + .15 * tension);
+      const depthScale = size * (.62 + .38 * hang);
+      drop.visible = bead > 0 && progress < .968;
+      drop.scale.set(size * (1 + .13 * Math.sin(slide * Math.PI)), height, depthScale);
       vein.getPoint(slide, drop.position);
       drop.position.z += depthScale * (1 - hang);
-      drop.position.y -= progress <= .912
-        ? height * (1 + .24 * tension) * hang
-        : .14 * 1.21 * 1.24 + .77 * release * release;
+      drop.position.y -= size * 1.01 * hang + size * .42 * hang + 1.35 * release * release;
       optics.radius.value = size;
       optics.neckTension.value = tension;
-      optics.passage.value = smooth(.940, .967, progress);
+      optics.passage.value = smooth(.929, .954, progress);
+      optics.exitWater.value = smooth(.949, .967, progress);
 
       twig.localToWorld(focus.copy(drop.position));
       camera.getWorldDirection(forward);
       target.copy(camera.position).addScaledVector(forward, 6);
-      const aim = smooth(.798, .895, progress);
-      target.lerp(focus, aim);
-      camera.position.lerp(cardPoint.set(focus.x, focus.y + .025, focus.z + 1.60), approach);
-      camera.position.lerp(cardPoint.set(focus.x, focus.y, focus.z + .185), immerse);
-      camera.position.lerp(cardPoint.set(focus.x, focus.y + .10 * settle, focus.z - .55 - .33 * settle), emerge);
-      target.lerp(cardPoint.set(focus.x, focus.y, focus.z - 6), smooth(.930, .970, progress));
-      camera.up.set(Math.sin(roll), Math.cos(roll), 0);
+      const approach = smooth(.801, .887, progress);
+      const lens = smooth(.916, .946, progress);
+      const width = Math.max(1, .83 / camera.aspect);
+      const offset = (.51 + .15 * (1 - bead)) * (1 - lens);
+      target.lerp(cardPoint.set(focus.x + offset, focus.y + .31 * (1 - lens), focus.z), approach);
+      camera.position.lerp(cardPoint.set(focus.x + offset, focus.y + .31 * (1 - lens),
+        focus.z + ((2.26 - 1.89 * lens) * (1 - settle) + 2.5 * settle) * width), approach);
       camera.lookAt(target);
       camera.updateMatrixWorld();
       camera.getWorldDirection(forward);
       right.set(1, 0, 0).applyQuaternion(camera.quaternion);
       up.set(0, 1, 0).applyQuaternion(camera.quaternion);
 
-      // The same printed insert comes through the lens, then drops into a recessed rail.
-      const frameDistance = Math.max(4.6, 3.75 / camera.aspect);
-      const reverse = smooth(.935, .949, progress);
-      const fly = smooth(.947, .991, progress);
-      const depth = .93 + (frameDistance - .93) * fly;
-      const centerY = .82 * Math.sin(Math.PI * fly) + .10 * (1 - seat);
+      // Align the same print behind the bead so its refracted image can meet the actual paper.
+      const frameDistance = Math.max(4.95, 3.75 / camera.aspect);
+      const closeDistance = Math.max(3.48, 2.95 / camera.aspect);
+      const depth = closeDistance + (frameDistance - closeDistance) * settle;
       cardPoint.copy(camera.position).addScaledVector(forward, depth)
-        .addScaledVector(up, centerY).addScaledVector(right, .25 * Math.sin(Math.PI * fly));
-      stageTurn.copy(camera.quaternion).multiply(yaw).multiply(tilt);
+        .addScaledVector(up, .22 * Math.sin(Math.PI * settle) + .11 * (1 - seat))
+        .addScaledVector(right, .15 * Math.sin(Math.PI * settle));
+      stageTurn.copy(camera.quaternion).slerp(cardTurn.copy(camera.quaternion).multiply(yaw).multiply(tilt), seat);
       cardTurn.copy(stageTurn).multiply(printTurn);
-      card.position.lerp(cardPoint, reverse);
-      card.quaternion.slerp(cardTurn, reverse);
+      const returnPrint = smooth(.911, .931, progress);
+      card.position.lerp(cardPoint, returnPrint);
+      card.quaternion.slerp(cardTurn, returnPrint);
       card.updateWorldMatrix(true, false);
       leaf.updateWorldMatrix(true, false);
       const view = camera.matrixWorldInverse;

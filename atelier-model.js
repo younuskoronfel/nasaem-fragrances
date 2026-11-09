@@ -5,8 +5,8 @@ import {
   PlaneGeometry, PMREMGenerator, Points, Quaternion, Scene, ShaderMaterial, SphereGeometry,
   SRGBColorSpace, TubeGeometry, Vector3, WebGLRenderer
 } from "./assets/atelier/three.js";
-import { buildCrown, buildPackaging } from "./atelier-packaging.js";
-import { buildMacro } from "./atelier-macro.js?v=clear-water-4";
+import { buildCrown, buildPackaging } from "./atelier-packaging.js?v=citrus-lens-1";
+import { buildMacro } from "./atelier-macro.js?v=citrus-lens-1";
 import { createScentOrbit } from "./scent-orbit.js?v=clear-water-2";
 
 const clamp = value => Math.min(1, Math.max(0, value));
@@ -43,7 +43,7 @@ function flacon(rings) {
   const indices = [];
   for (const [y, x, z, cut] of rings) {
     const bevel = cut * .25;
-    for (const [a, b] of [
+    const perimeter = [
       [x - cut - bevel, z], [-x + cut + bevel, z], [-x + cut, z - bevel * .14],
       [-x + bevel * .14, z - cut], [-x, z - cut - bevel],
       [-x, -z + cut + bevel], [-x + bevel * .14, -z + cut],
@@ -51,9 +51,24 @@ function flacon(rings) {
       [x - cut, -z + bevel * .14], [x - bevel * .14, -z + cut],
       [x, -z + cut + bevel], [x, z - cut - bevel],
       [x - bevel * .14, z - cut], [x - cut, z - bevel * .14]
-    ]) positions.push(a, y, b);
+    ];
+    // Polish the junctions between the flat facets without rounding away the cut glass.
+    for (let i = 0; i < perimeter.length; i++) {
+      const corner = perimeter[i];
+      const previous = perimeter[(i + perimeter.length - 1) % perimeter.length];
+      const next = perimeter[(i + 1) % perimeter.length];
+      for (const t of [0, 1 / 3, 2 / 3, 1]) {
+        const incoming = .24 * (1 - t) ** 2;
+        const outgoing = .24 * t ** 2;
+        positions.push(
+          corner[0] + incoming * (previous[0] - corner[0]) + outgoing * (next[0] - corner[0]),
+          y,
+          corner[1] + incoming * (previous[1] - corner[1]) + outgoing * (next[1] - corner[1])
+        );
+      }
+    }
   }
-  const sides = 16;
+  const sides = 64;
   for (let row = 1; row < rings.length; row++) {
     for (let i = 0; i < sides; i++) {
       const a = (row - 1) * sides + i;
@@ -72,8 +87,22 @@ function flacon(rings) {
 
 function studioMap(renderer) {
   const studio = new Scene();
+  const diffuser = document.createElement("canvas");
+  diffuser.width = diffuser.height = 96;
+  const ink = diffuser.getContext("2d");
+  const pixels = ink.createImageData(96, 96);
+  for (let y = 0; y < 96; y++) {
+    for (let x = 0; x < 96; x++) {
+      const at = (y * 96 + x) * 4;
+      const falloff = smooth(0, 22, Math.min(x, 95 - x)) * smooth(0, 19, Math.min(y, 95 - y));
+      pixels.data[at] = pixels.data[at + 1] = pixels.data[at + 2] = 255 * falloff;
+      pixels.data[at + 3] = 255;
+    }
+  }
+  ink.putImageData(pixels, 0, 0);
+  const softbox = new CanvasTexture(diffuser);
   function panel(width, height, position, light) {
-    const material = new MeshBasicMaterial({ color: "#ffffff", side: DoubleSide });
+    const material = new MeshBasicMaterial({ map: softbox, side: DoubleSide });
     material.color.setRGB(...light);
     const mesh = new Mesh(new PlaneGeometry(width, height), material);
     mesh.position.set(...position);
@@ -85,10 +114,12 @@ function studioMap(renderer) {
   panel(4.2, 1.6, [0, 5.3, -1.4], [5.7, 5.15, 4.45]);
   panel(2.6, 4.5, [-.8, 1.5, -4.1], [1.9, 1.47, 1.0]);
   panel(1.36, 3.6, [1.6, 2.9, 4.5], [5.7, 5.15, 4.4]);
-  panel(5.0, 3.3, [0, .38, 4.6], [2.15, 1.99, 1.73]);
+  panel(3.0, 2.9, [-.85, .40, 4.8], [.81, .73, .64]);
+  panel(3.6, .42, [.8, -.85, 3.5], [1.9, 1.63, 1.24]);
   const generator = new PMREMGenerator(renderer);
   const map = generator.fromScene(studio, .018, .1, 40, { size: innerWidth > 720 ? 512 : 256 });
   generator.dispose();
+  softbox.dispose();
   studio.traverse(panelMesh => {
     panelMesh.geometry?.dispose();
     panelMesh.material?.dispose();
@@ -411,7 +442,7 @@ function createStudio(canvas, redraw) {
   const renderer = new WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: "high-performance" });
   renderer.toneMapping = ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.04;
-  renderer.transmissionResolutionScale = innerWidth > 720 ? .61 : .53;
+  renderer.transmissionResolutionScale = innerWidth > 720 ? .76 : .57;
   renderer.setClearColor(0, 0);
 
   const scene = new Scene();
@@ -446,7 +477,7 @@ function buildFlacon(scene, optics, canvas, redraw) {
   const glass = new MeshPhysicalMaterial({
     color: "#fffcf7", roughness: .022, transmission: 1, thickness: .44,
     ior: 1.50, attenuationColor: "#fff2dd", attenuationDistance: 8,
-    clearcoat: .83, clearcoatRoughness: .021, envMapIntensity: 1.25
+    clearcoat: .95, clearcoatRoughness: .037, envMapIntensity: 1.38
   });
   glass.onBeforeCompile = shader => {
     Object.assign(shader.uniforms, optics.uniforms, { bottleStyle });
@@ -458,7 +489,7 @@ function buildFlacon(scene, optics, canvas, redraw) {
     shader.fragmentShader = "varying vec3 glassLocal; uniform float bottleStyle;\n" + plateFragment + shader.fragmentShader;
     shader.fragmentShader = shader.fragmentShader.replace("#include <transmission_fragment>", `
       #include <transmission_fragment>
-      float top = smoothstep(-.60, 1.04, glassLocal.y);
+      float top = smoothstep(-.64, 1.14, glassLocal.y);
       float skirt = smoothstep(.50, .81, abs(glassLocal.x));
       float heel = 1. - smoothstep(-1.25, -.89, glassLocal.y);
       vec3 amberDye = vec3(.16, .075, .034);
@@ -479,10 +510,16 @@ function buildFlacon(scene, optics, canvas, redraw) {
       float outline = pow(1. - incidence, 3.0);
       float heelLine = exp(-70. * abs(glassLocal.y + 1.125));
       float bottomLine = exp(-85. * abs(glassLocal.y + 1.294));
-      float tallStrip = exp(-100. * abs(abs(glassLocal.x) - .680));
+      float shoulder = smoothstep(.72, 1.16, glassLocal.y);
+      float flute = abs(glassLocal.x) - (.681 - .27 * shoulder);
+      float tallStrip = exp(-pow(flute * 66., 2.));
+      float facetGlint = exp(-pow((flute - .086) * 39., 2.));
+      float darkCrease = exp(-pow((flute + .034) * 58., 2.));
       float stripMask = smoothstep(-1.15, -.99, glassLocal.y) * (1. - smoothstep(.65, .91, glassLocal.y));
       vec3 edgeLight = mix(vec3(1., .69, .36), vec3(.85, .92, 1.), bottleStyle);
-      outgoingLight += edgeLight * (outline * .11 + heelLine * .13 + bottomLine * .10 + tallStrip * stripMask * .21);
+      outgoingLight *= 1. - darkCrease * stripMask * .15;
+      outgoingLight += edgeLight * (outline * .13 + heelLine * .13 + bottomLine * .10
+        + (tallStrip * .19 + facetGlint * .052) * stripMask);
       #include <opaque_fragment>
     `);
   };
@@ -603,7 +640,7 @@ export function mountBottle(exhibit, stage) {
   const cardLocalPosition = card.position.clone();
   const cardLocalTurn = card.quaternion.clone();
   scene.add(card);
-  const leafStage = buildMacro(scene, part, schedule, smooth, { uniforms: optics.uniforms, fragment: plateFragment });
+  const leafStage = buildMacro(scene, part, schedule, smooth, { uniforms: optics.uniforms, fragment: plateFragment }, card);
   bottleStyle.value = Number(exhibit.dataset.packaging === "black");
   packaging.select(Boolean(bottleStyle.value), exhibit.featuredScent);
   orbit.set(exhibit.featuredScent);
@@ -678,8 +715,8 @@ export function mountBottle(exhibit, stage) {
     height = area.height;
     const desktop = innerWidth > 720;
     renderer.setPixelRatio(Math.min(
-      desktop ? Math.max(1.5, devicePixelRatio) : devicePixelRatio,
-      desktop ? 2 : 1.5, Math.sqrt(2.5e6 / (width * height))
+      desktop ? Math.max(1.65, devicePixelRatio) : devicePixelRatio,
+      desktop ? 2 : 1.5, Math.sqrt((desktop ? 3.6e6 : 1.4e6) / (width * height))
     ));
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
@@ -710,7 +747,7 @@ export function mountBottle(exhibit, stage) {
     }
     const before = shownProgress ?? targetProgress;
     const distance = targetProgress - before;
-    const easing = 1 - Math.exp(-Math.max(12, now - lastFrame) / 32);
+    const easing = 1 - Math.exp(-Math.max(12, now - lastFrame) / 89);
     shownProgress = Math.abs(distance) > .31 || Math.abs(distance) < .00065
       ? targetProgress : before + distance * easing;
     lastFrame = now;
@@ -758,7 +795,7 @@ export function mountBottle(exhibit, stage) {
     const close = smooth(.57, .73, studio);
     const macro = smooth(.76, .875, studio);
     const sprayFrame = smooth(.735, .785, progress) * (1 - smooth(.811, .846, progress));
-    const leafPush = smooth(.842, .925, progress);
+    const leafPush = smooth(.835, .905, progress);
     const openFrame = smooth(.28, .39, progress) * (1 - smooth(.46, .59, progress));
     look.set(-.16 * macro, .16 + 1.32 * elevation + .32 * close + 1.00 * macro + .69 * openFrame - .60 * sprayFrame, 0);
     camera.position.set(.12 - .04 * macro, 1.15 + 1.24 * wide + .38 * close + .62 * macro + .36 * openFrame,
@@ -790,7 +827,7 @@ export function mountBottle(exhibit, stage) {
     cardPosition.z -= .128 * liftPrint;
     card.position.copy(lid.localToWorld(cardPosition)).sub(retreat);
     lid.getWorldQuaternion(card.quaternion).multiply(cardLocalTurn);
-    parkedPosition.set(1.78 + 4.0 * clearPrint, -.07 + 1.32 * clearPrint, .05 - 1.10 * clearPrint);
+    parkedPosition.set(1.52 + 4.0 * clearPrint, -.07 + 1.32 * clearPrint, .05 - 1.10 * clearPrint);
     card.position.lerp(parkedPosition, parkPrint);
     parkedTurn.setFromAxisAngle(look.set(0, 1, 0), -.16).multiply(printTurn);
     card.quaternion.slerp(parkedTurn, turnPrint);
@@ -829,9 +866,8 @@ export function mountBottle(exhibit, stage) {
     shadow.position.x = -.40 - 5.2 * leafPush;
     optics.uniforms.artwork.value = packaging.cardTexture;
     optics.uniforms.sceneFinish.value = .80 * smooth(.955, .992, progress);
-    const finish = smooth(.968, 1, progress);
-    const macroProgress = Math.min(1, progress + .025 * smooth(.925, .974, progress));
-    leafStage.update(macroProgress, camera, card, packaging.cardTexture);
+    const finish = smooth(.981, 1, progress);
+    leafStage.update(progress, camera, packaging.cardTexture);
     if (finish > 0) {
       camera.updateMatrixWorld();
       orbitPosition.set(1, 0, 0).applyQuaternion(camera.quaternion);
@@ -956,7 +992,7 @@ export function mountScentStudio(viewer, scent, onReveal, onFallback) {
       started = time;
       pending = false;
     }
-    const seconds = started === undefined ? 0 : Math.min(4.4, (time - started) / 1000);
+    const seconds = started === undefined ? 0 : Math.min(4.4, (time - started) / 1550);
     const uncork = smooth(0, .47, seconds);
     const settle = smooth(1.42, 2.10, seconds);
     const lift = uncork * (1 - settle);

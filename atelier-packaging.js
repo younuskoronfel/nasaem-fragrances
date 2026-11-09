@@ -244,6 +244,7 @@ export function buildPackaging(scene, part, foil, refresh) {
   const lining = new MeshStandardMaterial({ color: "#171316", roughness: .85 });
   const paperEdge = new MeshStandardMaterial({ color: "#513a2a", roughness: .85 });
   const satin = printTexture("satin", refresh);
+  satin.anisotropy = 8;
   const bedding = new MeshPhysicalMaterial({
     map: satin, roughness: .69, bumpMap: satin, bumpScale: .035, sheen: .55,
     sheenColor: "#6e5d5c", sheenRoughness: .71
@@ -256,7 +257,7 @@ export function buildPackaging(scene, part, foil, refresh) {
   const inside = new MeshBasicMaterial({ map: cardTexture(blankCard), toneMapped: false });
   let requestedCard;
 
-  part(box, beveledPanel(1.93, 2.76, .12, .016), cover, 0, 0, -.43);
+  part(box, beveledPanel(1.93, 2.76, .12, .024), cover, 0, 0, -.43);
   for (const side of [-1, 1]) {
     part(box, beveledPanel(.105, 2.76, .90, .011), boxGold, side * .91, 0, .02);
     part(box, beveledPanel(1.83, .105, .90, .011), boxGold, 0, side * 1.33, .02);
@@ -272,7 +273,7 @@ export function buildPackaging(scene, part, foil, refresh) {
   for (const material of [cover, boxGold]) batch(box, material, part);
 
   lid.position.set(0, 1.38, .49);
-  part(lid, beveledPanel(1.93, 2.76, .082, .013), cover, 0, -1.38, 0);
+  part(lid, beveledPanel(1.93, 2.76, .082, .020), cover, 0, -1.38, 0);
   part(lid, new PlaneGeometry(1.87, 2.70), packageFoil, 0, -1.38, .044);
   part(lid, beveledPanel(1.92, .09, .14, .008), cover, 0, -2.76, -.018);
   batch(lid, cover, part);
