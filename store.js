@@ -2,9 +2,7 @@ const collection = document.querySelector("#scents");
 const filters = document.querySelector(".filters");
 const count = document.querySelector(".count");
 const dialog = document.querySelector(".scent-dialog");
-const familyNames = Object.fromEntries(
-  [...filters.querySelectorAll("[data-filter]")].map(button => [button.dataset.filter, button.textContent])
-);
+const familyNames = { bright: "Bright & fresh", floral: "Soft & floral", warm: "Warm & sweet", deep: "Deep & smoky" };
 const arrows = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5"/></svg>';
 const messageUrl = "https://ig.me/m/nasaem.fragrances";
 
@@ -20,7 +18,7 @@ function createCard(scent, index) {
   const art = article.querySelector("img");
   art.loading = "lazy";
   article.querySelector("strong").textContent = scent.name;
-  article.querySelector(".card-mood").textContent = scent.mood;
+  article.querySelector(".card-mood").textContent = scentText(scent, "mood");
   article.querySelector("button").addEventListener("click", () => openScent(scent, art));
   return article;
 }
@@ -30,14 +28,19 @@ let discovery;
 let collectionMotion;
 const cards = scents.map(createCard);
 // Finish laying out the carousel before the shelf becomes clickable.
-import("./collection-motion.js?v=engraved-notes-1").then(module => {
+import("./collection-motion.js?v=language-1").then(module => {
   collectionMotion = module;
   discovery = module.mountOrbit(document.querySelector(".scent-discovery"), visibleScents, openScent);
 }).catch(() => {}).finally(() => {
   collection.append(...cards);
   filters.hidden = false;
-  count.textContent = `${scents.length} fragrances`;
+  showScentCount();
 });
+
+function showScentCount() {
+  const total = visibleScents.length;
+  count.textContent = t(total === 1 ? "{count} fragrance" : "{count} fragrances", { count: total });
+}
 
 filters.addEventListener("click", event => {
   const chosen = event.target.closest("button");
@@ -52,7 +55,7 @@ filters.addEventListener("click", event => {
     cards[index].hidden = !matches;
     if (matches) visibleScents.push(scent);
   }
-  count.textContent = `${visibleScents.length} fragrances`;
+  showScentCount();
   discovery?.setScents(visibleScents);
   collection.classList.remove("updated");
   requestAnimationFrame(() => requestAnimationFrame(() => collection.classList.add("updated")));
@@ -68,8 +71,8 @@ function fillNotes(list, pyramid) {
   for (const [stage, value] of Object.entries(pyramid ?? {})) {
     const term = document.createElement("dt");
     const notes = document.createElement("dd");
-    term.textContent = stage;
-    notes.textContent = value;
+    term.textContent = t(stage);
+    notes.textContent = translateNotes(value);
     list.append(term, notes);
   }
 }
@@ -105,15 +108,19 @@ function showFeaturedScent() {
   atelier.featuredScent = featuredScent;
   featuredChapter.querySelector(".atelier-orbit-guide").hidden = !featuredScent.notePyramid;
   featuredTitle.textContent = `${featuredScent.name}.`;
-  featuredMood.textContent = featuredScent.mood;
-  featuredNotes.replaceChildren();
-  fillNotes(featuredNotes, featuredScent.notePyramid);
+  showFeaturedCopy();
   featuredNotes.hidden = !featuredScent.notePyramid;
   featuredLiner.src = `assets/atelier/cards/${featuredScent.id}.jpg`;
-  featuredLiner.alt = `${featuredScent.name} campaign card`;
   atelier.dispatchEvent(new CustomEvent("atelier:scent", {
     detail: { masculine: packaging === "black", scent: featuredScent }
   }));
+}
+
+function showFeaturedCopy() {
+  featuredMood.textContent = scentText(featuredScent, "mood");
+  featuredLiner.alt = t("{name} campaign card", { name: featuredScent.name });
+  featuredNotes.replaceChildren();
+  fillNotes(featuredNotes, featuredScent.notePyramid);
 }
 
 function showAtelierPackaging(packaging) {
@@ -152,24 +159,30 @@ scentPreview.addEventListener("click", () => {
   destination.scrollIntoView({ block: "start" });
 });
 
+let sprayCopy = "Spray me";
+function labelSpray(key) {
+  sprayCopy = key;
+  sprayButton.textContent = t(key);
+}
+
 function showScentNotes() {
   viewer.classList.toggle("has-campaign-reveal", !inspectedScent.notePyramid);
   reveal.hidden = false;
   sprayButton.disabled = false;
-  sprayButton.textContent = studio ? "Spray again" : "View scent notes";
+  labelSpray(studio ? "Spray again" : "View scent notes");
 }
 
 function useStillStudio() {
   studio?.dispose();
   studio = undefined;
   sprayButton.disabled = false;
-  sprayButton.textContent = "View scent notes";
+  labelSpray("View scent notes");
 }
 
 async function loadStudio(scent, current) {
   if (scentMotion.matches) return useStillStudio();
   try {
-    const { mountScentStudio } = await import("./atelier-model.js?v=selected-engraving-1");
+    const { mountScentStudio } = await import("./atelier-model.js?v=language-1");
     if (session !== current || !dialog.open || scentMotion.matches) return;
     studio = mountScentStudio(viewer, scent, showScentNotes, () => {
       if (session !== current || !dialog.open) return;
@@ -177,7 +190,7 @@ async function loadStudio(scent, current) {
       useStillStudio();
       if (shouldReveal) showScentNotes();
     });
-    sprayButton.textContent = "Spray the bottle";
+    labelSpray("Spray me");
   } catch {
     if (session === current) useStillStudio();
   }
@@ -188,7 +201,7 @@ sprayButton.addEventListener("click", () => {
   viewer.classList.remove("has-campaign-reveal");
   reveal.hidden = true;
   sprayButton.disabled = true;
-  sprayButton.textContent = "Spraying";
+  labelSpray("Spraying");
   studio.spray();
 });
 viewer.querySelectorAll("[data-turn]").forEach(button => {
@@ -217,27 +230,10 @@ function openScent(scent, source) {
   viewer.classList.remove("has-campaign-reveal");
   reveal.hidden = true;
   sprayButton.disabled = false;
-  sprayButton.textContent = scentMotion.matches ? "View scent notes" : "Spray the bottle";
+  labelSpray(scentMotion.matches ? "View scent notes" : "Spray me");
   const art = dialog.querySelector(".scent-art");
   art.src = `assets/scents/${scent.id}.webp`;
-  art.alt = `${scent.name} campaign artwork`;
-  dialog.querySelector("#scent-title").textContent = scent.name;
-  dialog.querySelector(".scent-family").textContent = [scent.collection, familyNames[scent.family]].filter(Boolean).join(" · ");
-  dialog.querySelector(".scent-mood").textContent = scent.mood;
-  dialog.querySelector(".scent-description").textContent = scent.description;
-  setOptional(".scent-format", [scent.size, scent.notes].filter(Boolean).join(" · "));
-  setOptional(".scent-price", scent.price);
-  const noteList = dialog.querySelector(".scent-notes");
-  noteList.replaceChildren();
-  noteList.hidden = !scent.notePyramid;
-  fillNotes(noteList, scent.notePyramid);
-  setOptional(".scent-note-status", scent.notePyramid ? "" : "Ask us for this fragrance’s note list.");
-
-  const canBuy = Boolean(scent.price && scent.checkoutUrl?.startsWith("https://"));
-  const action = dialog.querySelector(".scent-action");
-  action.href = canBuy ? scent.checkoutUrl : messageUrl;
-  action.textContent = canBuy ? "Continue to checkout" : "Ask on Instagram";
-  setOptional(".checkout-note", canBuy ? "You’ll continue to our checkout provider." : "Message us for pricing, availability, and ordering.");
+  updateScentCopy(scent);
   dialog.showModal();
   dialog.scrollTop = 0;
   if (source) collectionMotion?.transferArtwork(dialog, source, viewer).catch(() => {});
@@ -264,4 +260,37 @@ dialog.addEventListener("cancel", event => {
 });
 dialog.addEventListener("click", event => {
   if (event.target === dialog) closeScent();
+});
+
+function updateScentCopy(scent) {
+  dialog.querySelector(".scent-art").alt = t("{name} campaign artwork", { name: scent.name });
+  dialog.querySelector("#scent-title").textContent = scent.name;
+  dialog.querySelector(".scent-family").textContent = [scent.collection, familyNames[scent.family]].filter(Boolean).map(value => t(value)).join(" · ");
+  dialog.querySelector(".scent-mood").textContent = scentText(scent, "mood");
+  dialog.querySelector(".scent-description").textContent = scentText(scent, "description");
+  setOptional(".scent-format", [scent.size, scent.notes].filter(Boolean).join(" · "));
+  setOptional(".scent-price", scent.price);
+  const noteList = dialog.querySelector(".scent-notes");
+  noteList.replaceChildren();
+  noteList.hidden = !scent.notePyramid;
+  fillNotes(noteList, scent.notePyramid);
+  setOptional(".scent-note-status", scent.notePyramid ? "" : t("Ask us for this fragrance’s note list."));
+
+  const canBuy = Boolean(scent.price && scent.checkoutUrl?.startsWith("https://"));
+  const action = dialog.querySelector(".scent-action");
+  action.href = canBuy ? scent.checkoutUrl : messageUrl;
+  action.textContent = t(canBuy ? "Continue to checkout" : "Ask on Instagram");
+  setOptional(".checkout-note", t(canBuy ? "You’ll continue to our checkout provider." : "Message us for pricing, availability, and ordering."));
+}
+
+document.addEventListener("nasaem:language", () => {
+  cards.forEach((card, index) => {
+    card.querySelector(".card-mood").textContent = scentText(scents[index], "mood");
+  });
+  showScentCount();
+  showFeaturedCopy();
+  if (dialog.open) {
+    labelSpray(sprayCopy);
+    updateScentCopy(inspectedScent);
+  }
 });

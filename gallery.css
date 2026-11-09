@@ -338,3 +338,28 @@
 }
 .discovery-art { position: relative; z-index: 1 }
 .discovery-ghost { z-index: 2 }
+
+@media (max-width:720px) {
+  .scent-dialog .scent-actions { display:grid; grid-template-columns:1fr; gap:.6rem }
+  .scent-actions .scent-spray {
+    min-height:3.25rem;
+    width:100%;
+    justify-content:center;
+    font-size:1rem;
+    box-shadow:0 5px 18px #d59b5030;
+  }
+  .scent-actions .scent-action { justify-content:center; min-height:2.75rem }
+  .scent-actions .scent-preview { min-height:2.75rem; justify-self:start }
+  .scent-turn button {
+    width:2.75rem;
+    height:2.75rem;
+    color:var(--on-gold);
+    background:var(--gold);
+  }
+  .scent-turn button:hover { background:#f7d9a9 }
+  .scent-turn span { padding:.35rem .5rem; border-radius:.35rem; background:#171210e8; color:var(--ink) }
+  .discovery-open { min-height:3rem }
+}
+@media (max-width:720px) {
+  .atelier-controls :is(button,select) { min-height:2.75rem }
+}

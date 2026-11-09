@@ -153,6 +153,15 @@ export function createScentOrbit(scene, overlay) {
   let samples = [];
   let selected;
 
+  function translateLabels() {
+    for (const { label, stage, names } of samples) {
+      label.firstChild.textContent = t(stages[stage]);
+      label.lastChild.data = names.map(note => t(note)).join(" · ");
+    }
+  }
+
+  document.addEventListener("nasaem:language", translateLabels);
+
   function clear() {
     for (const { mesh } of samples) {
       group.remove(mesh);
@@ -192,10 +201,11 @@ export function createScentOrbit(scene, overlay) {
         group.add(mesh);
         const label = document.createElement("span");
         const kind = document.createElement("small");
-        kind.textContent = stages[stage];
-        label.append(kind, document.createTextNode(names.slice(0, 2).join(" · ")));
+        kind.textContent = t(stages[stage]);
+        const visibleNames = names.slice(0, 2);
+        label.append(kind, document.createTextNode(visibleNames.map(note => t(note)).join(" · ")));
         overlay.append(label);
-        return [{ mesh, label, stage }];
+        return [{ mesh, label, stage, names: visibleNames }];
       });
     },
     update(camera, phase, reveal, radius) {
@@ -228,6 +238,7 @@ export function createScentOrbit(scene, overlay) {
       }
     },
     dispose() {
+      document.removeEventListener("nasaem:language", translateLabels);
       clear();
       track.geometry.dispose();
       track.material.dispose();

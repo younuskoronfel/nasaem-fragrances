@@ -92,7 +92,7 @@ function showStep(moveFocus = false) {
   const step = answers.length;
   choices.replaceChildren();
   backStep.hidden = step === 0;
-  backStep.textContent = "Back";
+  backStep.textContent = t("Back");
   finder.querySelectorAll(".step-track i").forEach((dot, index) => {
     dot.classList.toggle("filled", index <= step);
   });
@@ -100,11 +100,10 @@ function showStep(moveFocus = false) {
 
   if (step === scentJourney.length) {
     const matches = recommendScents(answers, scents);
-    stepTrack.setAttribute("aria-label", "Fragrance finder complete");
-    question.textContent = "Your two matches";
-    const preference = scentJourney[0].answers.find(answer => answer.id === answers[0]);
+    stepTrack.setAttribute("aria-label", t("Fragrance finder complete"));
+    question.textContent = t("Your two matches");
     hint.hidden = false;
-    hint.textContent = `You like ${preference.label.toLowerCase()} scents. These are two good places to start.`;
+    hint.textContent = t("Start with these two fragrances based on your answers.");
     for (const scent of matches) {
       const match = document.createElement("button");
       match.type = "button";
@@ -118,13 +117,13 @@ function showStep(moveFocus = false) {
       match.addEventListener("click", () => openScent(scent));
       choices.append(match);
     }
-    backStep.textContent = "Start again";
+    backStep.textContent = t("Start again");
     paintMood(matches[0].family);
   } else {
     const current = scentJourney[step];
-    stepTrack.setAttribute("aria-label", `Question ${step + 1} of ${scentJourney.length}`);
-    question.textContent = current.question;
-    hint.textContent = current.hint;
+    stepTrack.setAttribute("aria-label", t("Question {step} of {total}", { step: step + 1, total: scentJourney.length }));
+    question.textContent = t(current.question);
+    hint.textContent = t(current.hint);
     hint.hidden = !current.hint;
     for (const answer of current.answers) {
       const button = document.createElement("button");
@@ -134,7 +133,7 @@ function showStep(moveFocus = false) {
       img.src = `assets/journey/${answer.mood}.webp`;
       img.alt = "";
       const label = document.createElement("span");
-      label.textContent = answer.label;
+      label.textContent = t(answer.label);
       button.append(img, label);
       button.addEventListener("click", () => {
         answers.push(answer.id);
@@ -171,3 +170,5 @@ journey.addEventListener("pointerleave", () => {
 
 finder.hidden = false;
 showStep();
+
+document.addEventListener("nasaem:language", () => showStep());

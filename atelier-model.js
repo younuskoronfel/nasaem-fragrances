@@ -7,7 +7,7 @@ import {
 } from "./assets/atelier/three.js";
 import { buildCrown, buildPackaging } from "./atelier-packaging.js?v=citrus-lens-1";
 import { buildMacro } from "./atelier-macro.js?v=citrus-lens-1";
-import { createScentOrbit } from "./scent-orbit.js?v=engraved-notes-1";
+import { createScentOrbit } from "./scent-orbit.js?v=language-1";
 
 const clamp = value => Math.min(1, Math.max(0, value));
 const smooth = (from, to, value) => {
@@ -508,21 +508,24 @@ function buildFlacon(scene, optics, canvas, redraw, scentName) {
     shader.fragmentShader = "varying vec3 glassLocal; uniform float bottleStyle;\n" + plateFragment + shader.fragmentShader;
     shader.fragmentShader = shader.fragmentShader.replace("#include <transmission_fragment>", `
       #include <transmission_fragment>
-      float top = smoothstep(-.64, 1.14, glassLocal.y);
+      float top = smoothstep(-1.12, .85, glassLocal.y);
       float skirt = smoothstep(.50, .81, abs(glassLocal.x));
-      float heel = 1. - smoothstep(-1.25, -.89, glassLocal.y);
-      vec3 amberDye = vec3(.16, .075, .034);
-      vec3 smokeDye = vec3(.038, .038, .043);
+      float heel = 1. - smoothstep(-1.20, -.78, glassLocal.y);
+      vec3 amberDye = vec3(.135, .047, .019);
+      vec3 smokeDye = vec3(.014, .016, .020);
       vec3 glazing = mix(amberDye, smokeDye, bottleStyle);
-      vec3 attenuation = mix(vec3(1.), glazing, min(.985, pow(top, .63) + skirt * (1. - heel) * .19));
+      vec3 attenuation = mix(vec3(1.), glazing, min(.985, top * .96 + skirt * (1. - heel) * .11));
       totalDiffuse *= attenuation;
       vec2 screen = vec2(gl_FragCoord.x / resolution.x, 1. - gl_FragCoord.y / resolution.y);
       vec2 bend = normal.xy * .068 + vec2(glassLocal.x * .028, .082);
       vec3 throughHeel = studioPlate(screen + bend);
       float secondaryRim = exp(-pow(abs((glassLocal.y + 1.118) * 26.), 2.));
-      throughHeel *= mix(vec3(1., .89, .72), vec3(.94, .98, 1.), bottleStyle);
+      throughHeel *= mix(vec3(1., .97, .90), vec3(.98, .99, 1.), bottleStyle);
       throughHeel *= 1. - secondaryRim * (.54 + .23 * skirt);
-      totalDiffuse = mix(totalDiffuse, throughHeel, .62 * heel);
+      float window = exp(-pow((glassLocal.x + .35 + .15 * glassLocal.y) * 2.4, 2.));
+      vec3 crystalLight = mix(vec3(.65, .51, .35), vec3(.53, .56, .61), bottleStyle);
+      totalDiffuse = mix(totalDiffuse, throughHeel, .52 * heel);
+      totalDiffuse += crystalLight * heel * (.09 + .19 * window);
     `);
     shader.fragmentShader = shader.fragmentShader.replace("#include <opaque_fragment>", `
       float incidence = max(0., dot(normal, normalize(vViewPosition)));
@@ -563,7 +566,7 @@ function buildFlacon(scene, optics, canvas, redraw, scentName) {
       vec3 smoke = exp(-vec3(1.25, 1.20, 1.16) * pathLength);
       vec3 refraction = studioPlate(screen + normal.xy * .036);
       float windowLight = exp(-5.0 * dot(fluidLocal.xy - vec2(.08, -.65), fluidLocal.xy - vec2(.08, -.65)));
-      vec3 concentrated = mix(vec3(.37, .19, .036), vec3(.17, .18, .20), bottleStyle);
+      vec3 concentrated = mix(vec3(.48, .22, .041), vec3(.26, .28, .32), bottleStyle);
       outgoingLight = refraction * mix(amber, smoke, bottleStyle) + concentrated * windowLight * .46 + totalSpecular * .44;
       #include <opaque_fragment>
     `);
@@ -1031,8 +1034,9 @@ export function mountScentStudio(viewer, scent, onReveal, onFallback) {
     const liquidTilt = Math.sin(seconds * 12) * .022 * near;
     fill.rotation.z = meniscus.rotation.z = liquidTilt;
 
+    const bottleDistance = area.width <= 480 ? 7.3 : 6.6;
     camera.position.set(.02, .61 + near * .62,
-      Math.max(6.6 + impression * .50 - near * .70, (4.85 + impression * .80) / camera.aspect));
+      Math.max(bottleDistance + impression * .50 - near * .70, (4.85 + impression * .80) / camera.aspect));
     focus.y = .37 + .67 * near;
     camera.lookAt(focus);
     outlet.localToWorld(nozzle.set(0, .030, 0));

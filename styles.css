@@ -201,3 +201,39 @@ details[open] .plus::after { transform:none }
   *,*::before,*::after { scroll-behavior:auto!important; animation:none!important; transition:none!important }
   .drift { display:none }
 }
+
+.header-tools { display:flex; align-items:center; justify-self:end; gap:clamp(.5rem,2vw,1.25rem) }
+.site-language {
+  min-height:2.75rem;
+  padding-inline:.65rem .4rem;
+  color:var(--ink);
+  background:var(--surface);
+  border:1px solid var(--seam);
+  border-radius:.5rem;
+  font:600 .82rem/1.2 var(--text);
+}
+[dir="rtl"] { --text: Tahoma, Arial, sans-serif; --display: Tahoma, Arial, sans-serif }
+[dir="rtl"] :is(.film-copy h1,.discovery-name,#scent-title,#bottle-notes h3) {
+  direction:ltr;
+  font-family:Cormorant, Georgia, serif;
+  text-align:right;
+}
+[dir="rtl"] :is(.discovery-strip,.scent-turn,.discovery-controls) { direction:ltr }
+[dir="rtl"] :is(h2,h3,summary) { letter-spacing:normal }
+[dir="rtl"] :is(.card-text strong,.match strong) { font-family:Cormorant, Georgia, serif }
+[dir="rtl"] .art-veil { transform:scaleX(-1) }
+[dir="rtl"] .close { inset-inline-end:.75rem; right:auto }
+@media (max-width:620px) {
+  .header-inner {
+    grid-template-columns:auto 1fr auto;
+    grid-template-areas:"mark . tools" "nav nav nav";
+    height:auto;
+    padding-block:.35rem;
+    row-gap:0;
+  }
+  .header-inner .wordmark { grid-area:mark; width:3rem }
+  .header-inner nav { grid-area:nav; justify-content:center; gap:clamp(.5rem,5vw,1.5rem) }
+  .header-inner nav a { min-height:2.75rem; display:grid; align-items:center; text-align:center }
+  .header-tools { grid-area:tools }
+  .header-social { min-width:2.75rem; justify-content:center }
+}

@@ -16,8 +16,9 @@ function updateFilm() {
 }
 
 function updateFilmButton() {
-  filmButton.setAttribute("aria-label", film.paused ? "Play film" : "Pause film");
+  filmButton.setAttribute("aria-label", t(film.paused ? "Play film" : "Pause film"));
 }
+document.addEventListener("nasaem:language", updateFilmButton);
 filmButton.hidden = false;
 filmButton.addEventListener("click", () => {
   playbackChoice = film.paused;

@@ -25,17 +25,18 @@
   <link rel="icon" href="assets/nasaem-icon.png" type="image/png" sizes="192x192">
   <link rel="preload" href="assets/hero/nasaem-poster.webp" as="image" fetchpriority="high">
   <link rel="preload" href="assets/cormorant.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=language-1">
   <link rel="stylesheet" href="atelier.css?v=citrus-lens-1">
   <link rel="stylesheet" href="crystal.css?v=clear-water-2">
   <link rel="stylesheet" href="film.css?v=clear-water-2">
-  <link rel="stylesheet" href="gallery.css?v=clear-water-3">
+  <link rel="stylesheet" href="gallery.css?v=language-1">
+  <script src="language.js?v=1" defer></script>
   <script src="scents.js?v=engraved-notes-1" defer></script>
-  <script src="store.js?v=selected-engraving-1" defer></script>
-  <script src="journey.js" defer></script>
-  <script type="module" src="atelier.js?v=selected-engraving-1"></script>
+  <script src="store.js?v=language-1" defer></script>
+  <script src="journey.js?v=language-1" defer></script>
+  <script type="module" src="atelier.js?v=language-1"></script>
   <script src="scroll-art.js" defer></script>
-  <script src="hero-film.js" defer></script>
+  <script src="hero-film.js?v=language-1" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -47,7 +48,14 @@
         <a href="#journey">Find my scent</a>
         <a href="#atelier">Unboxing</a>
       </nav>
+      <div class="header-tools">
+        <select class="site-language" aria-label="Website language" hidden>
+          <option value="en" lang="en">English</option>
+          <option value="ar" lang="ar">العربية</option>
+          <option value="es" lang="es">Español</option>
+        </select>
       <a class="header-social" aria-label="Nasaem Fragrances on Instagram" href="https://www.instagram.com/nasaem.fragrances/"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01" stroke-linecap="round" stroke-width="2.5"/></svg><span>Instagram</span></a>
+      </div>
     </div>
   </header>
 
@@ -106,7 +114,7 @@
       <div class="atelier-layout wrap">
         <div class="atelier-stage">
           <div class="atelier-frame" aria-hidden="true">
-            <img class="atelier-poster" src="assets/atelier/bottle.webp" alt="" width="424" height="404" loading="lazy" decoding="async">
+            <img class="atelier-poster" src="assets/hero/nasaem-poster.webp" alt="" width="1920" height="1080" loading="lazy" decoding="async">
             <canvas class="atelier-canvas"></canvas>
             <div class="orbit-labels" hidden></div>
           </div>
@@ -249,7 +257,7 @@
         <h2 id="scent-title"></h2>
         <p class="scent-mood"></p>
         <div class="scent-actions">
-          <button class="button scent-spray" type="button">Spray the bottle</button>
+          <button class="button scent-spray" type="button">Spray me</button>
           <a class="button dark scent-action"></a>
           <button class="text-link scent-preview" type="button">See the unboxing</button>
         </div>

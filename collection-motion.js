@@ -44,6 +44,17 @@ export function mountOrbit(root, scents, open) {
   const arrows = [...root.querySelectorAll("[data-discovery-step]")];
   let items, current, generation = 0, timeline, touch, ghost;
 
+  function showCaption(scent) {
+    name.textContent = scent.name;
+    art.setAttribute("aria-label", t("Open {name}", { name: scent.name }));
+    mood.textContent = scentText(scent, "mood");
+    edition.textContent = t(scent.collection);
+  }
+
+  document.addEventListener("nasaem:language", () => {
+    if (items?.[current]) showCaption(items[current]);
+  });
+
   function show(index, direction, animate = true) {
     if (!items.length) return;
     const outgoing = animate && image.complete && image.naturalWidth ? image.currentSrc || image.src : "";
@@ -59,10 +70,7 @@ export function mountOrbit(root, scents, open) {
     arc.style.removeProperty("transform");
     root.style.setProperty("--discovery-tone", tones[scent.family]);
     image.src = `assets/scents/${scent.id}.webp`;
-    name.textContent = scent.name;
-    art.setAttribute("aria-label", `Open ${scent.name}`);
-    mood.textContent = scent.mood;
-    edition.textContent = scent.collection;
+    showCaption(scent);
     readout.textContent = `${current + 1} / ${items.length}`;
     for (const [position, button] of [...strip.children].entries()) {
       if (position === current) button.setAttribute("aria-current", "true");
