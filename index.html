@@ -4,7 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <script>
-    if (!location.hash && "scrollRestoration" in history) history.scrollRestoration = "manual";
+    if (!location.hash) {
+      if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+      addEventListener("pageshow", () => {
+        if (!location.hash) scrollTo({ top: 0, behavior: "instant" });
+      });
+    }
   </script>
   <meta name="theme-color" content="#100e0e">
   <meta name="description" content="Explore sixteen Nasaem perfumes, find a fragrance by mood, and experience the unboxing.">
