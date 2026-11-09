@@ -40,6 +40,8 @@ Daytime outings|الخروجات النهارية|Salidas de día
 Evenings and special occasions|الأمسيات والمناسبات الخاصة|Noches y ocasiones especiales
 Your two matches|عطران يناسبانك|Dos perfumes para ti
 Start with these two fragrances based on your answers.|بناءً على إجاباتك، جرّب هذين العطرين أولًا.|Según tus respuestas, empieza por estos dos perfumes.
+Fragrance collection|مجموعة العطور|Colección de perfumes
+Both|كلاهما|Ambas
 Packaging|تغليف العطر|Presentación
 Feminine|نسائي|Femenino
 Masculine|رجالي|Masculino

@@ -17,24 +17,27 @@
   <meta property="og:url" content="https://younuskoronfel.github.io/nasaem-fragrances/">
   <meta property="og:title" content="Nasaem Fragrances — Where your soul finds its scent">
   <meta property="og:description" content="Sixteen fragrances, a scent finder, and an interactive unboxing.">
-  <meta property="og:image" content="https://younuskoronfel.github.io/nasaem-fragrances/assets/hero/nasaem-poster.webp">
-  <meta property="og:image:alt" content="A Nasaem Fragrances bottle in warm studio light">
+  <meta property="og:image" content="https://younuskoronfel.github.io/nasaem-fragrances/assets/nasaem-share.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The gold Nasaem Fragrances mark and wordmark on a dark background">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="https://younuskoronfel.github.io/nasaem-fragrances/">
   <title>Nasaem Fragrances — Where your soul finds its scent</title>
   <link rel="icon" href="assets/nasaem-icon.png" type="image/png" sizes="192x192">
   <link rel="preload" href="assets/hero/nasaem-poster.webp" as="image" fetchpriority="high">
   <link rel="preload" href="assets/cormorant.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=language-1">
+  <link rel="stylesheet" href="styles.css?v=finder-collection-1">
   <link rel="stylesheet" href="atelier.css?v=citrus-lens-1">
   <link rel="stylesheet" href="crystal.css?v=clear-water-2">
   <link rel="stylesheet" href="film.css?v=clear-water-2">
   <link rel="stylesheet" href="gallery.css?v=language-1">
-  <script src="language.js?v=1" defer></script>
+  <script src="language.js?v=2" defer></script>
   <script src="scents.js?v=engraved-notes-1" defer></script>
-  <script src="store.js?v=language-1" defer></script>
-  <script src="journey.js?v=language-1" defer></script>
-  <script type="module" src="atelier.js?v=language-1"></script>
+  <script src="store.js?v=orbit-loop-1" defer></script>
+  <script src="journey.js?v=finder-collection-1" defer></script>
+  <script type="module" src="atelier.js?v=orbit-loop-1"></script>
   <script src="scroll-art.js" defer></script>
   <script src="hero-film.js?v=language-1" defer></script>
 </head>
@@ -99,6 +102,14 @@
             <div class="journey-progress"><div class="step-track" role="img" aria-label="Fragrance finder progress"><i></i><i></i><i></i></div></div>
             <h2 class="question" tabindex="-1"></h2>
             <p class="question-hint"></p>
+            <fieldset class="finder-collections">
+              <legend>Fragrance collection</legend>
+              <div class="finder-collection-options">
+                <label><input type="radio" name="finder-collection" value="Feminine"><span>Feminine</span></label>
+                <label><input type="radio" name="finder-collection" value="Masculine"><span>Masculine</span></label>
+                <label><input type="radio" name="finder-collection" value="all" checked><span>Both</span></label>
+              </div>
+            </fieldset>
             <div class="answer-grid"></div>
             <div class="journey-nav">
               <button class="back-step text-link" type="button" hidden>Back</button>

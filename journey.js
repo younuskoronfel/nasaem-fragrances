@@ -42,9 +42,10 @@ const scentAccents = {
 
 // The UI supplies answer IDs and the catalog. A future guide can replace this
 // ranking function or supply its own questions without rewriting the storefront.
-function recommendScents(answerIds, catalog) {
+function recommendScents(answerIds, catalog, collection = "all") {
   const picked = answerIds.map((id, step) => scentJourney[step].answers.find(answer => answer.id === id));
-  return catalog.map(scent => {
+  const eligible = collection === "all" ? catalog : catalog.filter(scent => scent.collection === collection);
+  return eligible.map(scent => {
     const score = picked.reduce((total, answer, step) => {
       return total + (scent.family === answer.mood ? [5, 3, 2][step] : 0)
         + (scentAccents[scent.id]?.includes(answer.id) ? 3 : 0);
@@ -57,6 +58,7 @@ const finder = document.querySelector("#finder");
 const question = finder.querySelector(".question");
 const hint = finder.querySelector(".question-hint");
 const choices = finder.querySelector(".answer-grid");
+const collectionPicker = finder.querySelector(".finder-collections");
 const stepTrack = finder.querySelector(".step-track");
 const backStep = finder.querySelector(".back-step");
 const artwork = document.querySelector(".living-art");
@@ -92,6 +94,7 @@ function showStep(moveFocus = false) {
   const step = answers.length;
   choices.replaceChildren();
   backStep.hidden = step === 0;
+  collectionPicker.hidden = step !== 0;
   backStep.textContent = t("Back");
   finder.querySelectorAll(".step-track i").forEach((dot, index) => {
     dot.classList.toggle("filled", index <= step);
@@ -99,7 +102,8 @@ function showStep(moveFocus = false) {
   choices.classList.toggle("results", step === scentJourney.length);
 
   if (step === scentJourney.length) {
-    const matches = recommendScents(answers, scents);
+    const collection = collectionPicker.querySelector("input:checked").value;
+    const matches = recommendScents(answers, scents, collection);
     stepTrack.setAttribute("aria-label", t("Fragrance finder complete"));
     question.textContent = t("Your two matches");
     hint.hidden = false;

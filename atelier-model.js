@@ -9,6 +9,7 @@ import { buildCrown, buildPackaging } from "./atelier-packaging.js?v=citrus-lens
 import { buildMacro } from "./atelier-macro.js?v=citrus-lens-1";
 import { createScentOrbit } from "./scent-orbit.js?v=language-1";
 
+const orbitSpeed = Math.PI * 2 / 24000;
 const clamp = value => Math.min(1, Math.max(0, value));
 const smooth = (from, to, value) => {
   const fraction = clamp((value - from) / (to - from));
@@ -723,6 +724,7 @@ export function mountBottle(exhibit, stage) {
   let ready = false;
   let shownProgress;
   let lastFrame = 0;
+  let finaleOrbit = 0;
   const focusState = [];
   let notesState;
   let chapterOffsets;
@@ -770,7 +772,8 @@ export function mountBottle(exhibit, stage) {
     }
     const before = shownProgress ?? targetProgress;
     const distance = targetProgress - before;
-    const easing = 1 - Math.exp(-Math.max(12, now - lastFrame) / 89);
+    const frameTime = now - lastFrame;
+    const easing = 1 - Math.exp(-Math.max(12, frameTime) / 89);
     shownProgress = Math.abs(distance) > .31 || Math.abs(distance) < .00065
       ? targetProgress : before + distance * easing;
     lastFrame = now;
@@ -909,10 +912,14 @@ export function mountBottle(exhibit, stage) {
       cap.rotation.set(0, 0, 0);
       camera.up.set(0, 1, 0);
     }
-    orbit.update(camera, -.60 + finish * 1.65, smooth(.28, 1, finish) * orbitBlend, camera.aspect < 1 ? 1.52 : 1.83);
+    const circling = finish > .98 && area.bottom > 0 && area.top < innerHeight;
+    if (circling) finaleOrbit += Math.min(frameTime, 50) * orbitSpeed;
+    else if (finish === 0) finaleOrbit = 0;
+    orbit.update(camera, -.60 + finish * 1.65 + finaleOrbit, smooth(.28, 1, finish) * orbitBlend,
+      camera.aspect < 1 ? 1.52 : 1.83);
     renderer.render(scene, camera);
     stage.classList.add("is-rendered");
-    if (progress !== targetProgress || selection) schedule();
+    if (progress !== targetProgress || selection || circling) schedule();
   }
 
   function schedule() {
@@ -989,6 +996,9 @@ export function mountScentStudio(viewer, scent, onReveal, onFallback) {
   let frame = 0;
   let stopped = false;
   let started;
+  let canvasVisible = true;
+  let circleTime = 0;
+  let lastDraw = 0;
   let pending = false;
   let revealed = false;
   let ready = false;
@@ -1013,9 +1023,13 @@ export function mountScentStudio(viewer, scent, onReveal, onFallback) {
 
     if (pending) {
       started = time;
+      circleTime = 0;
       pending = false;
     }
     const seconds = started === undefined ? 0 : Math.min(4.4, (time - started) / 1550);
+    const circling = seconds === 4.4 && canvasVisible;
+    if (circling && lastDraw) circleTime += Math.min(time - lastDraw, 50);
+    lastDraw = time;
     const uncork = smooth(0, .47, seconds);
     const settle = smooth(1.42, 2.10, seconds);
     const lift = uncork * (1 - settle);
@@ -1043,7 +1057,7 @@ export function mountScentStudio(viewer, scent, onReveal, onFallback) {
     outlet.localToWorld(target.set(0, 1.95, 0));
     spray.update(.765 + (seconds - .52) * .124, density, nozzle, target, camera);
     const sweep = smooth(1.20, 4.4, seconds);
-    orbit.update(camera, -.35 + sweep * 7.63 + angle * .5, impression, camera.aspect < .9 ? 1.48 : 1.82);
+    orbit.update(camera, -.35 + sweep * 7.63 + angle * .5 + circleTime * orbitSpeed, impression, camera.aspect < .9 ? 1.48 : 1.82);
 
     if (seconds >= 1.28 && !revealed) {
       revealed = true;
@@ -1051,7 +1065,7 @@ export function mountScentStudio(viewer, scent, onReveal, onFallback) {
     }
     renderer.render(scene, camera);
     viewer.classList.add("is-rendered");
-    if ((started !== undefined && seconds < 4.4) || rotation !== angle) schedule();
+    if ((started !== undefined && seconds < 4.4) || rotation !== angle || circling) schedule();
   }
 
   function schedule() {
@@ -1079,6 +1093,12 @@ export function mountScentStudio(viewer, scent, onReveal, onFallback) {
 
   const resize = new ResizeObserver(schedule);
   resize.observe(canvas);
+  const visibility = new IntersectionObserver(([entry]) => {
+    canvasVisible = entry.isIntersecting;
+    lastDraw = 0;
+    if (canvasVisible) schedule();
+  });
+  visibility.observe(canvas);
   canvas.addEventListener("pointerdown", startDrag);
   canvas.addEventListener("pointermove", moveDrag);
   canvas.addEventListener("lostpointercapture", endDrag);
@@ -1102,6 +1122,7 @@ export function mountScentStudio(viewer, scent, onReveal, onFallback) {
     stopped = true;
     cancelAnimationFrame(frame);
     resize.disconnect();
+    visibility.disconnect();
     canvas.removeEventListener("pointerdown", startDrag);
     canvas.removeEventListener("pointermove", moveDrag);
     canvas.removeEventListener("lostpointercapture", endDrag);
