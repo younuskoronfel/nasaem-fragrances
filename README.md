@@ -1,31 +1,35 @@
 # Nasaem Fragrances
 
-Source repository for the Nasaem Fragrances website.
+[![A gold-crowned Nasaem fragrance bottle in warm studio light](assets/hero/nasaem-poster.webp)](https://younuskoronfel.github.io/nasaem-fragrances/)
 
-## Contributing
+An interactive site for Nasaem Fragrances. Explore 16 fragrances, find a scent by mood, or follow the scroll-driven unboxing from the first spray to the printed scent card.
 
-1. Clone the repository and open it in Codex or your editor.
-2. Start from the latest `main` and create a branch for your change.
-3. Push your branch and open a pull request into `main` for review.
+[**Visit the live site**](https://younuskoronfel.github.io/nasaem-fragrances/) · [Explore the collection](https://younuskoronfel.github.io/nasaem-fragrances/#collection) · [Instagram](https://www.instagram.com/nasaem.fragrances/)
 
-## Preview locally
+## Run locally
 
-Run `python3 -m http.server 8765` from the repository root and open `http://localhost:8765`. The site has no build step.
+From the repository root, run:
 
-## Scent discovery
+```sh
+python3 -m http.server 8765
+```
 
-The three-question journey and ranking function live in `journey.js`. Questions and scoring are kept separate from the catalog and detail dialog, so a future conversational guide can return fragrance IDs and reuse the storefront. The current journey runs in the browser and saves no answers.
+Open [localhost:8765](http://localhost:8765/). The site uses static HTML, CSS, and JavaScript with no install or build step.
 
-## Catalog and checkout
+## Find your way around
 
-Edit the catalog in `scents.js`. The names and mood words are based on the campaign art. The mood filters are browsing categories. Add confirmed `size`, `notes`, `price` (including currency), and a provider-issued HTTPS `checkoutUrl` to each fragrance when ready. The checkout button appears when both price and checkout URL are present. Until then, fragrance details link to Instagram.
+| File or directory | What it contains |
+| --- | --- |
+| [`scents.js`](scents.js) | Fragrance names, collections, moods, descriptions, and confirmed top, heart, and base notes |
+| [`store.js`](store.js) and [`collection-motion.js`](collection-motion.js) | Collection filters, carousel, and fragrance detail dialog |
+| [`journey.js`](journey.js) | Three-question scent finder and recommendation scoring |
+| [`atelier-model.js`](atelier-model.js), [`atelier-macro.js`](atelier-macro.js), and [`scent-orbit.js`](scent-orbit.js) | Three.js bottle, scroll sequence, droplet reveal, and animated scent notes |
+| [`assets/scents/`](assets/scents/) and [`assets/atelier/cards/`](assets/atelier/cards/) | Collection artwork and full-resolution inserts, named by fragrance ID |
 
-The site publishes through GitHub Pages. The source branch is selected in **Settings → Pages**, with `/ (root)` as the folder.
+Fragrance details currently send ordering inquiries to Instagram. To enable checkout for a fragrance, add its confirmed price with currency and the payment provider’s HTTPS checkout URL in `scents.js`.
 
-## Bottle sequence
+## Contribute and publish
 
-The scroll sequence uses a local Three.js r180 bundle (MIT) and WebGL. The renderer loads near the exhibit. Visitors who prefer reduced motion or use a browser without WebGL can still select a fragrance and see its artwork and details.
+Branch from `main` and open a pull request back into `main`. For storefront changes, check the affected flow on desktop and mobile. For animation changes, also check reduced motion and the static artwork fallback.
 
-`atelier-model.js` defines the bottle optics, lighting, and scroll poses. `atelier-packaging.js` builds the bag, hinged box, crown, and printed insert. `atelier-macro.js` handles the camera move through the droplet and the insert landing. The insert uses the selected fragrance’s 1080 × 1350 campaign artwork with Cormorant title lettering from `assets/atelier/cards/`. Keep the filenames in sync with `scents.js`; the smaller `assets/scents/` images serve the collection grid.
-
-The hero’s silent 1080p loop and poster live in `assets/hero/`. `hero-film.js` pauses the video offscreen and respects reduced motion. `scroll-art.js` drives the video, light, and text parallax.
+GitHub Pages serves the root of `nasaem/website`. After review, fast-forward that branch to the approved `main` commit to publish. The [custom-domain branch](https://github.com/younuskoronfel/nasaem-fragrances/tree/nasaem/custom-domain) stages the switch to `nasaemfragrances.com` for when the domain is registered and ready to connect.
