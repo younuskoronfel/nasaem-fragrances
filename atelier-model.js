@@ -252,6 +252,19 @@ function makeLabel(redraw, scentName) {
       x += advances[i];
     }
   }
+  function paintScent() {
+    ink.clearRect(0, 644, art.width, 145);
+    ink.fillStyle = "#edc175";
+    if (scentName) {
+      ink.textAlign = "center";
+      ink.font = "bold 58px Georgia";
+      ink.fillText(scentName, art.width / 2, 737, 650);
+      ink.textAlign = "start";
+    } else {
+      engrave("FRAGRANCES", 689, "26px Georgia", 8);
+    }
+    texture.needsUpdate = true;
+  }
   function paint(mark) {
     ink.clearRect(0, 0, art.width, art.height);
     if (mark) {
@@ -280,17 +293,9 @@ function makeLabel(redraw, scentName) {
     ink.lineTo(371, 625);
     ink.closePath();
     ink.stroke();
-    if (scentName) {
-      ink.textAlign = "center";
-      ink.font = "bold 58px Georgia";
-      ink.fillText(scentName, art.width / 2, 737, 650);
-      ink.textAlign = "start";
-    } else {
-      engrave("FRAGRANCES", 689, "26px Georgia", 8);
-    }
     engrave("Extrait de Parfum", 823, "27px Georgia", 2);
     engrave("50 ML  |  1.7 FL.OZ", 870, "22px Georgia", 3);
-    texture.needsUpdate = true;
+    paintScent();
   }
   paint();
   const mark = new Image();
@@ -299,7 +304,14 @@ function makeLabel(redraw, scentName) {
     redraw();
   };
   mark.src = new URL("./assets/nasaem-wordmark.webp", import.meta.url);
-  return texture;
+  return {
+    texture,
+    setName(name) {
+      if (scentName === name) return;
+      scentName = name;
+      paintScent();
+    }
+  };
 }
 
 function makeSpray(opticalUniforms) {
@@ -623,21 +635,21 @@ function buildFlacon(scene, optics, canvas, redraw, scentName) {
   const crownFinish = buildCrown(cap, part, gold, polished);
   cap.scale.set(1.26, 1.25, 1.26);
 
-  const labelTexture = makeLabel(redraw, scentName);
+  const { texture: labelTexture, setName: setEngraving } = makeLabel(redraw, scentName);
   const foil = new MeshStandardMaterial({
     map: labelTexture, transparent: true, alphaTest: .08, metalness: .59,
     roughness: .24, depthWrite: false, envMapIntensity: 1.10,
     emissive: "#b58243", emissiveMap: labelTexture, emissiveIntensity: .57
   });
   part(body, new PlaneGeometry(1.06, 1.31), foil, 0, -.10, .491).renderOrder = 5;
-  return { body, part, bottleStyle, fill, meniscus, atomizer, outlet, outletAngle, cap, crownFinish, labelTexture, foil };
+  return { body, part, bottleStyle, fill, meniscus, atomizer, outlet, outletAngle, cap, crownFinish, labelTexture, setEngraving, foil };
 }
 
 export function mountBottle(exhibit, stage) {
   const canvas = stage.querySelector("canvas");
   const { renderer, scene, camera, optics, map } = createStudio(canvas, schedule);
-  const { body, part, bottleStyle, fill, meniscus, atomizer, outlet, outletAngle, cap, crownFinish, labelTexture, foil } =
-    buildFlacon(scene, optics, canvas, schedule);
+  const { body, part, bottleStyle, fill, meniscus, atomizer, outlet, outletAngle, cap, crownFinish, labelTexture, setEngraving, foil } =
+    buildFlacon(scene, optics, canvas, schedule, exhibit.featuredScent?.name);
   const orbit = createScentOrbit(scene, stage.querySelector(".orbit-labels"));
   const packaging = buildPackaging(scene, part, foil, texture => {
     if (texture && !stopped) renderer.initTexture(texture);
@@ -658,6 +670,7 @@ export function mountBottle(exhibit, stage) {
       start: performance.now(), from: bottleStyle.value, to: Number(masculine),
       initialOrbit: orbitBlend, scent, swapped: false
     };
+    setEngraving(scent.name);
     packaging.select(masculine, scent);
     schedule();
   }

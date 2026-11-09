@@ -3,6 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script>
+    if (!location.hash && "scrollRestoration" in history) history.scrollRestoration = "manual";
+  </script>
   <meta name="theme-color" content="#100e0e">
   <meta name="description" content="Explore sixteen Nasaem perfumes, find a fragrance by mood, and experience the unboxing.">
   <meta property="og:type" content="website">
@@ -23,9 +26,9 @@
   <link rel="stylesheet" href="film.css?v=clear-water-2">
   <link rel="stylesheet" href="gallery.css?v=clear-water-3">
   <script src="scents.js?v=engraved-notes-1" defer></script>
-  <script src="store.js?v=engraved-notes-1" defer></script>
+  <script src="store.js?v=selected-engraving-1" defer></script>
   <script src="journey.js" defer></script>
-  <script type="module" src="atelier.js?v=engraved-notes-1"></script>
+  <script type="module" src="atelier.js?v=selected-engraving-1"></script>
   <script src="scroll-art.js" defer></script>
   <script src="hero-film.js" defer></script>
 </head>

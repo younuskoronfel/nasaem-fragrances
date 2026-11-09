@@ -10,7 +10,7 @@ const nearExhibit = new IntersectionObserver(async ([entry]) => {
   loading = true;
   nearExhibit.unobserve(exhibit);
   try {
-    const { mountBottle } = await import("./atelier-model.js?v=engraved-notes-1");
+    const { mountBottle } = await import("./atelier-model.js?v=selected-engraving-1");
     if (!reducedMotion.matches) stop = mountBottle(exhibit, stage);
   } catch {
     exhibit.classList.add("is-static");
