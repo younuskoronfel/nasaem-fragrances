@@ -182,7 +182,7 @@ function useStillStudio() {
 async function loadStudio(scent, current) {
   if (scentMotion.matches) return useStillStudio();
   try {
-    const { mountScentStudio } = await import("./atelier-model.js?v=card-art-1");
+    const { mountScentStudio } = await import("./atelier-model.js?v=studio-finish-1");
     if (session !== current || !dialog.open || scentMotion.matches) return;
     studio = mountScentStudio(viewer, scent, showScentNotes, () => {
       if (session !== current || !dialog.open) return;
@@ -236,6 +236,12 @@ function openScent(scent, source) {
   const art = dialog.querySelector(".scent-art");
   art.removeAttribute("src");
   setCardArtwork(art, scent.id);
+  const tile = scentPrintOrder.indexOf(scent.id);
+  viewer.querySelector(".scent-backdrop span").style.backgroundPosition =
+    `${(tile % 4) * 100 / 3}% ${Math.floor(tile / 4) * 100 / 3}%`;
+  const still = viewer.querySelector(".scent-still");
+  still.src = bottleStill(scent);
+  still.hidden = false;
   updateScentCopy(scent);
   setOptional(".checkout-note", "");
   dialog.querySelector(".scent-packaging").open = false;

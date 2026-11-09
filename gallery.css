@@ -132,6 +132,7 @@
 }
 .scent-viewer .scent-art,
 .scent-viewer canvas,
+.scent-still,
 .orbit-labels {
   position: absolute;
   inset: 0;
@@ -149,9 +150,30 @@
   cursor: grab;
   touch-action: pan-y;
 }
+.scent-backdrop {
+  position: absolute;
+  inset: 1.3rem;
+  display: grid;
+  place-items: center;
+  container-type: size;
+  pointer-events: none;
+}
+.scent-backdrop span {
+  width: min(100cqw, 80cqh);
+  aspect-ratio: 4 / 5;
+  background: url(assets/packaging/scent-backdrops.webp?v=1) 0 0 / 400% 400% no-repeat;
+  opacity: .58;
+}
+.scent-viewer.has-campaign-reveal .scent-backdrop { display: none }
 .scent-viewer canvas:active { cursor: grabbing }
 .scent-viewer.is-rendered canvas { visibility: visible }
-.scent-viewer.is-rendered .scent-art { visibility: hidden }
+.scent-still {
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 .35rem .65rem #08050470);
+}
+.scent-viewer.is-rendered .scent-still,
+.scent-viewer.has-campaign-reveal .scent-still { display: none }
 .scent-turn {
   position: absolute;
   z-index: 12;
@@ -238,8 +260,8 @@
   .scent-dialog .scent-copy { padding-top: 1.25rem }
 }
 
-.scent-viewer .scent-art { opacity: 1; transition: opacity .45s var(--ease) }
-.scent-viewer.is-rendered .scent-art { visibility: visible; opacity: 0; pointer-events: none }
+.scent-viewer .scent-art { opacity: 0; transition: opacity .45s var(--ease); pointer-events: none }
+.scent-viewer.has-campaign-reveal .scent-art { opacity: 1 }
 .scent-viewer.is-rendered.has-campaign-reveal .scent-art { z-index: 11; opacity: 1 }
 .scent-viewer.is-rendered.has-campaign-reveal canvas { opacity: 0; pointer-events: none }
 .scent-viewer.has-campaign-reveal .scent-turn { display: none }
@@ -262,6 +284,14 @@
   place-items: center;
   aspect-ratio: 560 / 470;
   isolation: isolate;
+}
+.discovery-stage::before {
+  content: "";
+  position: absolute;
+  inset: auto 16% 2%;
+  height: 13%;
+  background: radial-gradient(ellipse, #0c0807b8 0%, #1a0d0854 40%, transparent 72%);
+  pointer-events: none;
 }
 .discovery-arc {
   position: absolute;
@@ -310,7 +340,23 @@
 .discovery-thumbnail { flex: 0 0 2.75rem; width: 2.75rem; padding: 2px; background: transparent; border: 1px solid transparent; border-radius: .35rem; opacity: .72 }
 .discovery-thumbnail[aria-current], .discovery-thumbnail:hover { opacity: 1; border-color: var(--discovery-tone) }
 .discovery-thumbnail img { width: 100%; height: auto; aspect-ratio: 4 / 5; border-radius: .2rem }
-.shelf-transfer { position: fixed; z-index: 20; pointer-events: none; transform-origin: top left; object-fit: cover; border-radius: .55rem; max-width: none }
+.shelf-transfer {
+  position: fixed;
+  z-index: 20;
+  pointer-events: none;
+  transform-origin: top left;
+  object-fit: cover;
+  border-radius: .55rem;
+  max-width: none;
+  box-shadow: 0 14px 28px #0805048c, 0 3px 8px #08050470;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .shelf-transfer { animation: shelf-lift-shadow .36s ease-out both }
+}
+@keyframes shelf-lift-shadow {
+  0%, 100% { box-shadow: 0 14px 28px #0805048c, 0 3px 8px #08050470 }
+  45% { box-shadow: 0 26px 44px #08050499, 0 8px 16px #0805044d }
+}
 .scent-dialog.is-transferring .scent-viewer { opacity: .24 }
 .scent-viewer { transition: opacity .25s var(--ease) }
 
@@ -329,6 +375,7 @@
   height: auto;
   aspect-ratio: 4 / 5;
   border-radius: .55rem;
+  box-shadow: 0 20px 38px #080504a6, 0 4px 10px #08050485;
   pointer-events: none;
 }
 @keyframes studio-open { from { opacity: .72 } to { opacity: 1 } }

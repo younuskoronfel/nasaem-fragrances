@@ -5,7 +5,7 @@ import {
   PlaneGeometry, PMREMGenerator, Points, Quaternion, Scene, ShaderMaterial, SphereGeometry,
   SRGBColorSpace, TubeGeometry, Vector3, WebGLRenderer
 } from "./assets/atelier/three.js";
-import { buildCrown, buildPackaging } from "./atelier-packaging.js?v=card-art-1";
+import { buildCrown, buildPackaging } from "./atelier-packaging.js?v=studio-finish-1";
 import { buildMacro } from "./atelier-macro.js?v=citrus-lens-1";
 import { createScentOrbit } from "./scent-orbit.js?v=language-1";
 
@@ -28,7 +28,7 @@ export function bottlePose(progress) {
   return {
     takeOut, setDown, open, clearBed, emerge,
     bagExit: smooth(.225, .367, progress),
-    boxExit: smooth(.557, .680, progress),
+    boxExit: smooth(.582, .690, progress),
     yaw: -.26 + emerge * .48 - thread * .22,
     capX: -1.52 * capAside,
     capY: 1.71 + thread * .88 - capAside * .27,
@@ -110,15 +110,17 @@ function studioMap(renderer) {
     mesh.lookAt(0, .6, 0);
     studio.add(mesh);
   }
-  panel(1.22, 6.7, [-3.8, 2.5, 2.2], [8.6, 7.8, 6.7]);
-  panel(.53, 5.8, [3.8, 1.2, .2], [8.1, 6.4, 4.5]);
+  panel(1.46, 6.7, [-3.8, 2.5, 2.2], [7.7, 7.2, 6.5]);
+  panel(.31, 6.5, [-2.55, 1.9, 3.35], [10.4, 9.7, 8.5]);
+  panel(.54, 5.8, [3.8, 1.2, .2], [9.1, 7.25, 5.3]);
+  panel(.27, 4.6, [3.6, 1.6, -1.1], [4.8, 5.25, 5.9]);
   panel(4.2, 1.6, [0, 5.3, -1.4], [5.7, 5.15, 4.45]);
   panel(2.6, 4.5, [-.8, 1.5, -4.1], [1.9, 1.47, 1.0]);
   panel(1.36, 3.6, [1.6, 2.9, 4.5], [5.7, 5.15, 4.4]);
   panel(3.0, 2.9, [-.85, .40, 4.8], [.81, .73, .64]);
   panel(3.6, .42, [.8, -.85, 3.5], [1.9, 1.63, 1.24]);
   const generator = new PMREMGenerator(renderer);
-  const map = generator.fromScene(studio, .018, .1, 40, { size: innerWidth > 720 ? 512 : 256 });
+  const map = generator.fromScene(studio, .012, .1, 40, { size: innerWidth > 720 ? 512 : 256 });
   generator.dispose();
   softbox.dispose();
   studio.traverse(panelMesh => {
@@ -132,6 +134,9 @@ const plateFragment = `
   uniform sampler2D room;
   uniform sampler2D artwork;
   uniform float sceneFinish;
+  uniform float portraitStrength;
+  uniform vec4 portraitRect;
+  uniform vec2 portraitTile;
   uniform vec4 roomRect;
   uniform vec4 sceneRect;
   uniform float phone;
@@ -162,6 +167,14 @@ const plateFragment = `
       float pool = exp(-6.6 * dot((point - vec2(.5, .57)), (point - vec2(.5, .57))));
       color = mix(color, mix(night, reflected, .44), pool * sceneFinish);
     }
+    if (portraitStrength > 0.) {
+      vec2 portrait = (point - portraitRect.xy) / portraitRect.zw;
+      vec2 edge = smoothstep(vec2(0.), vec2(.025), portrait) *
+        (1. - smoothstep(vec2(.975), vec2(1.), portrait));
+      vec2 atlasPoint = (portraitTile + clamp(portrait, .003, .997)) * .25;
+      vec3 pigment = texture2D(artwork, vec2(atlasPoint.x, 1. - atlasPoint.y)).rgb;
+      color = mix(color, pigment, portraitStrength * edge.x * edge.y);
+    }
     return color;
   }
 `;
@@ -179,6 +192,9 @@ function opticalPlate(redraw) {
     room: { value: room },
     artwork: { value: null },
     sceneFinish: { value: 0 },
+    portraitStrength: { value: 0 },
+    portraitRect: { value: [0, 0, 1, 1] },
+    portraitTile: { value: [0, 0] },
     roomRect: { value: [0, 0, 1, 1] },
     sceneRect: { value: [0, 0, 1, 1] },
     phone: { value: 0 },
@@ -472,7 +488,7 @@ function createStudio(canvas, redraw) {
   const map = studioMap(renderer);
   scene.environment = map.texture;
   scene.environmentIntensity = .86;
-  scene.add(new AmbientLight("#f2be8e", .65));
+  scene.add(new AmbientLight("#f2be8e", .43));
   const key = new DirectionalLight("#fff2d8", 2.5);
   key.position.set(-3, 4, 6);
   scene.add(key);
@@ -480,7 +496,63 @@ function createStudio(canvas, redraw) {
   edge.position.set(5, 3, -3);
   scene.add(edge);
 
-  return { renderer, scene, camera, optics, map };
+  function lightAngle(angle) {
+    const sine = Math.sin(angle);
+    const cosine = Math.cos(angle);
+    scene.environmentRotation.y = angle;
+    key.position.set(-3 * cosine + 6 * sine, 4, 3 * sine + 6 * cosine);
+    edge.position.set(5 * cosine - 3 * sine, 3, -5 * sine - 3 * cosine);
+  }
+
+  return { renderer, scene, camera, optics, map, lightAngle };
+}
+
+// A soft footprint broadens as its prop lifts and stays attached as it travels.
+function contactShadow(scene, width, depth, squared = false) {
+  const uniforms = {
+    strength: { value: 0 },
+    square: { value: Number(squared) }
+  };
+  const material = new ShaderMaterial({
+    uniforms, transparent: true, depthWrite: false, toneMapped: false,
+    vertexShader: `
+      varying vec2 footprint;
+      void main() {
+        footprint = uv * 2. - 1.;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.);
+      }
+    `,
+    fragmentShader: `
+      uniform float strength;
+      uniform float square;
+      varying vec2 footprint;
+      void main() {
+        vec2 point = abs(footprint);
+        float round = length(point);
+        float block = pow(pow(point.x, 4.) + pow(point.y, 4.), .25);
+        float radius = mix(round, block, square);
+        float core = exp(-radius * radius * 11.);
+        float penumbra = exp(-radius * radius * 3.5);
+        float edge = 1. - smoothstep(.68, 1., radius);
+        gl_FragColor = vec4(mix(vec3(.11, .054, .030), vec3(.036, .019, .012), core),
+          strength * (core * .49 + penumbra * .25) * edge);
+        #include <colorspace_fragment>
+      }
+    `
+  });
+  const mesh = new Mesh(new PlaneGeometry(width, depth), material);
+  mesh.rotation.x = -Math.PI / 2;
+  mesh.renderOrder = 1;
+  scene.add(mesh);
+
+  return (prop, strength, lift = 0) => {
+    mesh.visible = prop.visible && strength > .005;
+    if (!mesh.visible) return;
+    const spread = Math.max(.68, prop.scale.x) * (1 + lift * .22);
+    mesh.position.set(prop.position.x + .12 + lift * .25, -1.44, prop.position.z - .08 - lift * .16);
+    mesh.scale.set(spread, spread, 1);
+    uniforms.strength.value = strength / (1 + lift * .72);
+  };
 }
 
 function buildFlacon(scene, optics, canvas, redraw, scentName) {
@@ -509,19 +581,21 @@ function buildFlacon(scene, optics, canvas, redraw, scentName) {
     shader.fragmentShader = "varying vec3 glassLocal; uniform float bottleStyle;\n" + plateFragment + shader.fragmentShader;
     shader.fragmentShader = shader.fragmentShader.replace("#include <transmission_fragment>", `
       #include <transmission_fragment>
-      float top = smoothstep(-1.12, .85, glassLocal.y);
+      float top = smoothstep(-.98, .78, glassLocal.y);
       float skirt = smoothstep(.50, .81, abs(glassLocal.x));
       float heel = 1. - smoothstep(-1.20, -.78, glassLocal.y);
-      vec3 amberDye = vec3(.135, .047, .019);
+      vec3 amberDye = vec3(.155, .052, .017);
       vec3 smokeDye = vec3(.014, .016, .020);
       vec3 glazing = mix(amberDye, smokeDye, bottleStyle);
       vec3 attenuation = mix(vec3(1.), glazing, min(.985, top * .96 + skirt * (1. - heel) * .11));
       totalDiffuse *= attenuation;
       vec2 screen = vec2(gl_FragCoord.x / resolution.x, 1. - gl_FragCoord.y / resolution.y);
-      vec2 bend = normal.xy * .068 + vec2(glassLocal.x * .028, .082);
+      float handPolish = sin(glassLocal.x * 33. + glassLocal.y * 16.) * sin(glassLocal.y * 42.);
+      vec2 bend = normal.xy * .068 + vec2(glassLocal.x * .028 + handPolish * .0015, .082);
       vec3 throughHeel = studioPlate(screen + bend);
       float secondaryRim = exp(-pow(abs((glassLocal.y + 1.118) * 26.), 2.));
-      throughHeel *= mix(vec3(1., .97, .90), vec3(.98, .99, 1.), bottleStyle);
+      float neutralHeel = dot(throughHeel, vec3(.2126, .7152, .0722));
+      throughHeel = mix(throughHeel * vec3(1., .98, .94), mix(throughHeel, vec3(neutralHeel), .58), bottleStyle);
       throughHeel *= 1. - secondaryRim * (.54 + .23 * skirt);
       float window = exp(-pow((glassLocal.x + .35 + .15 * glassLocal.y) * 2.4, 2.));
       vec3 crystalLight = mix(vec3(.65, .51, .35), vec3(.53, .56, .61), bottleStyle);
@@ -567,13 +641,13 @@ function buildFlacon(scene, optics, canvas, redraw, scentName) {
       vec3 smoke = exp(-vec3(1.25, 1.20, 1.16) * pathLength);
       vec3 refraction = studioPlate(screen + normal.xy * .036);
       float windowLight = exp(-5.0 * dot(fluidLocal.xy - vec2(.08, -.65), fluidLocal.xy - vec2(.08, -.65)));
-      vec3 concentrated = mix(vec3(.48, .22, .041), vec3(.26, .28, .32), bottleStyle);
+      vec3 concentrated = mix(vec3(.57, .265, .047), vec3(.28, .30, .33), bottleStyle);
       outgoingLight = refraction * mix(amber, smoke, bottleStyle) + concentrated * windowLight * .46 + totalSpecular * .44;
       #include <opaque_fragment>
     `);
   };
-  const gold = new MeshPhysicalMaterial({ color: "#e1b970", metalness: 1, roughness: .22, anisotropy: .20 });
-  const polished = new MeshPhysicalMaterial({ color: "#efd091", metalness: 1, roughness: .115, anisotropy: .13 });
+  const gold = new MeshPhysicalMaterial({ color: "#e1b970", metalness: .98, roughness: .28, anisotropy: .33 });
+  const polished = new MeshPhysicalMaterial({ color: "#efd091", metalness: 1, roughness: .13, anisotropy: .17 });
   const ivory = new MeshPhysicalMaterial({ color: "#211812", roughness: .28, clearcoat: .35 });
   const ink = new MeshStandardMaterial({ color: "#3f2315", roughness: .55 });
   part(body, flacon([
@@ -637,6 +711,10 @@ function buildFlacon(scene, optics, canvas, redraw, scentName) {
   const cap = new Group();
   body.add(cap);
   const crownFinish = buildCrown(cap, part, gold, polished);
+  gold.roughnessMap = brushed.roughnessMap = crownFinish;
+  gold.bumpMap = brushed.bumpMap = crownFinish;
+  gold.bumpScale = .0008;
+  brushed.bumpScale = .0014;
   cap.scale.set(1.26, 1.25, 1.26);
 
   const { texture: labelTexture, setName: setEngraving } = makeLabel(redraw, scentName);
@@ -651,7 +729,7 @@ function buildFlacon(scene, optics, canvas, redraw, scentName) {
 
 export function mountBottle(exhibit, stage) {
   const canvas = stage.querySelector("canvas");
-  const { renderer, scene, camera, optics, map } = createStudio(canvas, schedule);
+  const { renderer, scene, camera, optics, map, lightAngle } = createStudio(canvas, schedule);
   const { body, part, bottleStyle, fill, meniscus, atomizer, outlet, outletAngle, cap, crownFinish, labelTexture, setEngraving, foil } =
     buildFlacon(scene, optics, canvas, schedule, exhibit.featuredScent?.name);
   const orbit = createScentOrbit(scene, stage.querySelector(".orbit-labels"));
@@ -686,20 +764,9 @@ export function mountBottle(exhibit, stage) {
   const contact = new Vector3();
   const contactLocal = new Vector3();
 
-  const ground = document.createElement("canvas");
-  ground.width = ground.height = 128;
-  const shadowInk = ground.getContext("2d");
-  const falloff = shadowInk.createRadialGradient(64, 64, 0, 64, 64, 62);
-  falloff.addColorStop(0, "#170d09d9");
-  falloff.addColorStop(.53, "#1e100979");
-  falloff.addColorStop(1, "#1e100900");
-  shadowInk.fillStyle = falloff;
-  shadowInk.fillRect(0, 0, 128, 128);
-  const shadowTexture = new CanvasTexture(ground);
-  const shadow = part(scene, new PlaneGeometry(4.5, 2.15), new MeshBasicMaterial({
-    map: shadowTexture, transparent: true, depthWrite: false
-  }), .04, -1.44, .03);
-  shadow.rotation.x = -Math.PI / 2;
+  const bagShadow = contactShadow(scene, 4.7, 2.5, true);
+  const boxShadow = contactShadow(scene, 3.9, 2.5, true);
+  const bottleShadow = contactShadow(scene, 3.4, 1.85);
 
   const look = new Vector3();
   const bed = new Vector3();
@@ -829,14 +896,15 @@ export function mountBottle(exhibit, stage) {
     camera.up.set(0, 1, 0);
     camera.lookAt(look);
 
+    // Leave the frame under motion even on the widest stage.
+    const exitDistance = Math.max(6, 11 * Math.tan(camera.fov * Math.PI / 360) * camera.aspect + 3.4);
     bag.visible = pose.bagExit < 1;
-    bag.position.set(-5.25 * pose.bagExit, -.17 - 2.55 * pose.bagExit, -.08 - .45 * pose.bagExit);
-    bag.rotation.set(.015, -.39 - .25 * pose.bagExit, -.12 * pose.bagExit);
+    bag.position.set(-exitDistance * pose.bagExit, -.17 - .55 * pose.bagExit, -.08 - .48 * pose.bagExit);
+    bag.rotation.set(.015, -.39 - .32 * pose.bagExit, -.095 * pose.bagExit);
     const opening = smooth(.018, .072, studio) * (1 - .55 * pose.bagExit);
     bag.scale.set(.91 + .19 * opening, 1.08, .98 + .14 * opening);
     const back = smooth(.557, .622, studio);
-    const exitLeft = smooth(.602, .680, studio);
-    retreat.set(-5.50 * exitLeft, -3.80 * exitLeft, -2.22 * back);
+    retreat.set(-exitDistance * pose.boxExit, -.54 * pose.boxExit, -1.60 * back);
     box.visible = studio > .045 && pose.boxExit < 1;
     box.position.set(.30 * pose.setDown, -.20 + 3.08 * pose.takeOut - 3.04 * pose.setDown, -.08 + .24 * pose.setDown).add(retreat);
     box.rotation.set(-.78 * pose.open, -.39 + .67 * pose.open, 0);
@@ -889,7 +957,6 @@ export function mountBottle(exhibit, stage) {
       spray.cloud.visible = false;
       spray.plume.visible = false;
     }
-    shadow.position.x = -.40 - 5.2 * leafPush;
     optics.uniforms.artwork.value = packaging.cardTexture;
     optics.uniforms.sceneFinish.value = .80 * smooth(.955, .992, progress);
     const finish = smooth(.981, 1, progress);
@@ -912,6 +979,12 @@ export function mountBottle(exhibit, stage) {
       cap.rotation.set(0, 0, 0);
       camera.up.set(0, 1, 0);
     }
+    lightAngle(.24 * Math.sin(progress * Math.PI) - .16 * openFrame - .09 * leafPush);
+    bagShadow(bag, .89 * (1 - smooth(.72, 1, pose.bagExit)));
+    boxShadow(box, .85 * (1 - smooth(.72, 1, pose.boxExit)), Math.max(0, box.position.y + .20));
+    const bottleContact = Math.max(pose.emerge * (1 - leafPush), finish);
+    bottleShadow(body, .94 * bottleContact, Math.max(0, body.position.y + .10));
+
     const circling = finish > .98 && area.bottom > 0 && area.top < innerHeight;
     if (circling) finaleOrbit += Math.min(frameTime, 50) * orbitSpeed;
     else if (finish === 0) finaleOrbit = 0;
@@ -961,7 +1034,6 @@ export function mountBottle(exhibit, stage) {
     panels.forEach(panel => panel.style.removeProperty("--film-focus"));
     exhibit.style.removeProperty("--notes");
     labelTexture.dispose();
-    shadowTexture.dispose();
     map.dispose();
     optics.room.dispose();
     packaging.dispose();
@@ -980,7 +1052,7 @@ export function mountBottle(exhibit, stage) {
 
 export function mountScentStudio(viewer, scent, onReveal, onFallback) {
   const canvas = viewer.querySelector("canvas");
-  const { renderer, scene, camera, optics, map } = createStudio(canvas, schedule);
+  const { renderer, scene, camera, optics, map, lightAngle } = createStudio(canvas, schedule);
   const { body, bottleStyle, atomizer, outlet, cap, crownFinish, labelTexture, fill, meniscus } =
     buildFlacon(scene, optics, canvas, schedule, scent.name);
   const spray = makeSpray(optics.uniforms);
@@ -989,10 +1061,11 @@ export function mountScentStudio(viewer, scent, onReveal, onFallback) {
   orbit.set(scent);
   bottleStyle.value = Number(scent.collection === "Masculine");
   scene.environmentIntensity = 1.08;
+  const bottleShadow = contactShadow(scene, 3.55, 1.9);
 
   const nozzle = new Vector3();
   const target = new Vector3();
-  const focus = new Vector3(0, .36, 0);
+  const focus = new Vector3(0, .49, 0);
   let frame = 0;
   let stopped = false;
   let started;
@@ -1005,6 +1078,20 @@ export function mountScentStudio(viewer, scent, onReveal, onFallback) {
   let angle = -.24;
   let rotation = angle;
   let drag;
+  let portraitTexture;
+  const artwork = new Image();
+  const portraitPadding = parseFloat(getComputedStyle(viewer.querySelector(".scent-art")).paddingTop) || 0;
+  artwork.onload = () => {
+    if (stopped) return;
+    portraitTexture = new CanvasTexture(artwork);
+    portraitTexture.colorSpace = SRGBColorSpace;
+    optics.uniforms.artwork.value = portraitTexture;
+    optics.uniforms.portraitStrength.value = .31;
+    schedule();
+  };
+  const tile = scentPrintOrder.indexOf(scent.id);
+  optics.uniforms.portraitTile.value = [tile % 4, Math.floor(tile / 4)];
+  artwork.src = new URL("./assets/packaging/scent-backdrops.webp?v=1", import.meta.url);
 
   function draw(time) {
     frame = 0;
@@ -1020,6 +1107,10 @@ export function mountScentStudio(viewer, scent, onReveal, onFallback) {
       camera.updateProjectionMatrix();
     }
     optics.update(area, viewer, area, canvas);
+    const portraitHeight = Math.max(1, Math.min(area.height - 2 * portraitPadding, (area.width - 2 * portraitPadding) / .8));
+    const portraitW = portraitHeight * .8 / area.width;
+    const portraitH = portraitHeight / area.height;
+    optics.uniforms.portraitRect.value = [(1 - portraitW) / 2, (1 - portraitH) / 2, portraitW, portraitH];
 
     if (pending) {
       started = time;
@@ -1048,11 +1139,13 @@ export function mountScentStudio(viewer, scent, onReveal, onFallback) {
     const liquidTilt = Math.sin(seconds * 12) * .022 * near;
     fill.rotation.z = meniscus.rotation.z = liquidTilt;
 
-    const bottleDistance = area.width <= 480 ? 7.3 : 6.6;
-    camera.position.set(.02, .61 + near * .62,
-      Math.max(bottleDistance + impression * .50 - near * .70, (4.85 + impression * .80) / camera.aspect));
-    focus.y = .37 + .67 * near;
+    const bottleDistance = area.width <= 480 ? 7.8 : 7.45;
+    camera.position.set(.02, .68 + lift * .66,
+      Math.max(bottleDistance + impression * .42 + lift * 1.05, (5.12 + impression * .72 + lift * .38) / camera.aspect));
+    focus.y = .49 + lift * .35;
     camera.lookAt(focus);
+    lightAngle(.19 * near - .15 * Math.sin(rotation));
+    bottleShadow(body, .89);
     outlet.localToWorld(nozzle.set(0, .030, 0));
     outlet.localToWorld(target.set(0, 1.95, 0));
     spray.update(.765 + (seconds - .52) * .124, density, nozzle, target, camera);
@@ -1133,6 +1226,7 @@ export function mountScentStudio(viewer, scent, onReveal, onFallback) {
     crownFinish.dispose();
     map.dispose();
     optics.room.dispose();
+    portraitTexture?.dispose();
     scene.traverse(mesh => {
       mesh.geometry?.dispose();
       mesh.material?.dispose();

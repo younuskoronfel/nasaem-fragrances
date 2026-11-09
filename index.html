@@ -32,17 +32,17 @@
   <link rel="stylesheet" href="atelier.css?v=citrus-lens-1">
   <link rel="stylesheet" href="crystal.css?v=clear-water-2">
   <link rel="stylesheet" href="film.css?v=glitter-3">
-  <link rel="stylesheet" href="gallery.css?v=language-1">
-  <link rel="stylesheet" href="cart.css?v=4">
-  <script src="language.js?v=scroll-cue-1" defer></script>
+  <link rel="stylesheet" href="gallery.css?v=studio-finish-1">
+  <link rel="stylesheet" href="cart.css?v=studio-finish-1">
+  <script src="language.js?v=studio-finish-1" defer></script>
   <script src="scents.js?v=cart-1" defer></script>
   <script src="card-art.js?v=2" defer></script>
-  <script src="cart.js?v=2" defer></script>
+  <script src="cart.js?v=studio-finish-1" defer></script>
   <script src="account-config.js?v=1" defer></script>
   <script src="account.js?v=1" defer></script>
-  <script src="store.js?v=cart-3" defer></script>
+  <script src="store.js?v=studio-finish-1" defer></script>
   <script src="journey.js?v=card-art-1" defer></script>
-  <script type="module" src="atelier.js?v=card-art-1"></script>
+  <script type="module" src="atelier.js?v=studio-finish-1"></script>
   <script src="scroll-art.js?v=gold-dust-2" defer></script>
   <script src="glitter.js?v=3" defer></script>
   <script src="hero-film.js?v=language-1" defer></script>
@@ -272,6 +272,8 @@
       <button type="button" class="close" aria-label="Close fragrance details" autofocus><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
       <div class="scent-viewer">
         <img class="scent-art" width="768" height="960" alt="">
+        <div class="scent-backdrop" aria-hidden="true"><span></span></div>
+        <img class="scent-still" width="192" height="240" alt="" hidden>
         <canvas width="1920" height="1080" aria-hidden="true"></canvas>
         <div class="orbit-labels" aria-hidden="true" hidden></div>
         <div class="scent-turn" role="group" aria-label="Turn the bottle">
@@ -340,6 +342,15 @@
         <div class="cart-notice" role="status"></div>
       </div>
     </div>
+  </dialog>
+  <dialog class="cart-card-preview" aria-labelledby="cart-card-title">
+    <h2 id="cart-card-title"></h2>
+    <form method="dialog">
+      <button class="close" type="submit" aria-label="Close card preview" autofocus>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+      </button>
+    </form>
+    <img width="768" height="960" alt="">
   </dialog>
   <dialog class="cart-dialog account-dialog" id="account" aria-labelledby="account-title">
     <div class="cart-shell">

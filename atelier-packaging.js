@@ -65,22 +65,30 @@ function cardTexture(source) {
 
 function finishTexture(brushed, grain = 1) {
   const plate = document.createElement("canvas");
-  plate.width = plate.height = 192;
+  const size = brushed ? 512 : 256;
+  plate.width = plate.height = size;
   const context = plate.getContext("2d");
-  const pixels = context.createImageData(192, 192);
+  const pixels = context.createImageData(size, size);
   let seed = 12;
-  for (let y = 0; y < 192; y++) {
-    const stroke = brushed ? 19 * Math.sin(y * 2.83) + 11 * Math.sin(y * .66) : 0;
-    for (let x = 0; x < 192; x++) {
-      seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
-      const value = 179 + grain * (stroke + (seed >>> 26) - 31);
-      const i = (y * 192 + x) * 4;
+  const noise = () => {
+    seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+    return (seed >>> 24) / 255 - .5;
+  };
+  for (let y = 0; y < size; y++) {
+    const stroke = brushed ? noise() * 49 : 0;
+    const scratch = brushed && noise() > .35 ? -18 : 0;
+    for (let x = 0; x < size; x++) {
+      const fibers = brushed ? 6 * Math.sin(x * .041 + y * .58) : 9 * Math.sin(x * .32 + y * .4);
+      const value = 185 + grain * (stroke + scratch + fibers + noise() * (brushed ? 18 : 66));
+      const i = (y * size + x) * 4;
       pixels.data[i] = pixels.data[i + 1] = pixels.data[i + 2] = value;
       pixels.data[i + 3] = 255;
     }
   }
   context.putImageData(pixels, 0, 0);
-  return new CanvasTexture(plate);
+  const texture = new CanvasTexture(plate);
+  texture.anisotropy = 8;
+  return texture;
 }
 
 function beveledPanel(width, height, depth, bevel) {
@@ -239,7 +247,7 @@ export function buildPackaging(scene, part, foil, refresh) {
     color: "#493021", roughness: .79, bumpMap: grain, bumpScale: .011
   });
   const boxGold = new MeshStandardMaterial({
-    color: "#c7a367", metalness: .62, roughness: .46, roughnessMap: brushing, bumpMap: brushing, bumpScale: .003
+    color: "#c7a367", metalness: .76, roughness: .43, roughnessMap: brushing, bumpMap: brushing, bumpScale: .0016
   });
   const lining = new MeshStandardMaterial({ color: "#171316", roughness: .85 });
   const paperEdge = new MeshStandardMaterial({ color: "#513a2a", roughness: .85 });
@@ -339,10 +347,10 @@ export function buildCrown(cap, part, gold, polished) {
   }
   const shell = reshape(new CylinderGeometry(.48, .35, .65, 112, 19, true), (x, y, z) =>
     crownPoint(Math.atan2(z, x), (y + .325) / .65).toArray());
-  const roughnessMap = finishTexture(true, .3);
+  const roughnessMap = finishTexture(true, .72);
   const wall = new MeshPhysicalMaterial({
-    color: "#f0d498", metalness: .94, roughness: .34, roughnessMap,
-    bumpMap: roughnessMap, bumpScale: .0009, anisotropy: .24,
+    color: "#f0d498", metalness: .97, roughness: .34, roughnessMap,
+    bumpMap: roughnessMap, bumpScale: .00125, anisotropy: .37,
     clearcoat: .06, clearcoatRoughness: .13, side: DoubleSide
   });
   part(cap, shell, wall, 0, 0, 0);

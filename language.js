@@ -2,6 +2,7 @@ const languageCopy = new Map(`
 Cart|السلة|Carrito
 Your cart|سلتك|Tu carrito
 Close cart|إغلاق السلة|Cerrar carrito
+Close card preview|إغلاق معاينة البطاقة|Cerrar vista de la tarjeta
 Your cart is empty|سلتك فارغة|Tu carrito está vacío
 Add a fragrance from the collection to start your selection.|أضف عطراً من المجموعة لتبدأ اختيارك.|Añade un perfume de la colección para empezar tu selección.
 Selected fragrances|العطور المختارة|Perfumes seleccionados

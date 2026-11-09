@@ -1,4 +1,5 @@
 const cart = document.querySelector("#cart");
+const cartCardPreview = document.querySelector(".cart-card-preview");
 const cartToggle = document.querySelector(".cart-toggle");
 const cartItems = cart.querySelector(".cart-items");
 const cartSummary = cart.querySelector(".cart-summary");
@@ -108,6 +109,10 @@ cartPreviewPicker.addEventListener("click", event => {
   showCartPackaging();
 });
 
+function bottleStill(scent) {
+  return scent.collection === "Masculine" ? "assets/packaging/onyx-bottle.webp" : "assets/packaging/amber-bottle.webp";
+}
+
 function renderCart() {
   const total = [...cartLines.values()].reduce((sum, quantity) => sum + quantity, 0);
   cartToggle.querySelector(".cart-count").textContent = new Intl.NumberFormat(siteLanguage).format(total);
@@ -127,7 +132,9 @@ function renderCart() {
     const row = document.createElement("li");
     row.dataset.scentId = id;
     row.innerHTML = `
-      <img class="cart-thumb" width="72" height="90" alt="">
+      <button class="cart-thumb" type="button" aria-haspopup="dialog">
+        <img width="72" height="90" alt="">
+      </button>
       <div class="cart-item-details">
         <strong dir="auto"></strong>
         <span></span>
@@ -140,7 +147,17 @@ function renderCart() {
           <button type="button" class="text-link" data-cart-action="remove"></button>
         </div>
       </div>`;
-    setCardArtwork(row.querySelector("img"), id);
+    const thumb = row.querySelector(".cart-thumb");
+    thumb.setAttribute("aria-label", t("{name} campaign artwork", { name: scent.name }));
+    setCardArtwork(thumb.querySelector("img"), id);
+    thumb.addEventListener("click", () => {
+      const art = cartCardPreview.querySelector("img");
+      art.removeAttribute("src");
+      art.alt = t("{name} campaign artwork", { name: scent.name });
+      setCardArtwork(art, id, true);
+      cartCardPreview.querySelector("h2").textContent = scent.name;
+      cartCardPreview.showModal();
+    });
     row.querySelector("strong").textContent = scent.name;
     const soldOut = isScentSoldOut(id);
     row.querySelector("span").textContent = soldOut ? `${t(scent.collection)} · ${t("Sold out")}` : t(scent.collection);
@@ -158,7 +175,7 @@ function renderCart() {
       ?? [...cartItems.children].find(item => item.dataset.scentId === nextFocusId)
       ?? cartItems.lastElementChild;
     const button = row?.querySelector(`[data-cart-action="${activeAction}"]:not(:disabled)`)
-      ?? row?.querySelector("button");
+      ?? row?.querySelector("[data-cart-action]");
     (button ?? cart.querySelector(".cart-empty a")).focus({ preventScroll: true });
   }
 }
