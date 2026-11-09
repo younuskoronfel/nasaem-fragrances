@@ -105,7 +105,7 @@
 .cart-photos { display: grid; grid-template-columns: repeat(auto-fit, minmax(5.7rem, 1fr)); gap: .5rem }
 .cart-photos figure { margin: 0; min-width: 0 }
 .cart-photos :is(img, .packaging-interior) { display: block; width: 100%; height: auto; aspect-ratio: 1; border-radius: .4rem }
-.packaging-interior { background-image: url(assets/packaging/interiors.jpg?v=studio-1); background-size: 400% 400% }
+.packaging-interior { background-image: url(assets/packaging/interiors.jpg?v=studio-2); background-size: 400% 400% }
 .cart-preview-picker { display: flex; flex-wrap: wrap; gap: .4rem; margin-block: .25rem .65rem }
 .cart-preview-picker button {
   min-height: 2.75rem; padding-inline: .72rem; border: 1px solid var(--seam); border-radius: 2rem;
