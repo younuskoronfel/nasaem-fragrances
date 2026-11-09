@@ -566,19 +566,20 @@ function buildFlacon(scene, optics, canvas, redraw, scentName) {
   }
 
   const bottleStyle = { value: 0 };
+  const beddingLight = { value: 0 };
   const glass = new MeshPhysicalMaterial({
     color: "#fffcf7", roughness: .022, transmission: 1, thickness: .44,
     ior: 1.50, attenuationColor: "#fff2dd", attenuationDistance: 8,
     clearcoat: .95, clearcoatRoughness: .037, envMapIntensity: 1.38
   });
   glass.onBeforeCompile = shader => {
-    Object.assign(shader.uniforms, optics.uniforms, { bottleStyle });
+    Object.assign(shader.uniforms, optics.uniforms, { bottleStyle, beddingLight });
     shader.vertexShader = "varying vec3 glassLocal;\n" + shader.vertexShader;
     shader.vertexShader = shader.vertexShader.replace("#include <begin_vertex>", `
       #include <begin_vertex>
       glassLocal = position;
     `);
-    shader.fragmentShader = "varying vec3 glassLocal; uniform float bottleStyle;\n" + plateFragment + shader.fragmentShader;
+    shader.fragmentShader = "varying vec3 glassLocal; uniform float bottleStyle; uniform float beddingLight;\n" + plateFragment + shader.fragmentShader;
     shader.fragmentShader = shader.fragmentShader.replace("#include <transmission_fragment>", `
       #include <transmission_fragment>
       float top = smoothstep(-.98, .78, glassLocal.y);
@@ -615,6 +616,11 @@ function buildFlacon(scene, optics, canvas, redraw, scentName) {
       float stripMask = smoothstep(-1.15, -.99, glassLocal.y) * (1. - smoothstep(.65, .91, glassLocal.y));
       vec3 edgeLight = mix(vec3(1., .69, .36), vec3(.85, .92, 1.), bottleStyle);
       outgoingLight *= 1. - darkCrease * stripMask * .15;
+      // Warm trim and satin illuminate the clear heel even inside the dark box.
+      float bedFade = 1. - smoothstep(-1.31, .34, glassLocal.y);
+      float bedPool = exp(-pow((glassLocal.x - .16) * 1.25, 2.));
+      vec3 reflectedBed = mix(vec3(.61, .33, .13), vec3(.47, .47, .49), bottleStyle);
+      outgoingLight += reflectedBed * beddingLight * bedFade * (.17 + .45 * bedPool + .16 * outline);
       outgoingLight += edgeLight * (outline * .13 + heelLine * .13 + bottomLine * .10
         + (tallStrip * .19 + facetGlint * .052) * stripMask);
       #include <opaque_fragment>
@@ -625,13 +631,13 @@ function buildFlacon(scene, optics, canvas, redraw, scentName) {
     envMapIntensity: .38, toneMapped: false
   });
   liquid.onBeforeCompile = shader => {
-    Object.assign(shader.uniforms, optics.uniforms, { bottleStyle });
+    Object.assign(shader.uniforms, optics.uniforms, { bottleStyle, beddingLight });
     shader.vertexShader = "varying vec3 fluidLocal;\n" + shader.vertexShader;
     shader.vertexShader = shader.vertexShader.replace("#include <begin_vertex>", `
       #include <begin_vertex>
       fluidLocal = position;
     `);
-    shader.fragmentShader = "varying vec3 fluidLocal; uniform float bottleStyle;\n" + plateFragment + shader.fragmentShader;
+    shader.fragmentShader = "varying vec3 fluidLocal; uniform float bottleStyle; uniform float beddingLight;\n" + plateFragment + shader.fragmentShader;
     shader.fragmentShader = shader.fragmentShader.replace("#include <opaque_fragment>", `
       vec2 screen = vec2(gl_FragCoord.x / resolution.x, 1. - gl_FragCoord.y / resolution.y);
       float top = smoothstep(-.95, .75, fluidLocal.y);
@@ -643,6 +649,7 @@ function buildFlacon(scene, optics, canvas, redraw, scentName) {
       float windowLight = exp(-5.0 * dot(fluidLocal.xy - vec2(.08, -.65), fluidLocal.xy - vec2(.08, -.65)));
       vec3 concentrated = mix(vec3(.57, .265, .047), vec3(.28, .30, .33), bottleStyle);
       outgoingLight = refraction * mix(amber, smoke, bottleStyle) + concentrated * windowLight * .46 + totalSpecular * .44;
+      outgoingLight += concentrated * beddingLight * (1. - top) * (.14 + .28 * windowLight);
       #include <opaque_fragment>
     `);
   };
@@ -724,13 +731,13 @@ function buildFlacon(scene, optics, canvas, redraw, scentName) {
     emissive: "#b58243", emissiveMap: labelTexture, emissiveIntensity: .57
   });
   part(body, new PlaneGeometry(1.06, 1.31), foil, 0, -.10, .491).renderOrder = 5;
-  return { body, part, bottleStyle, fill, meniscus, atomizer, outlet, outletAngle, cap, crownFinish, labelTexture, setEngraving, foil };
+  return { body, part, bottleStyle, beddingLight, fill, meniscus, atomizer, outlet, outletAngle, cap, crownFinish, labelTexture, setEngraving, foil };
 }
 
 export function mountBottle(exhibit, stage) {
   const canvas = stage.querySelector("canvas");
   const { renderer, scene, camera, optics, map, lightAngle } = createStudio(canvas, schedule);
-  const { body, part, bottleStyle, fill, meniscus, atomizer, outlet, outletAngle, cap, crownFinish, labelTexture, setEngraving, foil } =
+  const { body, part, bottleStyle, beddingLight, fill, meniscus, atomizer, outlet, outletAngle, cap, crownFinish, labelTexture, setEngraving, foil } =
     buildFlacon(scene, optics, canvas, schedule, exhibit.featuredScent?.name);
   const orbit = createScentOrbit(scene, stage.querySelector(".orbit-labels"));
   const packaging = buildPackaging(scene, part, foil, texture => {
@@ -929,6 +936,7 @@ export function mountBottle(exhibit, stage) {
     card.visible = studio > .045;
 
     body.visible = studio > .208 && progress < .958;
+    beddingLight.value = pose.open * (1 - pose.emerge);
     bed.set(0, -.21, .95 * pose.clearBed);
     box.localToWorld(bed);
     bed.sub(retreat);
