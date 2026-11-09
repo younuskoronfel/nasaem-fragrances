@@ -159,9 +159,16 @@
   position: fixed;
   z-index: 4;
   inset: 0;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
   overflow: clip;
   pointer-events: none;
 }
+dialog > .gold-dust { position: absolute }
 .glitter {
   position: absolute;
   width: var(--size);
@@ -177,14 +184,14 @@
 .gold-dust .glitter {
   left: var(--left);
   top: var(--top);
-  box-shadow: 0 0 7px #ffcc7775;
+  box-shadow: 0 0 7px 1px #ffd38da0;
   animation: glitter-drift var(--time) linear var(--delay) infinite;
 }
 @keyframes glitter-drift {
   0% { opacity: 0; transform: translate(0, 0) scale(.55) rotate(0deg) }
-  28% { opacity: .8 }
-  48% { opacity: .36 }
-  58% { opacity: .66 }
+  28% { opacity: .98 }
+  48% { opacity: .48 }
+  58% { opacity: .78 }
   100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(.8) rotate(85deg) }
 }
 .glitter-burst {
@@ -202,6 +209,7 @@
 }
 dialog > .glitter-burst { position: absolute }
 .glitter-burst .glitter {
+  box-shadow: 0 0 5px #ffd38db0;
   animation: glitter-pop var(--time) cubic-bezier(.18, .58, .35, 1) forwards;
 }
 @keyframes glitter-pop {
