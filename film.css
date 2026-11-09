@@ -110,3 +110,80 @@
 @media (prefers-reduced-motion: reduce) {
   .film-video, .film-light, .film-copy { transform: none }
 }
+
+/* Small points of candlelight sit around the artwork and text. */
+.about-nasaem {
+  background: radial-gradient(ellipse at 8% 65%, #57332235, transparent 62%), var(--paper);
+}
+.guide {
+  background: radial-gradient(ellipse at 20% 70%, #663b2742, transparent 65%), var(--surface);
+}
+.contact {
+  background: radial-gradient(ellipse at 50% 52%, #6a402a42, transparent 71%);
+}
+.guide-list details[open] {
+  background: linear-gradient(90deg, #bc784917, transparent 82%);
+  border-radius: .85rem;
+  padding-inline: .8rem;
+}
+.guide-list details {
+  padding-inline: .8rem;
+}
+.collection, .guide, .contact {
+  position: relative;
+  isolation: isolate;
+}
+.gold-dust {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  overflow: clip;
+  pointer-events: none;
+  --dust-top: 18%;
+}
+.film-hero .gold-dust { --dust-top: 33%; z-index: 0 }
+.atelier > .gold-dust { --dust-top: clamp(9rem, 27vh, 17rem) }
+.collection > .gold-dust { --dust-top: clamp(7rem, 22vh, 13rem) }
+.gold-dust i {
+  position: absolute;
+  inset-inline-start: 8%;
+  inset-block-start: var(--dust-top);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #fff0b4;
+  box-shadow: 0 0 8px 2px #e9ad6490;
+  opacity: 0;
+  animation: gold-twinkle 10s ease-in-out var(--wait, -2s) infinite paused;
+}
+.gold-dust i:nth-child(2) {
+  --wait: -6s;
+  inset-inline-start: 91%;
+  inset-block-start: calc(var(--dust-top) + 4.2rem);
+  width: 3px;
+  height: 3px;
+}
+.gold-dust i:nth-child(3) {
+  --wait: -3.8s;
+  inset-inline-start: 84%;
+  inset-block-start: calc(var(--dust-top) + 1.4rem);
+  width: 2px;
+  height: 2px;
+}
+.journey .drift i {
+  animation: gold-twinkle 12s ease-in-out calc(var(--delay) * -8) infinite paused;
+}
+.art-in-view > .gold-dust i, .journey.art-in-view .drift i { animation-play-state: running }
+@keyframes gold-twinkle {
+  0%, 72%, 100% { opacity: 0; transform: translateY(8px) scale(.65) }
+  20% { opacity: .74; transform: translateY(0) scale(1) }
+  42% { opacity: .25; transform: translateY(-7px) scale(.78) }
+}
+@media (max-width: 700px) {
+  .gold-dust i { inset-inline-start: 5% }
+  .gold-dust i:nth-child(2) { inset-inline-start: 94% }
+  .gold-dust i:nth-child(3), .journey .drift i:nth-child(n+5) { display: none }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gold-dust i { animation: none; opacity: .34 }
+}

@@ -1,5 +1,5 @@
 const scrollMotion = matchMedia("(prefers-reduced-motion: no-preference)");
-const scrollScenes = [...document.querySelectorAll(".film-hero, .journey, .collection, .guide, .contact")];
+const scrollScenes = [...document.querySelectorAll(".film-hero, .about-nasaem, .journey, .atelier, .collection, .guide, .contact")];
 const visibleScenes = new Set();
 let scrollFrame = 0;
 
@@ -19,6 +19,7 @@ function scheduleScrollArt() {
 
 const sceneObserver = new IntersectionObserver(entries => {
   for (const entry of entries) {
+    entry.target.classList.toggle("art-in-view", entry.isIntersecting);
     if (entry.isIntersecting) visibleScenes.add(entry.target);
     else visibleScenes.delete(entry.target);
   }
