@@ -155,43 +155,63 @@
 .guide-list details {
   padding-inline: .8rem;
 }
-/* A sparse edge light stays continuous across every section as the page scrolls. */
 .gold-dust {
   position: fixed;
-  z-index: 3;
+  z-index: 4;
   inset: 0;
   overflow: clip;
   pointer-events: none;
 }
-.gold-dust i {
+.glitter {
   position: absolute;
-  inset-inline-start: var(--x);
-  inset-block-start: var(--y);
-  width: var(--size, 3px);
-  aspect-ratio: 1;
+  width: var(--size);
+  height: var(--size);
+  background: var(--glint, #ffe5a5);
   border-radius: 50%;
-  background: #fff0b4;
-  box-shadow: 0 0 7px 2px #e9ad6490;
   opacity: 0;
-  animation: gold-twinkle var(--duration, 11s) ease-in-out var(--wait) infinite;
 }
-.gold-dust i:nth-child(1) { --x: 2.4%; --y: 16%; --wait: -2s }
-.gold-dust i:nth-child(2) { --x: 96.5%; --y: 25%; --wait: -5s; --duration: 13s }
-.gold-dust i:nth-child(3) { --x: 3.8%; --y: 41%; --wait: -7s; --size: 2px }
-.gold-dust i:nth-child(4) { --x: 97%; --y: 53%; --wait: -3.2s; --size: 4px }
-.gold-dust i:nth-child(5) { --x: 1.7%; --y: 66%; --wait: -8.6s; --duration: 14s }
-.gold-dust i:nth-child(6) { --x: 95.7%; --y: 76%; --wait: -2.7s; --duration: 12s }
-.gold-dust i:nth-child(7) { --x: 3.6%; --y: 90%; --wait: -4.8s; --size: 2px }
-.gold-dust i:nth-child(8) { --x: 97.6%; --y: 93%; --wait: -8s; --size: 2px }
-@keyframes gold-twinkle {
-  0%, 72%, 100% { opacity: 0; transform: translateY(8px) scale(.65) }
-  20% { opacity: .78; transform: translateY(0) scale(1) }
-  42% { opacity: .25; transform: translateY(-7px) scale(.78) }
+.glitter:nth-child(3n + 1) {
+  border-radius: 0;
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+}
+.gold-dust .glitter {
+  left: var(--left);
+  top: var(--top);
+  box-shadow: 0 0 7px #ffcc7775;
+  animation: glitter-drift var(--time) linear var(--delay) infinite;
+}
+@keyframes glitter-drift {
+  0% { opacity: 0; transform: translate(0, 0) scale(.55) rotate(0deg) }
+  28% { opacity: .8 }
+  48% { opacity: .36 }
+  58% { opacity: .66 }
+  100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(.8) rotate(85deg) }
+}
+.glitter-burst {
+  position: fixed;
+  z-index: 25;
+  inset: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: visible;
+  background: transparent;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+dialog > .glitter-burst { position: absolute }
+.glitter-burst .glitter {
+  animation: glitter-pop var(--time) cubic-bezier(.18, .58, .35, 1) forwards;
+}
+@keyframes glitter-pop {
+  0% { opacity: .95; transform: translate(-50%, -50%) scale(.55) }
+  30% { opacity: 1 }
+  100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(.2) rotate(115deg) }
 }
 @media (max-width: 700px) {
-  .gold-dust i:nth-child(n+7) { display: none }
-  .gold-dust i { box-shadow: 0 0 6px 1px #e9ad6480 }
+  .gold-dust .glitter:nth-child(4n) { display: none }
 }
 @media (prefers-reduced-motion: reduce) {
-  .gold-dust i { animation: none; opacity: .28 }
+  .gold-dust, .glitter-burst { display: none }
 }
