@@ -329,6 +329,10 @@ export function buildMacro(scene, part, refresh, smooth, backdrop) {
         .addScaledVector(up, -.62 * (1 - railLift));
       dock.quaternion.copy(stageTurn);
     },
+    exit(direction, distance) {
+      twig.position.addScaledVector(direction, distance);
+      dock.position.addScaledVector(direction, distance);
+    },
     dispose() {
       active = false;
       leafPrint.dispose();

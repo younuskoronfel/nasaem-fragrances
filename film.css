@@ -6,7 +6,7 @@
   isolation: isolate;
   overflow: clip;
   color: #fff0d6;
-  background: #251711;
+  background: var(--paper);
 }
 .film-set, .film-set::after, .film-video, .film-light {
   position: absolute;
@@ -28,8 +28,8 @@
 .film-set::after {
   content: "";
   background:
-    linear-gradient(90deg, #21120df5, #27170de8 28%, #2c1c1282 49%, transparent 73%),
-    linear-gradient(180deg, #1c100ab8, transparent 25%, transparent 76%, #261711e6);
+    linear-gradient(90deg, #100e0ef5, #100e0ed9 28%, #17100b6b 50%, transparent 76%),
+    linear-gradient(180deg, #1c100ab8, transparent 25%, transparent 76%, #100e0e);
 }
 .site-header { color: #ffedd3; z-index: 3 }
 .site-header .wordmark img { filter: url("assets/wordmark-filter.svg?v=3#champagne-ink") }
@@ -76,10 +76,8 @@
 .about-nasaem {
   position: relative;
   isolation: isolate;
-  background:
-    radial-gradient(ellipse at 76% 0, #e3ab735e, transparent 70%),
-    url("assets/atelier/alabaster-grain.svg") 0 0 / 160px 160px,
-    var(--paper);
+  background: var(--paper);
+  border-top: 1px solid var(--seam);
 }
 .about-inner {
   display: grid;
@@ -100,7 +98,7 @@
   .film-hero { min-height: min(52rem, 93svh) }
   .film-video { object-position: 81% 36% }
   .film-set::after {
-    background: linear-gradient(180deg, #201209bd 0, #26160c16 26%, #27170e27 40%, #21120cda 67%, #21120cf7 96%);
+    background: linear-gradient(180deg, #201209bd 0, #26160c16 26%, #27170e27 40%, #21120cda 67%, #100e0e 100%);
   }
   .film-copy { align-self: end; padding-block: 10rem 5.3rem }
   .film-copy h1 { font-size: clamp(3.4rem, 13.3vw, 6.4rem) }

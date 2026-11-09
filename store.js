@@ -74,14 +74,25 @@ const featuredMood = featuredChapter.querySelector(".atelier-mood");
 const featuredNotes = featuredChapter.querySelector(".atelier-notes");
 const featuredLiner = featuredChapter.querySelector(".atelier-liner");
 const featuredDetail = featuredChapter.querySelector(".atelier-detail");
+const scentPreview = dialog.querySelector(".scent-preview");
+const viewer = dialog.querySelector(".scent-viewer");
+const sprayButton = dialog.querySelector(".scent-spray");
+const reveal = dialog.querySelector(".scent-reveal");
+const scentMotion = matchMedia("(prefers-reduced-motion: reduce)");
+let studio;
+let session = 0;
 const selectedScents = { brown: "golden-hour-bloom", black: "midnight-spice" };
 let featuredScent;
+let inspectedScent;
 
 function showFeaturedScent() {
   const packaging = atelier.dataset.packaging;
   featuredScent = scents.find(scent => scent.id === scentSelect.value);
   selectedScents[packaging] = featuredScent.id;
   atelier.dataset.scent = featuredScent.id;
+  atelier.featuredScent = featuredScent;
+  featuredChapter.querySelector(".atelier-orbit-guide").textContent = featuredScent.notePyramid
+    ? "Opening, heart and dry-down" : "Mood and scent hints";
   featuredTitle.textContent = `${featuredScent.name}.`;
   featuredMood.textContent = featuredScent.mood;
   featuredNotes.replaceChildren();
@@ -120,7 +131,77 @@ showAtelierPackaging(atelier.dataset.packaging);
 atelierControls.hidden = false;
 featuredDetail.hidden = false;
 
+scentPreview.addEventListener("click", () => {
+  const packaging = inspectedScent.collection === "Masculine" ? "black" : "brown";
+  selectedScents[packaging] = inspectedScent.id;
+  showAtelierPackaging(packaging);
+  dialog.close();
+  const destination = atelier.querySelector("#bottle-form");
+  destination.focus({ preventScroll: true });
+  destination.scrollIntoView({ block: "start" });
+});
+
+function showScentNotes() {
+  reveal.hidden = false;
+  sprayButton.disabled = false;
+  sprayButton.textContent = studio ? "Spray again" : "View scent notes";
+}
+
+function useStillStudio() {
+  studio?.dispose();
+  studio = undefined;
+  sprayButton.disabled = false;
+  sprayButton.textContent = "View scent notes";
+}
+
+async function loadStudio(scent, current) {
+  if (scentMotion.matches) return useStillStudio();
+  try {
+    const { mountScentStudio } = await import("./atelier-model.js?v=scent-studio-2");
+    if (session !== current || !dialog.open || scentMotion.matches) return;
+    studio = mountScentStudio(viewer, scent, showScentNotes, () => {
+      if (session !== current || !dialog.open) return;
+      const shouldReveal = sprayButton.disabled;
+      useStillStudio();
+      if (shouldReveal) showScentNotes();
+    });
+    sprayButton.textContent = "Spray the bottle";
+  } catch {
+    if (session === current) useStillStudio();
+  }
+}
+
+sprayButton.addEventListener("click", () => {
+  if (!studio) return showScentNotes();
+  reveal.hidden = true;
+  sprayButton.disabled = true;
+  sprayButton.textContent = "Spraying";
+  studio.spray();
+});
+viewer.querySelectorAll("[data-turn]").forEach(button => {
+  button.addEventListener("click", () => studio?.rotate(Number(button.dataset.turn) * .42));
+});
+dialog.addEventListener("close", () => {
+  if (dialog.open) return;
+  session++;
+  studio?.dispose();
+  studio = undefined;
+});
+scentMotion.addEventListener("change", () => {
+  if (!dialog.open || !scentMotion.matches) return;
+  const shouldReveal = sprayButton.disabled;
+  useStillStudio();
+  if (shouldReveal) showScentNotes();
+});
+
 function openScent(scent) {
+  inspectedScent = scent;
+  const current = ++session;
+  studio?.dispose();
+  studio = undefined;
+  reveal.hidden = true;
+  sprayButton.disabled = false;
+  sprayButton.textContent = scentMotion.matches ? "View scent notes" : "Spray the bottle";
   const art = dialog.querySelector(".scent-art");
   art.src = `assets/scents/${scent.id}.webp`;
   art.alt = `${scent.name} campaign artwork`;
@@ -134,6 +215,8 @@ function openScent(scent) {
   noteList.replaceChildren();
   noteList.hidden = !scent.notePyramid;
   fillNotes(noteList, scent.notePyramid);
+  dialog.querySelector(".scent-reveal-title").textContent = scent.notePyramid ? "Scent notes" : "Scent hints";
+  setOptional(".scent-hints", scent.notePyramid ? "" : scent.mood);
 
   const canBuy = Boolean(scent.price && scent.checkoutUrl?.startsWith("https://"));
   const action = dialog.querySelector(".scent-action");
@@ -142,6 +225,7 @@ function openScent(scent) {
   setOptional(".checkout-note", canBuy ? "You’ll continue to our checkout provider." : "Message us for pricing, availability, and ordering.");
   dialog.showModal();
   dialog.scrollTop = 0;
+  loadStudio(scent, current);
 }
 
 dialog.querySelector(".close").addEventListener("click", () => dialog.close());

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#f0d4a7">
+  <meta name="theme-color" content="#100e0e">
   <meta name="description" content="Explore sixteen Nasaem perfumes, find a fragrance by mood, and experience the unboxing.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://younuskoronfel.github.io/nasaem-fragrances/">
@@ -19,13 +19,13 @@
   <link rel="preload" href="assets/cormorant.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="atelier.css">
-  <link rel="stylesheet" href="crystal.css">
-  <link rel="stylesheet" href="film.css">
-  <link rel="stylesheet" href="gallery.css">
+  <link rel="stylesheet" href="crystal.css?v=scent-studio-2">
+  <link rel="stylesheet" href="film.css?v=scent-studio-2">
+  <link rel="stylesheet" href="gallery.css?v=scent-studio-2">
   <script src="scents.js" defer></script>
-  <script src="store.js" defer></script>
+  <script src="store.js?v=scent-studio-2" defer></script>
   <script src="journey.js" defer></script>
-  <script type="module" src="atelier.js"></script>
+  <script type="module" src="atelier.js?v=scent-studio-2"></script>
   <script src="scroll-art.js" defer></script>
   <script src="hero-film.js" defer></script>
 </head>
@@ -100,6 +100,7 @@
           <div class="atelier-frame" aria-hidden="true">
             <img class="atelier-poster" src="assets/atelier/bottle.webp" alt="" width="424" height="404" loading="lazy" decoding="async">
             <canvas class="atelier-canvas"></canvas>
+            <div class="orbit-labels" hidden></div>
           </div>
           <div class="atelier-controls" hidden>
             <div class="atelier-variants" role="group" aria-label="Packaging">
@@ -108,16 +109,24 @@
             </div>
             <select class="atelier-scent" aria-label="Fragrance"></select>
           </div>
+          <nav class="atelier-sequence" aria-label="Unboxing chapters">
+            <a href="#bottle-form" aria-current="step">Unbox</a>
+            <a href="#bottle-box">Open</a>
+            <a href="#bottle-crown">Crown</a>
+            <a href="#bottle-mist">Spray</a>
+            <a href="#bottle-notes">Notes</a>
+          </nav>
         </div>
         <div class="atelier-chapters">
-          <div class="atelier-chapter" id="bottle-form"><h2 id="atelier-title">The unboxing.</h2></div>
+          <div class="atelier-chapter" id="bottle-form" tabindex="-1"><h2 id="atelier-title">The unboxing.</h2></div>
           <div class="atelier-chapter" id="bottle-box"><h3>Inside the box.</h3></div>
           <div class="atelier-chapter" id="bottle-crown"><h3>The crown.</h3></div>
-          <div class="atelier-chapter" id="bottle-mist"><h3>The first spray.</h3></div>
+          <div class="atelier-chapter" id="bottle-mist" tabindex="-1"><h3>The first spray.</h3></div>
           <div class="atelier-chapter" id="bottle-leaf" aria-hidden="true"></div>
-          <div class="atelier-chapter" id="bottle-notes">
+          <div class="atelier-chapter" id="bottle-notes" tabindex="-1">
             <h3>Golden Hour Bloom.</h3>
             <p class="atelier-mood">Radiant, feminine, unforgettable</p>
+            <p class="atelier-orbit-guide">Opening, heart and dry-down</p>
             <dl class="atelier-notes" hidden></dl>
             <img class="atelier-liner" src="assets/atelier/cards/golden-hour-bloom.jpg" width="768" height="960" alt="Golden Hour Bloom campaign card" loading="lazy" decoding="async">
             <div class="atelier-links">
@@ -133,6 +142,7 @@
       <div class="wrap">
         <div class="section-intro">
           <h2 id="collection-title">The collection</h2>
+          <p>Open any fragrance to turn its bottle, try a spray, and discover how it unfolds.</p>
         </div>
         <div class="collection-bar">
           <div class="filters" role="group" aria-label="Filter fragrances by mood" hidden>
@@ -191,16 +201,33 @@
   <dialog class="scent-dialog" aria-labelledby="scent-title">
     <div class="dialog-shell">
       <button type="button" class="close" aria-label="Close fragrance details" autofocus><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
-      <img class="scent-art" src="assets/scents/static.webp" width="768" height="960" alt="">
+      <div class="scent-viewer">
+        <img class="scent-art" width="768" height="960" alt="">
+        <canvas width="1920" height="1080" aria-hidden="true"></canvas>
+        <div class="orbit-labels" aria-hidden="true" hidden></div>
+        <div class="scent-turn" role="group" aria-label="Turn the bottle">
+          <button type="button" data-turn="-1" aria-label="Turn bottle left"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
+          <span>Drag to turn</span>
+          <button type="button" data-turn="1" aria-label="Turn bottle right"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg></button>
+        </div>
+      </div>
       <div class="scent-copy">
         <p class="scent-family"></p>
         <h2 id="scent-title"></h2>
         <p class="scent-mood"></p>
+        <div class="scent-actions">
+          <button class="button scent-spray" type="button">Spray the bottle</button>
+          <a class="button dark scent-action"></a>
+          <button class="text-link scent-preview" type="button">See the unboxing</button>
+        </div>
+        <div class="scent-reveal" aria-live="polite" hidden>
+          <h3 class="scent-reveal-title">Scent notes</h3>
+          <dl class="scent-notes" hidden></dl>
+          <p class="scent-hints" hidden></p>
+        </div>
         <p class="scent-description"></p>
         <p class="scent-format" hidden></p>
-        <dl class="scent-notes" hidden></dl>
         <p class="scent-price" hidden></p>
-        <a class="button dark scent-action"></a>
         <p class="checkout-note"></p>
       </div>
     </div>
