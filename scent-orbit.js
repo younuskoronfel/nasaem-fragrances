@@ -17,17 +17,70 @@ function noteShape(note, materials) {
     return mesh;
   };
   const sphere = new SphereGeometry(1, 24, 16);
-  if (/bergamot|mandarin|orange|grapefruit/i.test(note)) {
-    const rind = /bergamot/i.test(note) ? "#96a84a" : "#df8838";
+  if (/bergamot|mandarin|^orange$|grapefruit|lemon|tangerine/i.test(note)) {
+    const rind = /bergamot/i.test(note) ? "#96a84a" : /lemon/i.test(note) ? "#e3c04a" : "#df8838";
+    const pulp = /grapefruit/i.test(note) ? "#db846e" : /lemon|bergamot/i.test(note) ? "#f0d174" : "#ef9949";
     piece(sphere, rind, 0, 0, 0, [.36, .36, .18]);
     piece(sphere, "#f8cf89", 0, 0, .105, [.324, .324, .085]);
     for (let i = 0; i < 9; i++) {
       const a = i * Math.PI * 2 / 9;
-      piece(sphere, "#ef9949", Math.cos(a) * .155, Math.sin(a) * .155, .176,
+      piece(sphere, pulp, Math.cos(a) * .155, Math.sin(a) * .155, .176,
         [.128, .053, .021], { roughness: .45 }).rotation.z = a;
     }
-  } else if (/rose|jasmine|blossom|lavender|orris/i.test(note)) {
-    const petal = /rose/i.test(note) ? "#c46f78" : /jasmine|blossom/i.test(note) ? "#f4e0b0" : "#ab93b5";
+  } else if (/strawberry|raspberry|blackcurrant/i.test(note)) {
+    const strawberry = /strawberry/i.test(note);
+    const currant = /blackcurrant/i.test(note);
+    const color = strawberry ? "#a62c28" : currant ? "#332435" : "#a12e52";
+    if (strawberry) {
+      piece(sphere, color, 0, -.10, 0, [.21, .23, .17]);
+      piece(sphere, color, 0, .06, 0, [.28, .23, .20]);
+      for (let i = 0; i < 12; i++) {
+        const y = -.20 + i * .033;
+        const x = Math.sin(i * 2.4) * (.19 + y * .22);
+        piece(sphere, "#e1b176", x, y, .18 - Math.abs(x) * .28, [.012, .021, .01]);
+      }
+      for (let i = -1; i <= 1; i++) {
+        piece(sphere, "#52703b", i * .085, .272, .03, [.055, .10, .021]).rotation.z = i * -.65;
+      }
+    } else {
+      const count = currant ? 6 : 18;
+      const size = currant ? .107 : .075;
+      for (let i = 0; i < count; i++) {
+        const angle = i * 2.4;
+        const fraction = i / (count - 1);
+        const r = .13 + .07 * Math.sin(fraction * Math.PI);
+        piece(sphere, color, Math.cos(angle) * r, .21 - .42 * fraction, Math.sin(angle) * r, [size, size, size]);
+      }
+    }
+  } else if (/pineapple|coconut|lady apple|^pear$/i.test(note)) {
+    const pineapple = /^pineapple$/i.test(note);
+    const coconut = /^coconut$/i.test(note);
+    const pear = /^pear$/i.test(note);
+    const skin = pineapple ? "#a57435" : coconut ? "#61412e" : pear ? "#9ea357" : "#a84e46";
+    piece(sphere, skin, 0, 0, 0, [.25, .30, .20], { roughness: .53 });
+    if (coconut) {
+      piece(sphere, "#e8d7b9", 0, .01, .14, [.218, .255, .089]);
+      piece(sphere, "#3d2b24", 0, .01, .198, [.166, .193, .035]);
+    } else {
+      piece(sphere, skin, 0, .15, 0, [.16, .19, .15]);
+      piece(sphere, "#64462e", 0, .34, .02, [.028, .06, .024]);
+      if (pineapple) {
+        for (let i = -2; i <= 2; i++) {
+          piece(sphere, "#64744a", i * .047, .43 - Math.abs(i) * .033, -.01, [.043, .15, .018]).rotation.z = i * -.35;
+        }
+        for (let i = 0; i < 12; i++) {
+          const y = -.17 + Math.floor(i / 3) * .09;
+          const x = (i % 3 - 1) * .12 + .026 * (Math.floor(i / 3) % 2);
+          piece(sphere, "#d8a955", x, y, .19 - Math.abs(x) * .26, [.035, .023, .014]).rotation.z = .75;
+        }
+      } else {
+        piece(sphere, "#64744a", .085, .34, .02, [.085, .029, .023]).rotation.z = .38;
+      }
+    }
+  } else if (/rose|jasmine|blossom|lavender|orris|iris|freesia|peony|ylang|orchid|heliotrope/i.test(note)) {
+    const petal = /rose|peony/i.test(note) ? "#c46f78"
+      : /ylang/i.test(note) ? "#d5ae59"
+      : /jasmine|blossom|freesia/i.test(note) ? "#f4e0b0" : "#ab93b5";
     for (let ring = 0; ring < 2; ring++) {
       for (let i = 0; i < 5; i++) {
         const a = i * Math.PI * .4 + ring * .6;
@@ -38,7 +91,14 @@ function noteShape(note, materials) {
       }
     }
     piece(sphere, "#dca960", 0, 0, .12, [.08, .08, .05]);
-  } else if (/fig|plum|coffee|bean|hazelnut|pepper/i.test(note)) {
+  } else if (/^milk$|marshmallow|praline/i.test(note)) {
+    const milk = /^milk$/i.test(note);
+    const color = milk ? "#f1e5ce" : /praline/i.test(note) ? "#aa7651" : "#eacacc";
+    for (let i = -1; i <= 1; i++) {
+      piece(sphere, color, i * .12, (i % 2) * .095, -.055 * i, [milk ? .11 : .15, .13, .10],
+        { roughness: milk ? .18 : .67, clearcoat: milk ? .63 : .08 }).rotation.z = i * .36;
+    }
+  } else if (/fig|plum|coffee|bean|hazelnut|pepper|almond/i.test(note)) {
     const fruit = /fig|plum/i.test(note);
     piece(sphere, fruit ? "#72455e" : "#825333", 0, 0, 0, [.26, .34, .20]).rotation.z = -.28;
     piece(sphere, fruit ? "#d58c78" : "#ad7543", .11, -.02, .12, [.15, .24, .075]);
@@ -49,10 +109,10 @@ function noteShape(note, materials) {
         piece(sphere, "#f2bc8a", .11 + Math.cos(a) * r, Math.sin(a) * r * 1.4, .187, [.016, .018, .01]);
       }
     }
-  } else if (/amber|resin|frankincense|honey/i.test(note)) {
+  } else if (/^(amber|resin|frankincense|honey)$/i.test(note)) {
     piece(new SphereGeometry(1, 6, 4), "#d39143", 0, 0, 0, [.30, .37, .26],
       { flatShading: true, roughness: .19, metalness: .18, iridescence: .16 });
-  } else if (/cedar|leather|vetiver|patchouli|cinnamon|sandalwood|licorice|vanilla/i.test(note)) {
+  } else if (/cedar|leather|vetiver|patchouli|cinnamon|sandalwood|licorice|vanilla|amberwood|ambery wood/i.test(note)) {
     for (let i = 0; i < 3; i++) {
       piece(new SphereGeometry(1, 6, 4), ["#9d6e43", "#bb8652", "#6b4936"][i],
         (i - 1) * .108, 0, (i - 1) * .07, [.09, .35 - .04 * i, .11],
@@ -135,7 +195,7 @@ export function createScentOrbit(scene, overlay) {
         kind.textContent = stages[stage];
         label.append(kind, document.createTextNode(names.slice(0, 2).join(" · ")));
         overlay.append(label);
-        return [{ mesh, label }];
+        return [{ mesh, label, stage }];
       });
     },
     update(camera, phase, reveal, radius) {
@@ -148,12 +208,12 @@ export function createScentOrbit(scene, overlay) {
       track.position.y = -.12;
       camera.updateMatrixWorld();
       for (let i = 0; i < samples.length; i++) {
-        const { mesh, label } = samples[i];
+        const { mesh, label, stage } = samples[i];
         const arrive = Math.max(0, Math.min(1, (reveal - i * .07) / (1 - i * .07)));
         const spread = arrive * arrive * (3 - 2 * arrive);
         const angle = phase + i * Math.PI * 2 / samples.length - (1 - spread) * .72;
         const x = Math.cos(angle) * radius;
-        const y = [-.45, .96, .36][i] + Math.sin(angle) * .22;
+        const y = [-.45, .96, .36][stage] + Math.sin(angle) * .22;
         const z = Math.sin(angle) * radius * .49;
         mesh.position.set(.28 + (x - .28) * spread, 1.20 + (y - 1.20) * spread, .28 + (z - .28) * spread);
         mesh.rotation.set(.17 + Math.sin(angle) * .5, -angle * .73, angle * .16);

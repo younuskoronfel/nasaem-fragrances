@@ -7,7 +7,7 @@ import {
 } from "./assets/atelier/three.js";
 import { buildCrown, buildPackaging } from "./atelier-packaging.js?v=citrus-lens-1";
 import { buildMacro } from "./atelier-macro.js?v=citrus-lens-1";
-import { createScentOrbit } from "./scent-orbit.js?v=clear-water-2";
+import { createScentOrbit } from "./scent-orbit.js?v=engraved-notes-1";
 
 const clamp = value => Math.min(1, Math.max(0, value));
 const smooth = (from, to, value) => {
@@ -234,7 +234,7 @@ function opticalPlate(redraw) {
   };
 }
 
-function makeLabel(redraw) {
+function makeLabel(redraw, scentName) {
   const art = document.createElement("canvas");
   art.width = 768;
   art.height = 948;
@@ -280,7 +280,14 @@ function makeLabel(redraw) {
     ink.lineTo(371, 625);
     ink.closePath();
     ink.stroke();
-    engrave("FRAGRANCES", 689, "26px Georgia", 8);
+    if (scentName) {
+      ink.textAlign = "center";
+      ink.font = "bold 58px Georgia";
+      ink.fillText(scentName, art.width / 2, 737, 650);
+      ink.textAlign = "start";
+    } else {
+      engrave("FRAGRANCES", 689, "26px Georgia", 8);
+    }
     engrave("Extrait de Parfum", 823, "27px Georgia", 2);
     engrave("50 ML  |  1.7 FL.OZ", 870, "22px Georgia", 3);
     texture.needsUpdate = true;
@@ -463,7 +470,7 @@ function createStudio(canvas, redraw) {
   return { renderer, scene, camera, optics, map };
 }
 
-function buildFlacon(scene, optics, canvas, redraw) {
+function buildFlacon(scene, optics, canvas, redraw, scentName) {
   const body = new Group();
   scene.add(body);
   function part(group, shape, material, x, y, z) {
@@ -616,7 +623,7 @@ function buildFlacon(scene, optics, canvas, redraw) {
   const crownFinish = buildCrown(cap, part, gold, polished);
   cap.scale.set(1.26, 1.25, 1.26);
 
-  const labelTexture = makeLabel(redraw);
+  const labelTexture = makeLabel(redraw, scentName);
   const foil = new MeshStandardMaterial({
     map: labelTexture, transparent: true, alphaTest: .08, metalness: .59,
     roughness: .24, depthWrite: false, envMapIntensity: 1.10,
@@ -952,7 +959,7 @@ export function mountScentStudio(viewer, scent, onReveal, onFallback) {
   const canvas = viewer.querySelector("canvas");
   const { renderer, scene, camera, optics, map } = createStudio(canvas, schedule);
   const { body, bottleStyle, atomizer, outlet, cap, crownFinish, labelTexture, fill, meniscus } =
-    buildFlacon(scene, optics, canvas, schedule);
+    buildFlacon(scene, optics, canvas, schedule, scent.name);
   const spray = makeSpray(optics.uniforms);
   scene.add(spray.cloud, spray.plume);
   const orbit = createScentOrbit(scene, viewer.querySelector(".orbit-labels"));

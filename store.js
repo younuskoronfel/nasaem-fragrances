@@ -28,20 +28,16 @@ function createCard(scent, index) {
 let visibleScents = scents;
 let discovery;
 let collectionMotion;
-const shelfObserver = new IntersectionObserver(entries => {
-  if (!entries.some(entry => entry.isIntersecting)) return;
-  shelfObserver.disconnect();
-  import("./collection-motion.js?v=clear-water-3").then(module => {
-    collectionMotion = module;
-    discovery = module.mountOrbit(document.querySelector(".scent-discovery"), visibleScents, openScent);
-  }).catch(() => {});
-}, { rootMargin: "400px" });
-shelfObserver.observe(document.querySelector("#collection"));
-
 const cards = scents.map(createCard);
-collection.append(...cards);
-filters.hidden = false;
-count.textContent = `${scents.length} fragrances`;
+// Finish laying out the carousel before the shelf becomes clickable.
+import("./collection-motion.js?v=engraved-notes-1").then(module => {
+  collectionMotion = module;
+  discovery = module.mountOrbit(document.querySelector(".scent-discovery"), visibleScents, openScent);
+}).catch(() => {}).finally(() => {
+  collection.append(...cards);
+  filters.hidden = false;
+  count.textContent = `${scents.length} fragrances`;
+});
 
 filters.addEventListener("click", event => {
   const chosen = event.target.closest("button");
@@ -173,7 +169,7 @@ function useStillStudio() {
 async function loadStudio(scent, current) {
   if (scentMotion.matches) return useStillStudio();
   try {
-    const { mountScentStudio } = await import("./atelier-model.js?v=citrus-lens-1");
+    const { mountScentStudio } = await import("./atelier-model.js?v=engraved-notes-1");
     if (session !== current || !dialog.open || scentMotion.matches) return;
     studio = mountScentStudio(viewer, scent, showScentNotes, () => {
       if (session !== current || !dialog.open) return;

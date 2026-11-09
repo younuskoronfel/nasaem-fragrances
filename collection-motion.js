@@ -149,8 +149,14 @@ export function mountOrbit(root, scents, open) {
   }, true);
   setScents(scents);
   if (!reduceMotion.matches) {
-    loadMotion();
-    loadGsap();
+    const warmup = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      warmup.disconnect();
+      if (reduceMotion.matches) return;
+      loadMotion();
+      loadGsap();
+    }, { rootMargin: "400px" });
+    warmup.observe(root);
   }
   return { setScents };
 }
