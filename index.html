@@ -19,13 +19,13 @@
   <link rel="preload" href="assets/cormorant.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="atelier.css">
-  <link rel="stylesheet" href="crystal.css?v=ingredient-studio">
-  <link rel="stylesheet" href="film.css?v=ingredient-studio">
-  <link rel="stylesheet" href="gallery.css?v=ingredient-studio">
+  <link rel="stylesheet" href="crystal.css?v=clear-water-2">
+  <link rel="stylesheet" href="film.css?v=clear-water-2">
+  <link rel="stylesheet" href="gallery.css?v=clear-water-3">
   <script src="scents.js" defer></script>
-  <script src="store.js?v=ingredient-studio" defer></script>
+  <script src="store.js?v=clear-water-4" defer></script>
   <script src="journey.js" defer></script>
-  <script type="module" src="atelier.js?v=ingredient-studio"></script>
+  <script type="module" src="atelier.js?v=clear-water-4"></script>
   <script src="scroll-art.js" defer></script>
   <script src="hero-film.js" defer></script>
 </head>
@@ -154,6 +154,31 @@
           </div>
           <p class="count" role="status"></p>
         </div>
+        <section class="scent-discovery" aria-label="Fragrance carousel" aria-roledescription="carousel" hidden>
+          <div class="discovery-stage">
+            <svg class="discovery-arc" viewBox="0 0 560 470" aria-hidden="true">
+              <ellipse cx="280" cy="236" rx="201" ry="201"/>
+              <path/>
+            </svg>
+            <button class="discovery-art" type="button" aria-label="Open the featured fragrance">
+              <img width="768" height="960" alt="">
+            </button>
+          </div>
+          <div class="discovery-copy">
+            <div class="discovery-caption" aria-live="polite" aria-atomic="true">
+              <p class="discovery-edition"></p>
+              <h3 class="discovery-name"></h3>
+              <p class="discovery-mood"></p>
+            </div>
+            <button class="button discovery-open" type="button">Explore fragrance</button>
+            <div class="discovery-controls">
+              <button type="button" data-discovery-step="-1" aria-label="Previous fragrance"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
+              <span class="discovery-position" aria-hidden="true"></span>
+              <button type="button" data-discovery-step="1" aria-label="Next fragrance"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg></button>
+            </div>
+            <div class="discovery-strip" role="group" aria-label="Choose a fragrance"></div>
+          </div>
+        </section>
         <div class="scent-grid" id="scents"></div>
         <noscript><p>Explore all sixteen fragrances on <a href="https://www.instagram.com/nasaem.fragrances/">Nasaem’s Instagram</a>.</p></noscript>
       </div>

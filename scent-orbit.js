@@ -149,18 +149,21 @@ export function createScentOrbit(scene, overlay) {
       camera.updateMatrixWorld();
       for (let i = 0; i < samples.length; i++) {
         const { mesh, label } = samples[i];
-        const angle = phase + i * Math.PI * 2 / samples.length;
-        const travel = radius * (.72 + .28 * reveal);
-        mesh.position.set(Math.cos(angle) * travel, [-.45, .96, .36][i] + Math.sin(angle) * .22,
-          Math.sin(angle) * travel * .49);
+        const arrive = Math.max(0, Math.min(1, (reveal - i * .07) / (1 - i * .07)));
+        const spread = arrive * arrive * (3 - 2 * arrive);
+        const angle = phase + i * Math.PI * 2 / samples.length - (1 - spread) * .72;
+        const x = Math.cos(angle) * radius;
+        const y = [-.45, .96, .36][i] + Math.sin(angle) * .22;
+        const z = Math.sin(angle) * radius * .49;
+        mesh.position.set(.28 + (x - .28) * spread, 1.20 + (y - 1.20) * spread, .28 + (z - .28) * spread);
         mesh.rotation.set(.17 + Math.sin(angle) * .5, -angle * .73, angle * .16);
-        mesh.scale.setScalar(reveal * .85);
+        mesh.scale.setScalar(arrive * .85);
         point.copy(mesh.position);
         point.y += .49;
         point.project(camera);
         label.style.left = Math.min(83, Math.max(17, (point.x + 1) * 50)) + "%";
         label.style.top = Math.min(86, Math.max(9, (1 - point.y) * 50)) + "%";
-        label.style.opacity = Math.min(1, Math.max(0, (Math.abs(point.x) - .12) * 4)).toFixed(2);
+        label.style.opacity = Math.min(1, Math.max(0, (Math.abs(point.x) - .12) * 4) * arrive).toFixed(2);
         label.style.zIndex = String(Math.round(5 + mesh.position.z * 2));
       }
     },

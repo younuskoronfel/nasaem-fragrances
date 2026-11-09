@@ -6,8 +6,8 @@ import {
   SRGBColorSpace, TubeGeometry, Vector3, WebGLRenderer
 } from "./assets/atelier/three.js";
 import { buildCrown, buildPackaging } from "./atelier-packaging.js";
-import { buildMacro } from "./atelier-macro.js?v=ingredient-studio";
-import { createScentOrbit } from "./scent-orbit.js?v=ingredient-studio";
+import { buildMacro } from "./atelier-macro.js?v=clear-water-4";
+import { createScentOrbit } from "./scent-orbit.js?v=clear-water-2";
 
 const clamp = value => Math.min(1, Math.max(0, value));
 const smooth = (from, to, value) => {
@@ -604,17 +604,20 @@ export function mountBottle(exhibit, stage) {
   const cardLocalTurn = card.quaternion.clone();
   scene.add(card);
   const leafStage = buildMacro(scene, part, schedule, smooth, { uniforms: optics.uniforms, fragment: plateFragment });
-  function setScent(masculine, scent) {
-    bottleStyle.value = Number(masculine);
-    packaging.select(masculine, scent);
-    if (scent.mood) orbit.set(scent);
-  }
+  bottleStyle.value = Number(exhibit.dataset.packaging === "black");
+  packaging.select(Boolean(bottleStyle.value), exhibit.featuredScent);
+  orbit.set(exhibit.featuredScent);
+  let selection;
+  let orbitBlend = 1;
   function selectScent({ detail: { masculine, scent } }) {
-    setScent(masculine, scent);
+    selection = {
+      start: performance.now(), from: bottleStyle.value, to: Number(masculine),
+      initialOrbit: orbitBlend, scent, swapped: false
+    };
+    packaging.select(masculine, scent);
     schedule();
   }
   exhibit.addEventListener("atelier:scent", selectScent);
-  setScent(exhibit.dataset.packaging === "black", exhibit.featuredScent);
 
   const spray = makeSpray(optics.uniforms);
   scene.add(spray.cloud, spray.plume);
@@ -712,6 +715,20 @@ export function mountBottle(exhibit, stage) {
       ? targetProgress : before + distance * easing;
     lastFrame = now;
     const progress = shownProgress;
+    if (selection) {
+      const elapsed = now - selection.start;
+      bottleStyle.value = selection.from + (selection.to - selection.from) * smooth(0, 370, elapsed);
+      if (elapsed < 140) {
+        orbitBlend = selection.initialOrbit * (1 - smooth(0, 140, elapsed));
+      } else {
+        if (!selection.swapped) {
+          orbit.set(selection.scent);
+          selection.swapped = true;
+        }
+        orbitBlend = smooth(140, 540, elapsed);
+        if (elapsed >= 540) selection = undefined;
+      }
+    }
     const step = progress >= .95 ? 4 : progress >= .72 ? 3 : progress >= .52 ? 2 : progress >= .25 ? 1 : 0;
     if (step !== activeStep) {
       steps[activeStep].removeAttribute("aria-current");
@@ -812,8 +829,8 @@ export function mountBottle(exhibit, stage) {
     shadow.position.x = -.40 - 5.2 * leafPush;
     optics.uniforms.artwork.value = packaging.cardTexture;
     optics.uniforms.sceneFinish.value = .80 * smooth(.955, .992, progress);
-    const finish = smooth(.954, 1, progress);
-    const macroProgress = Math.min(1, progress + .04 * smooth(.923, .966, progress));
+    const finish = smooth(.968, 1, progress);
+    const macroProgress = Math.min(1, progress + .025 * smooth(.925, .974, progress));
     leafStage.update(macroProgress, camera, card, packaging.cardTexture);
     if (finish > 0) {
       camera.updateMatrixWorld();
@@ -833,10 +850,10 @@ export function mountBottle(exhibit, stage) {
       cap.rotation.set(0, 0, 0);
       camera.up.set(0, 1, 0);
     }
-    orbit.update(camera, -.60 + finish * 1.65, smooth(.28, 1, finish), camera.aspect < 1 ? 1.52 : 1.83);
+    orbit.update(camera, -.60 + finish * 1.65, smooth(.28, 1, finish) * orbitBlend, camera.aspect < 1 ? 1.52 : 1.83);
     renderer.render(scene, camera);
     stage.classList.add("is-rendered");
-    if (progress !== targetProgress) schedule();
+    if (progress !== targetProgress || selection) schedule();
   }
 
   function schedule() {
@@ -950,7 +967,8 @@ export function mountScentStudio(viewer, scent, onReveal, onFallback) {
     rotation += (angle - rotation) * .24;
     if (Math.abs(angle - rotation) < .002) rotation = angle;
     body.rotation.y = rotation + near * .32;
-    cap.position.set(-.80 * lift, 1.69 + .65 * lift, -.10 * lift);
+    const clearNeck = smooth(.16, .53, seconds) * (1 - smooth(1.39, 1.96, seconds));
+    cap.position.set(-.80 * clearNeck, 1.69 + .65 * lift, -.10 * clearNeck);
     cap.rotation.set(0, lift * 2.8, .20 * lift);
     atomizer.position.y = 1.38 - .095 * press;
     atomizer.rotation.y = -body.rotation.y + .08;

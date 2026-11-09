@@ -21,9 +21,22 @@ function createCard(scent, index) {
   art.loading = "lazy";
   article.querySelector("strong").textContent = scent.name;
   article.querySelector(".card-mood").textContent = scent.mood;
-  article.querySelector("button").addEventListener("click", () => openScent(scent));
+  article.querySelector("button").addEventListener("click", () => openScent(scent, art));
   return article;
 }
+
+let visibleScents = scents;
+let discovery;
+let collectionMotion;
+const shelfObserver = new IntersectionObserver(entries => {
+  if (!entries.some(entry => entry.isIntersecting)) return;
+  shelfObserver.disconnect();
+  import("./collection-motion.js?v=clear-water-3").then(module => {
+    collectionMotion = module;
+    discovery = module.mountOrbit(document.querySelector(".scent-discovery"), visibleScents, openScent);
+  }).catch(() => {});
+}, { rootMargin: "400px" });
+shelfObserver.observe(document.querySelector("#collection"));
 
 const cards = scents.map(createCard);
 collection.append(...cards);
@@ -37,13 +50,14 @@ filters.addEventListener("click", event => {
   for (const button of filters.querySelectorAll("button")) {
     button.setAttribute("aria-pressed", String(button === chosen));
   }
-  let visible = 0;
+  visibleScents = [];
   for (const [index, scent] of scents.entries()) {
     const matches = mood === "all" || scent.family === mood;
     cards[index].hidden = !matches;
-    if (matches) visible++;
+    if (matches) visibleScents.push(scent);
   }
-  count.textContent = `${visible} fragrances`;
+  count.textContent = `${visibleScents.length} fragrances`;
+  discovery?.setScents(visibleScents);
   collection.classList.remove("updated");
   requestAnimationFrame(() => requestAnimationFrame(() => collection.classList.add("updated")));
 });
@@ -84,6 +98,8 @@ let session = 0;
 const selectedScents = { brown: "golden-hour-bloom", black: "midnight-spice" };
 let featuredScent;
 let inspectedScent;
+let inspectedArtwork;
+let closingStudio = false;
 
 function showFeaturedScent() {
   const packaging = atelier.dataset.packaging;
@@ -157,7 +173,7 @@ function useStillStudio() {
 async function loadStudio(scent, current) {
   if (scentMotion.matches) return useStillStudio();
   try {
-    const { mountScentStudio } = await import("./atelier-model.js?v=ingredient-studio");
+    const { mountScentStudio } = await import("./atelier-model.js?v=clear-water-4");
     if (session !== current || !dialog.open || scentMotion.matches) return;
     studio = mountScentStudio(viewer, scent, showScentNotes, () => {
       if (session !== current || !dialog.open) return;
@@ -195,8 +211,10 @@ scentMotion.addEventListener("change", () => {
   if (shouldReveal) showScentNotes();
 });
 
-function openScent(scent) {
+function openScent(scent, source) {
   inspectedScent = scent;
+  inspectedArtwork = source;
+  closingStudio = false;
   const current = ++session;
   studio?.dispose();
   studio = undefined;
@@ -226,10 +244,28 @@ function openScent(scent) {
   setOptional(".checkout-note", canBuy ? "You’ll continue to our checkout provider." : "Message us for pricing, availability, and ordering.");
   dialog.showModal();
   dialog.scrollTop = 0;
+  if (source) collectionMotion?.transferArtwork(dialog, source, viewer).catch(() => {});
   loadStudio(scent, current);
 }
 
-dialog.querySelector(".close").addEventListener("click", () => dialog.close());
+async function closeScent() {
+  if (closingStudio) return;
+  closingStudio = true;
+  const current = session;
+  try {
+    await collectionMotion?.transferArtwork(dialog, inspectedArtwork, viewer, true);
+  } catch {
+    // The native close still works if the shared animation is interrupted.
+  } finally {
+    if (dialog.open && session === current) dialog.close();
+    closingStudio = false;
+  }
+}
+dialog.querySelector(".close").addEventListener("click", closeScent);
+dialog.addEventListener("cancel", event => {
+  event.preventDefault();
+  closeScent();
+});
 dialog.addEventListener("click", event => {
-  if (event.target === dialog) dialog.close();
+  if (event.target === dialog) closeScent();
 });

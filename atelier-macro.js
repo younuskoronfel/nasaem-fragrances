@@ -120,7 +120,7 @@ export function buildMacro(scene, part, refresh, smooth, backdrop) {
     passage: { value: 0 }
   };
   const drop = part(twig, dropShape, new ShaderMaterial({
-    uniforms: optics, side: DoubleSide, toneMapped: false,
+    uniforms: optics, side: DoubleSide, toneMapped: false, transparent: true, depthWrite: false, forceSinglePass: true,
     vertexShader: `
       uniform float neckTension;
       varying vec3 viewNormal;
@@ -162,6 +162,7 @@ export function buildMacro(scene, part, refresh, smooth, backdrop) {
       }
 
       void main() {
+        if (!gl_FrontFacing && passage < .66) discard;
         vec3 n = normalize(viewNormal);
         vec3 incident = normalize(surfacePoint);
         vec3 origin = surfacePoint;
@@ -183,32 +184,48 @@ export function buildMacro(scene, part, refresh, smooth, backdrop) {
         ray = normalize(mix(ray, incident, passage));
         vec2 screen = vec2(gl_FragCoord.x / resolution.x, 1. - gl_FragCoord.y / resolution.y);
         vec2 bend = ray.xy / max(.24, -ray.z) - incident.xy / -incident.z;
-        vec3 transmitted = studioPlate(clamp(screen + bend * projectionScale * vec2(.5, -.5), 0., 1.));
+        vec3 roomLight = studioPlate(clamp(screen + bend * projectionScale * vec2(.5, -.5), 0., 1.));
+        // Water carries the scene's contrast without inheriting the bottle's amber tint.
+        float roomLuma = dot(roomLight, vec3(.2126, .7152, .0722));
+        vec3 transmitted = vec3(roomLuma * .84 + .005);
+        float opticalCoverage = .26;
         vec3 printHit = hitPlane(origin, ray, printCenter, printAcross, printUp, printSize);
-        if (printHit.z > 0.) transmitted = texture2D(printMap, 1. - printHit.xy).rgb;
+        if (printHit.z > 0.) {
+          vec3 printColor = texture2D(printMap, 1. - printHit.xy).rgb;
+          transmitted = mix(transmitted, printColor, passage);
+          opticalCoverage = mix(opticalCoverage, 1., passage);
+        }
         vec3 leafHit = hitPlane(origin, ray, leafCenter, leafAcross, leafUp, vec2(5.2, 3.465));
         if (leafHit.z > 0. && (printHit.z <= 0. || leafHit.z < printHit.z)) {
           vec4 foliage = texture2D(leafMap, leafHit.xy);
           vec3 leafEye = -vec3(dot(ray, leafAcross), dot(ray, leafUp), dot(ray, cross(leafAcross, leafUp)));
-          if (foliage.a >= .45) transmitted = litFoliage(foliage.rgb, leafHit.xy, leafEye, vec2(0.));
+          vec3 leafColor = litFoliage(foliage.rgb, leafHit.xy, leafEye, vec2(0.));
+          vec3 leafLuma = vec3(dot(leafColor, vec3(.2126, .7152, .0722)));
+          float leafCoverage = smoothstep(.40, .67, foliage.a);
+          transmitted = mix(transmitted, mix(leafLuma, leafColor, .63), leafCoverage);
+          opticalCoverage = max(opticalCoverage, .76 * leafCoverage);
         }
 
         float facing = clamp(dot(-incident, n), 0., 1.);
         float fresnel = .0204 + .9796 * pow(1. - facing, 5.);
         vec3 reflected = reflect(incident, n);
         float ceiling = smoothstep(.16, .84, reflected.y);
-        vec3 environment = mix(vec3(.065, .050, .031), vec3(.61, .66, .66), ceiling);
+        vec3 environment = mix(vec3(.055, .058, .062), vec3(.66, .71, .74), ceiling);
         float strip = exp(-pow(abs((n.x + .48 + .19 * n.y) * 18.), 2.));
         strip *= smoothstep(.03, .22, n.y) * (1. - smoothstep(.59, .78, n.y));
         float glint = pow(max(0., dot(reflected, normalize(vec3(.44, -.64, .68)))), 82.);
         float rim = pow(1. - facing, 5.) * smoothstep(.38, .97, n.x - .51 * n.y);
-        vec3 sparkle = strip * vec3(1.12, 1.14, 1.13) + (glint * 1.7 + rim * .71) * vec3(1., .93, .77);
+        float upperWindow = exp(-pow((reflected.y - .56) * 17., 2.)) * smoothstep(-.65, .25, reflected.x);
+        vec3 sparkle = vec3(.92, .97, 1.) * (strip * .85 + glint * 1.48 + rim * .54 + upperWindow * .29);
         vec3 color = mix(transmitted, environment, fresnel * (1. - passage)) + sparkle * (1. - passage);
-        gl_FragColor = vec4(color, 1.);
+        float highlightCoverage = clamp(strip + glint * 1.8 + rim + upperWindow * .36, 0., 1.);
+        float alpha = mix(opticalCoverage, 1., max(highlightCoverage, fresnel * .88));
+        gl_FragColor = vec4(color, max(alpha, passage));
         #include <colorspace_fragment>
       }
     `
   }), 0, 0, 0);
+  drop.renderOrder = 12;
 
   const dock = new Group();
   scene.add(dock);
@@ -258,11 +275,11 @@ export function buildMacro(scene, part, refresh, smooth, backdrop) {
       const hang = smooth(.876, .889, progress);
       const stretch = smooth(.897, .912, progress) * (1 - smooth(.912, .93, progress));
       const release = Math.max(0, (progress - .912) / .055);
-      const approach = smooth(.820, .914, progress);
+      const approach = smooth(.812, .914, progress);
       const immerse = smooth(.921, .961, progress);
       const emerge = smooth(.950, .979, progress);
       const seat = smooth(.974, 1, progress);
-      const roll = Math.PI * smooth(.905, .979, progress);
+      const roll = Math.PI * smooth(.917, .990, progress);
       const settle = smooth(.974, 1, progress);
       const railLift = smooth(.962, .991, progress);
 
@@ -279,12 +296,12 @@ export function buildMacro(scene, part, refresh, smooth, backdrop) {
         : .14 * 1.21 * 1.24 + .77 * release * release;
       optics.radius.value = size;
       optics.neckTension.value = tension;
-      optics.passage.value = smooth(.944, .960, progress);
+      optics.passage.value = smooth(.940, .967, progress);
 
       twig.localToWorld(focus.copy(drop.position));
       camera.getWorldDirection(forward);
       target.copy(camera.position).addScaledVector(forward, 6);
-      const aim = smooth(.809, .895, progress);
+      const aim = smooth(.798, .895, progress);
       target.lerp(focus, aim);
       camera.position.lerp(cardPoint.set(focus.x, focus.y + .025, focus.z + 1.60), approach);
       camera.position.lerp(cardPoint.set(focus.x, focus.y, focus.z + .185), immerse);
