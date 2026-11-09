@@ -56,6 +56,32 @@
 }
 .film-actions .button:hover { background: #ffe7bf }
 .film-actions .text-link { display: inline-flex; align-items: center; color: #fff0d8 }
+.film-scroll {
+  position: absolute;
+  left: max(1.25rem, calc((100% - 79rem) / 2));
+  bottom: 1.4rem;
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  min-height: 2.75rem;
+  padding-inline: .75rem;
+  border: 1px solid #f8e4c58c;
+  border-radius: 2rem;
+  background: #2f1e16;
+  color: #ffedd1;
+  font-size: .85rem;
+  text-decoration: none;
+}
+.film-scroll:hover { background: #493024 }
+.film-scroll svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .film-control {
   position: absolute;
   right: max(1.25rem, calc((100% - 79rem) / 2));
@@ -100,7 +126,7 @@
   .film-set::after {
     background: linear-gradient(180deg, #201209bd 0, #26160c16 26%, #27170e27 40%, #21120cda 67%, #100e0e 100%);
   }
-  .film-copy { align-self: end; padding-block: 10rem 5.3rem }
+  .film-copy { align-self: end; padding-block: 10rem 5.7rem }
   .film-copy h1 { font-size: clamp(3.4rem, 13.3vw, 6.4rem) }
   .film-copy p { margin-top: 1rem }
   .film-actions { margin-top: 1.15rem }

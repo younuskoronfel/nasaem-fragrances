@@ -62,6 +62,7 @@ Find my scent|اعثر على عطرك|Encuentra tu perfume
 Unboxing|فتح العلبة|Unboxing
 Where your soul finds its scent.|حيث تجد روحك عطرها.|Donde tu alma encuentra su aroma.
 Explore the collection|استكشف المجموعة|Explora la colección
+Scroll down|مرّر لأسفل|Desplázate hacia abajo
 Play film|تشغيل الفيلم|Reproducir vídeo
 Pause film|إيقاف الفيلم مؤقتًا|Pausar vídeo
 Perfume, by feeling.|عطر لكل إحساس.|Un perfume para cada sensación.
