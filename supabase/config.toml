@@ -1,0 +1,4 @@
+project_id = "nasaem-fragrances"
+
+[functions.fragrance-email]
+verify_jwt = false

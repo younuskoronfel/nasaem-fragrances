@@ -305,7 +305,9 @@ export function buildPackaging(scene, part, foil, refresh) {
       image.onerror = () => {
         if (requestedCard?.image === image) requestedCard = undefined;
       };
-      image.src = new URL(`./assets/atelier/cards/${scent.id}.jpg`, import.meta.url);
+      cardArtworkURL(scent.id, true).then(url => {
+        if (requestedCard?.image === image) image.src = url;
+      }).catch(image.onerror);
     },
     dispose() {
       requestedCard = undefined;

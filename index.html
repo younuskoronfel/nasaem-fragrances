@@ -28,20 +28,26 @@
   <link rel="icon" href="assets/nasaem-icon.png" type="image/png" sizes="192x192">
   <link rel="preload" href="assets/hero/nasaem-poster.webp" as="image" fetchpriority="high">
   <link rel="preload" href="assets/cormorant.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=finder-collection-1">
+  <link rel="stylesheet" href="styles.css?v=cart-1">
   <link rel="stylesheet" href="atelier.css?v=citrus-lens-1">
   <link rel="stylesheet" href="crystal.css?v=clear-water-2">
-  <link rel="stylesheet" href="film.css?v=gold-dust-1">
+  <link rel="stylesheet" href="film.css?v=gold-dust-2">
   <link rel="stylesheet" href="gallery.css?v=language-1">
-  <script src="language.js?v=2" defer></script>
-  <script src="scents.js?v=engraved-notes-1" defer></script>
-  <script src="store.js?v=orbit-loop-1" defer></script>
-  <script src="journey.js?v=finder-collection-1" defer></script>
-  <script type="module" src="atelier.js?v=orbit-loop-1"></script>
-  <script src="scroll-art.js?v=gold-dust-1" defer></script>
+  <link rel="stylesheet" href="cart.css?v=3">
+  <script src="language.js?v=account-1" defer></script>
+  <script src="scents.js?v=cart-1" defer></script>
+  <script src="card-art.js?v=1" defer></script>
+  <script src="cart.js?v=2" defer></script>
+  <script src="account-config.js?v=1" defer></script>
+  <script src="account.js?v=1" defer></script>
+  <script src="store.js?v=cart-3" defer></script>
+  <script src="journey.js?v=card-art-1" defer></script>
+  <script type="module" src="atelier.js?v=card-art-1"></script>
+  <script src="scroll-art.js?v=gold-dust-2" defer></script>
   <script src="hero-film.js?v=language-1" defer></script>
 </head>
 <body>
+  <div class="gold-dust" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
   <a class="skip" href="#main">Skip to content</a>
   <header class="site-header" id="top">
     <div class="header-inner wrap">
@@ -57,6 +63,13 @@
           <option value="ar" lang="ar">العربية</option>
           <option value="es" lang="es">Español</option>
         </select>
+        <button class="cart-toggle" type="button" aria-haspopup="dialog" aria-controls="cart" hidden>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 8h14l1.5 12H3.5L5 8Zm4 1V6a3 3 0 0 1 6 0v3"/></svg>
+          <span>Cart</span><bdi class="cart-count">0</bdi>
+        </button>
+        <button class="cart-toggle account-toggle" type="button" aria-haspopup="dialog" aria-controls="account" hidden>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="7.5" r="3.5"/><path d="M5 21v-1a7 7 0 0 1 14 0v1"/></svg><span>Account</span>
+        </button>
       <a class="header-social" aria-label="Nasaem Fragrances on Instagram" href="https://www.instagram.com/nasaem.fragrances/"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01" stroke-linecap="round" stroke-width="2.5"/></svg><span>Instagram</span></a>
       </div>
     </div>
@@ -64,7 +77,6 @@
 
   <main id="main">
     <section class="film-hero" aria-labelledby="hero-title">
-      <div class="gold-dust" aria-hidden="true"><i></i><i></i><i></i></div>
       <div class="film-set" aria-hidden="true">
         <video class="film-video" data-src="assets/hero/nasaem-film.mp4" poster="assets/hero/nasaem-poster.webp" autoplay muted loop playsinline preload="none" width="1920" height="1080"></video>
         <div class="film-light"></div>
@@ -83,7 +95,6 @@
     </section>
 
     <section class="about-nasaem" aria-labelledby="about-title">
-      <div class="gold-dust" aria-hidden="true"><i></i><i></i><i></i></div>
       <div class="about-inner wrap">
         <h2 id="about-title">Perfume, by feeling.</h2>
         <p>Nasaem Fragrances is a collection of sixteen perfumes, from bright citrus and soft florals to warm spice and deep woods. Browse by mood or use the scent finder to see which fragrances might suit you.</p>
@@ -95,7 +106,6 @@
         <img class="scene scene-base" src="assets/journey/garden.webp" width="1536" height="1024" loading="lazy" decoding="async" alt="">
         <img class="scene scene-mood" src="assets/journey/garden.webp" alt="" hidden>
         <div class="art-veil"></div>
-        <div class="drift"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       </div>
       <div class="journey-inner wrap">
         <div class="journey-content">
@@ -124,7 +134,6 @@
     </section>
 
     <section class="atelier" id="atelier" aria-labelledby="atelier-title" data-packaging="brown" data-scent="golden-hour-bloom">
-      <div class="gold-dust" aria-hidden="true"><i></i><i></i><i></i></div>
       <div class="atelier-layout wrap">
         <div class="atelier-stage">
           <div class="atelier-frame" aria-hidden="true">
@@ -158,7 +167,7 @@
             <p class="atelier-mood">Radiant, feminine, unforgettable</p>
             <p class="atelier-orbit-guide" hidden>Opening, heart and dry-down</p>
             <dl class="atelier-notes" hidden></dl>
-            <img class="atelier-liner" src="assets/atelier/cards/golden-hour-bloom.jpg" width="768" height="960" alt="Golden Hour Bloom campaign card" loading="lazy" decoding="async">
+            <img class="atelier-liner" width="768" height="960" alt="Golden Hour Bloom campaign card" loading="lazy" decoding="async">
             <div class="atelier-links">
               <button class="atelier-next atelier-detail" type="button" aria-haspopup="dialog" hidden>View fragrance</button>
               <a class="atelier-next" href="#collection">Explore the collection <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M12 4v15m-5-5 5 5 5-5"/></svg></a>
@@ -169,7 +178,6 @@
     </section>
 
     <section class="collection" id="collection" aria-labelledby="collection-title">
-      <div class="gold-dust" aria-hidden="true"><i></i><i></i><i></i></div>
       <div class="wrap">
         <div class="section-intro">
           <h2 id="collection-title">The collection</h2>
@@ -216,7 +224,6 @@
     </section>
 
     <section class="guide" id="guide" aria-labelledby="guide-title">
-      <div class="gold-dust" aria-hidden="true"><i></i><i></i><i></i></div>
       <div class="guide-inner wrap">
         <div class="guide-intro">
           <svg class="guide-mark" viewBox="0 0 96 96" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="48" cy="48" r="32"/><circle cx="48" cy="48" r="42" stroke-dasharray="1 5"/><path d="M48 11C51 34 62 45 85 48C62 51 51 62 48 85C45 62 34 51 11 48C34 45 45 34 48 11Z"/><path d="M48 26v44M26 48h44"/></svg>
@@ -241,7 +248,6 @@
     </section>
 
     <section class="contact wrap" aria-labelledby="contact-title">
-      <div class="gold-dust" aria-hidden="true"><i></i><i></i><i></i></div>
       <h2 id="contact-title">Need help choosing?</h2>
       <p>Ask us about a fragrance, availability, or ordering.</p>
       <a class="button dark" href="https://ig.me/m/nasaem.fragrances">Message us on Instagram <span aria-hidden="true">↗</span></a>
@@ -275,9 +281,13 @@
         <p class="scent-mood"></p>
         <div class="scent-actions">
           <button class="button scent-spray" type="button">Spray me</button>
-          <a class="button dark scent-action"></a>
+          <button class="button dark scent-action" type="button">Add to cart</button>
+          <button class="button dark scent-watch" type="button" hidden>Notify me when it’s back</button>
+          <button class="text-link scent-cart-link" type="button" hidden>View cart</button>
           <button class="text-link scent-preview" type="button">See the unboxing</button>
         </div>
+        <p class="scent-availability" hidden>Sold out</p>
+        <p class="checkout-note" role="status"></p>
         <div class="scent-reveal" aria-live="polite" hidden>
           <h3 class="scent-reveal-title">Scent notes</h3>
           <dl class="scent-notes" hidden></dl>
@@ -286,7 +296,83 @@
         <p class="scent-description"></p>
         <p class="scent-format" hidden></p>
         <p class="scent-price" hidden></p>
-        <p class="checkout-note"></p>
+        <details class="scent-packaging">
+          <summary>A look inside the box</summary>
+          <div class="cart-photos"></div>
+        </details>
+      </div>
+    </div>
+  </dialog>
+  <dialog class="cart-dialog" id="cart" aria-labelledby="cart-title">
+    <div class="cart-shell">
+      <header class="cart-heading">
+        <img src="assets/nasaem-icon.png" width="192" height="192" alt="">
+        <div>
+          <h2 id="cart-title">Your cart</h2>
+          <p class="cart-summary" role="status"></p>
+        </div>
+        <button class="close" type="button" aria-label="Close cart" autofocus>
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </header>
+      <div class="cart-content">
+        <div class="cart-empty">
+          <h3>Your cart is empty</h3>
+          <p>Add a fragrance from the collection to start your selection.</p>
+          <a class="button" href="#collection">Explore the collection</a>
+        </div>
+        <ul class="cart-items" aria-label="Selected fragrances"></ul>
+        <section class="cart-packaging" aria-labelledby="cart-packaging-title" hidden>
+          <h3 id="cart-packaging-title">A look inside the box</h3>
+          <p>See the Nasaem bag, presentation box, and lined interior.</p>
+          <div class="cart-preview-picker" role="group" aria-label="Choose packaging preview"></div>
+          <div class="cart-photos"></div>
+        </section>
+      </div>
+      <div class="cart-footer" hidden>
+        <p>Prices will be shown when checkout opens.</p>
+        <button class="button cart-checkout" type="button">Checkout</button>
+        <div class="cart-notice" role="status"></div>
+      </div>
+    </div>
+  </dialog>
+  <dialog class="cart-dialog account-dialog" id="account" aria-labelledby="account-title">
+    <div class="cart-shell">
+      <header class="cart-heading">
+        <img src="assets/nasaem-icon.png" width="192" height="192" alt="">
+        <h2 id="account-title">Your account</h2>
+        <button class="close" type="button" aria-label="Close account" autofocus>
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </header>
+      <div class="cart-content account-content">
+        <p class="account-unavailable">Accounts and email updates are coming soon.</p>
+        <form class="account-email-form" hidden>
+          <p>Enter your email to create an account or sign in.</p>
+          <label for="account-email">Email address</label>
+          <input id="account-email" name="email" type="email" autocomplete="email" maxlength="254" dir="ltr" required>
+          <button class="button cart-checkout" type="submit">Send sign-in code</button>
+        </form>
+        <form class="account-code-form" hidden>
+          <p>Enter the one-time code we sent to your email.</p>
+          <label for="account-code">Sign-in code</label>
+          <input id="account-code" name="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6,10}" maxlength="10" dir="ltr" required>
+          <button class="button cart-checkout" type="submit">Verify code</button>
+          <button class="text-link account-change-email" type="button">Use a different email or resend</button>
+        </form>
+        <section class="account-profile" hidden>
+          <p class="account-address" dir="auto"></p>
+          <h3>Email preferences</h3>
+          <label class="account-updates">
+            <input type="checkbox">
+            <span>Send me fragrance launches and Nasaem news.</span>
+          </label>
+          <h3>Restock alerts</h3>
+          <p class="account-no-watches">You have no restock alerts.</p>
+          <ul class="account-watches"></ul>
+          <button class="text-link account-signout" type="button">Sign out</button>
+        </section>
+        <p class="account-status" role="status"></p>
       </div>
     </div>
   </dialog>

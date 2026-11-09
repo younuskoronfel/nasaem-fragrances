@@ -129,61 +129,43 @@
 .guide-list details {
   padding-inline: .8rem;
 }
-.collection, .guide, .contact {
-  position: relative;
-  isolation: isolate;
-}
+/* A sparse edge light stays continuous across every section as the page scrolls. */
 .gold-dust {
-  position: absolute;
-  z-index: -1;
+  position: fixed;
+  z-index: 3;
   inset: 0;
   overflow: clip;
   pointer-events: none;
-  --dust-top: 18%;
 }
-.film-hero .gold-dust { --dust-top: 33%; z-index: 0 }
-.atelier > .gold-dust { --dust-top: clamp(9rem, 27vh, 17rem) }
-.collection > .gold-dust { --dust-top: clamp(7rem, 22vh, 13rem) }
 .gold-dust i {
   position: absolute;
-  inset-inline-start: 8%;
-  inset-block-start: var(--dust-top);
-  width: 4px;
-  height: 4px;
+  inset-inline-start: var(--x);
+  inset-block-start: var(--y);
+  width: var(--size, 3px);
+  aspect-ratio: 1;
   border-radius: 50%;
   background: #fff0b4;
-  box-shadow: 0 0 8px 2px #e9ad6490;
+  box-shadow: 0 0 7px 2px #e9ad6490;
   opacity: 0;
-  animation: gold-twinkle 10s ease-in-out var(--wait, -2s) infinite paused;
+  animation: gold-twinkle var(--duration, 11s) ease-in-out var(--wait) infinite;
 }
-.gold-dust i:nth-child(2) {
-  --wait: -6s;
-  inset-inline-start: 91%;
-  inset-block-start: calc(var(--dust-top) + 4.2rem);
-  width: 3px;
-  height: 3px;
-}
-.gold-dust i:nth-child(3) {
-  --wait: -3.8s;
-  inset-inline-start: 84%;
-  inset-block-start: calc(var(--dust-top) + 1.4rem);
-  width: 2px;
-  height: 2px;
-}
-.journey .drift i {
-  animation: gold-twinkle 12s ease-in-out calc(var(--delay) * -8) infinite paused;
-}
-.art-in-view > .gold-dust i, .journey.art-in-view .drift i { animation-play-state: running }
+.gold-dust i:nth-child(1) { --x: 2.4%; --y: 16%; --wait: -2s }
+.gold-dust i:nth-child(2) { --x: 96.5%; --y: 25%; --wait: -5s; --duration: 13s }
+.gold-dust i:nth-child(3) { --x: 3.8%; --y: 41%; --wait: -7s; --size: 2px }
+.gold-dust i:nth-child(4) { --x: 97%; --y: 53%; --wait: -3.2s; --size: 4px }
+.gold-dust i:nth-child(5) { --x: 1.7%; --y: 66%; --wait: -8.6s; --duration: 14s }
+.gold-dust i:nth-child(6) { --x: 95.7%; --y: 76%; --wait: -2.7s; --duration: 12s }
+.gold-dust i:nth-child(7) { --x: 3.6%; --y: 90%; --wait: -4.8s; --size: 2px }
+.gold-dust i:nth-child(8) { --x: 97.6%; --y: 93%; --wait: -8s; --size: 2px }
 @keyframes gold-twinkle {
   0%, 72%, 100% { opacity: 0; transform: translateY(8px) scale(.65) }
-  20% { opacity: .74; transform: translateY(0) scale(1) }
+  20% { opacity: .78; transform: translateY(0) scale(1) }
   42% { opacity: .25; transform: translateY(-7px) scale(.78) }
 }
 @media (max-width: 700px) {
-  .gold-dust i { inset-inline-start: 5% }
-  .gold-dust i:nth-child(2) { inset-inline-start: 94% }
-  .gold-dust i:nth-child(3), .journey .drift i:nth-child(n+5) { display: none }
+  .gold-dust i:nth-child(n+7) { display: none }
+  .gold-dust i { box-shadow: 0 0 6px 1px #e9ad6480 }
 }
 @media (prefers-reduced-motion: reduce) {
-  .gold-dust i { animation: none; opacity: .34 }
+  .gold-dust i { animation: none; opacity: .28 }
 }

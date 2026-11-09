@@ -5,7 +5,7 @@ import {
   PlaneGeometry, PMREMGenerator, Points, Quaternion, Scene, ShaderMaterial, SphereGeometry,
   SRGBColorSpace, TubeGeometry, Vector3, WebGLRenderer
 } from "./assets/atelier/three.js";
-import { buildCrown, buildPackaging } from "./atelier-packaging.js?v=citrus-lens-1";
+import { buildCrown, buildPackaging } from "./atelier-packaging.js?v=card-art-1";
 import { buildMacro } from "./atelier-macro.js?v=citrus-lens-1";
 import { createScentOrbit } from "./scent-orbit.js?v=language-1";
 

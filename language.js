@@ -1,4 +1,56 @@
 const languageCopy = new Map(`
+Cart|السلة|Carrito
+Your cart|سلتك|Tu carrito
+Close cart|إغلاق السلة|Cerrar carrito
+Your cart is empty|سلتك فارغة|Tu carrito está vacío
+Add a fragrance from the collection to start your selection.|أضف عطراً من المجموعة لتبدأ اختيارك.|Añade un perfume de la colección para empezar tu selección.
+Selected fragrances|العطور المختارة|Perfumes seleccionados
+A look inside the box|نظرة داخل العلبة|Un vistazo al interior
+See the Nasaem bag, presentation box, and lined interior.|تعرّف على حقيبة نسائم وعلبة العطر وبطانتها الداخلية.|Descubre la bolsa Nasaem, la caja de presentación y su interior forrado.
+Nasaem bag|حقيبة نسائم|Bolsa Nasaem
+Feminine box|علبة المجموعة النسائية|Caja femenina
+Masculine box|علبة المجموعة الرجالية|Caja masculina
+Choose packaging preview|اختر معاينة العلبة|Elige la vista del empaque
+{name} box interior|داخل علبة {name}|Interior de la caja de {name}
+{count} bottle|زجاجة واحدة|{count} frasco
+{count} bottles|عدد الزجاجات: {count}|{count} frascos
+Increase quantity of {name}|زيادة كمية {name}|Aumentar la cantidad de {name}
+Decrease quantity of {name}|تقليل كمية {name}|Reducir la cantidad de {name}
+Remove {name}|إزالة {name}|Quitar {name}
+Remove|إزالة|Quitar
+View cart|عرض السلة|Ver carrito
+Add to cart|أضف إلى السلة|Añadir al carrito
+{name} added to your cart.|أُضيف {name} إلى سلتك.|{name} se añadió a tu carrito.
+This fragrance has reached the cart quantity limit.|بلغ هذا العطر الحد الأقصى للكمية في السلة.|Este perfume ha alcanzado el límite de unidades del carrito.
+Prices will be shown when checkout opens.|ستظهر الأسعار عند إتاحة الدفع.|Los precios se mostrarán cuando se habilite el pago.
+Checkout|إتمام الطلب|Finalizar pedido
+Checkout coming soon|الدفع قريبًا|Pago disponible próximamente
+Your selections stay in this cart on this device.|تبقى اختياراتك محفوظة في السلة على هذا الجهاز.|Tu selección queda guardada en el carrito de este dispositivo.
+Account|الحساب|Cuenta
+Your account|حسابك|Tu cuenta
+Close account|إغلاق الحساب|Cerrar cuenta
+Accounts and email updates are coming soon.|الحسابات والتحديثات عبر البريد الإلكتروني قريبًا.|Las cuentas y las novedades por correo llegarán pronto.
+Enter your email to create an account or sign in.|أدخل بريدك الإلكتروني لإنشاء حساب أو تسجيل الدخول.|Introduce tu correo para crear una cuenta o iniciar sesión.
+Email address|البريد الإلكتروني|Correo electrónico
+Send sign-in code|إرسال رمز الدخول|Enviar código de acceso
+Enter the one-time code we sent to your email.|أدخل الرمز المؤقت الذي أرسلناه إلى بريدك الإلكتروني.|Introduce el código de un solo uso que enviamos a tu correo.
+Sign-in code|رمز تسجيل الدخول|Código de acceso
+Verify code|التحقق من الرمز|Verificar código
+Use a different email or resend|استخدم بريدًا آخر أو أعد إرسال الرمز|Usar otro correo o reenviar
+Email preferences|تفضيلات البريد الإلكتروني|Preferencias de correo
+Send me fragrance launches and Nasaem news.|أرسلوا إليّ أخبار نسائم وإطلاقات العطور.|Quiero recibir lanzamientos de perfumes y novedades de Nasaem.
+Restock alerts|إشعارات عودة التوفر|Avisos de reposición
+You have no restock alerts.|ليس لديك إشعارات لعودة التوفر.|No tienes avisos de reposición.
+Sign out|تسجيل الخروج|Cerrar sesión
+Sold out|نفدت الكمية|Agotado
+Notify me when it’s back|أبلغوني عند عودته|Avísame cuando vuelva
+We couldn’t send a code. Please try again shortly.|تعذر إرسال الرمز. حاول مجددًا بعد قليل.|No pudimos enviar el código. Inténtalo de nuevo en unos momentos.
+This code couldn’t be verified. Check it or request a new one.|تعذر التحقق من الرمز. راجعه أو اطلب رمزًا جديدًا.|No se pudo verificar el código. Revísalo o solicita uno nuevo.
+We couldn’t update your account. Please try again.|تعذر تحديث حسابك. حاول مجددًا.|No pudimos actualizar tu cuenta. Inténtalo de nuevo.
+Email preferences saved.|تم حفظ تفضيلات البريد الإلكتروني.|Preferencias de correo guardadas.
+We’ll email you when {name} is back.|سنرسل إليك بريدًا عند عودة {name}.|Te escribiremos cuando vuelva {name}.
+Restock alert removed.|تم إلغاء إشعار عودة التوفر.|Aviso de reposición eliminado.
+Sign in for a restock alert for {name}.|سجّل الدخول لتلقي إشعار عند عودة {name}.|Inicia sesión para recibir un aviso cuando vuelva {name}.
 Website language|لغة الموقع|Idioma del sitio
 Skip to content|انتقل إلى المحتوى|Saltar al contenido
 Nasaem Fragrances home|الصفحة الرئيسية لنسائم|Inicio de Nasaem Fragrances
@@ -99,9 +151,7 @@ Spray again|رش مرة أخرى|Pulverizar de nuevo
 View scent notes|عرض النوتات العطرية|Ver notas del perfume
 Scent notes|النوتات العطرية|Notas del perfume
 See the unboxing|شاهد فتح العلبة|Ver el unboxing
-Continue to checkout|تابع إلى الدفع|Continuar al pago
 Ask on Instagram|اسألنا على إنستغرام|Pregunta en Instagram
-You’ll continue to our checkout provider.|ستنتقل إلى صفحة مزود الدفع.|Continuarás a la página de nuestro proveedor de pagos.
 Message us for pricing, availability, and ordering.|راسلنا لمعرفة السعر والتوفر وطريقة الطلب.|Escríbenos para consultar el precio, la disponibilidad y cómo pedirlo.
 Ask us for this fragrance’s note list.|اسألنا عن نوتات هذا العطر.|Pregúntanos por las notas de este perfume.
 {name} campaign artwork|العمل الفني لعطر {name}|Ilustración de {name}

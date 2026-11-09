@@ -1,6 +1,5 @@
 // The mood words come from the campaign artwork. Families and descriptions
-// guide browsing. Add verified notes, size, price, and an HTTPS checkout URL
-// only after the business confirms those details.
+// guide browsing. Keep storefront pricing out of the catalog until confirmed.
 const scents = [
   { id: "static", name: "Static", family: "bright", mood: "Cool, sharp, sleek", description: "A television left on long after everyone has gone to bed, its pale blue glow flickering across an otherwise empty room while the low hum of static fills the space where conversation used to be.", collection: "Masculine", notePyramid: {"Top": "Bergamot & Pepper", "Heart": "Lavender & Tonka Bean", "Base": "Musk & Amber"} },
   { id: "velvet-rose", name: "Velvet Rose", family: "floral", mood: "Playful, bold, romantic", description: "A rose mood with a vivid streak of color, playful enough to wear in daylight.", collection: "Feminine", notePyramid: {"Top": "Raspberry", "Heart": "Rose, Jasmine, Orange Blossom", "Base": "Red Vanilla"} },

@@ -69,7 +69,7 @@ export function mountOrbit(root, scents, open) {
     name.style.removeProperty("opacity");
     arc.style.removeProperty("transform");
     root.style.setProperty("--discovery-tone", tones[scent.family]);
-    image.src = `assets/scents/${scent.id}.webp`;
+    setCardArtwork(image, scent.id);
     showCaption(scent);
     readout.textContent = `${current + 1} / ${items.length}`;
     for (const [position, button] of [...strip.children].entries()) {
@@ -112,7 +112,7 @@ export function mountOrbit(root, scents, open) {
       button.className = "discovery-thumbnail";
       button.setAttribute("aria-label", scent.name);
       const thumbnail = new Image(48, 60);
-      thumbnail.src = `assets/scents/${scent.id}.webp`;
+      setCardArtwork(thumbnail, scent.id, false, true);
       thumbnail.loading = "lazy";
       thumbnail.alt = "";
       button.append(thumbnail);

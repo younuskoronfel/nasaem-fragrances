@@ -113,7 +113,7 @@ function showStep(moveFocus = false) {
       match.type = "button";
       match.className = "match";
       const img = document.createElement("img");
-      img.src = `assets/scents/${scent.id}.webp`;
+      setCardArtwork(img, scent.id);
       img.alt = "";
       const name = document.createElement("strong");
       name.textContent = scent.name;

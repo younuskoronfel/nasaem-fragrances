@@ -4,7 +4,6 @@ const count = document.querySelector(".count");
 const dialog = document.querySelector(".scent-dialog");
 const familyNames = { bright: "Bright & fresh", floral: "Soft & floral", warm: "Warm & sweet", deep: "Deep & smoky" };
 const arrows = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M5 12h13m-5-5 5 5-5 5"/></svg>';
-const messageUrl = "https://ig.me/m/nasaem.fragrances";
 
 function createCard(scent, index) {
   const article = document.createElement("article");
@@ -12,11 +11,11 @@ function createCard(scent, index) {
   article.dataset.family = scent.family;
   article.innerHTML = `
     <button class="card-button" type="button" aria-haspopup="dialog">
-      <span class="card-art"><img width="768" height="960" alt="" loading="lazy" decoding="async" src="assets/scents/${scent.id}.webp"></span>
+      <span class="card-art"><img width="768" height="960" alt="" loading="lazy" decoding="async"></span>
       <span class="card-text"><strong></strong><span class="card-mood"></span><span class="card-arrow">${arrows}</span></span>
     </button>`;
   const art = article.querySelector("img");
-  art.loading = "lazy";
+  setCardArtwork(art, scent.id, false, true);
   article.querySelector("strong").textContent = scent.name;
   article.querySelector(".card-mood").textContent = scentText(scent, "mood");
   article.querySelector("button").addEventListener("click", () => openScent(scent, art));
@@ -28,7 +27,7 @@ let discovery;
 let collectionMotion;
 const cards = scents.map(createCard);
 // Finish laying out the carousel before the shelf becomes clickable.
-import("./collection-motion.js?v=language-1").then(module => {
+import("./collection-motion.js?v=card-art-1").then(module => {
   collectionMotion = module;
   discovery = module.mountOrbit(document.querySelector(".scent-discovery"), visibleScents, openScent);
 }).catch(() => {}).finally(() => {
@@ -98,6 +97,7 @@ const selectedScents = { brown: "golden-hour-bloom", black: "midnight-spice" };
 let featuredScent;
 let inspectedScent;
 let inspectedArtwork;
+let scentOpener;
 let closingStudio = false;
 
 function showFeaturedScent() {
@@ -110,7 +110,7 @@ function showFeaturedScent() {
   featuredTitle.textContent = `${featuredScent.name}.`;
   showFeaturedCopy();
   featuredNotes.hidden = !featuredScent.notePyramid;
-  featuredLiner.src = `assets/atelier/cards/${featuredScent.id}.jpg`;
+  setCardArtwork(featuredLiner, featuredScent.id, true);
   atelier.dispatchEvent(new CustomEvent("atelier:scent", {
     detail: { masculine: packaging === "black", scent: featuredScent }
   }));
@@ -182,7 +182,7 @@ function useStillStudio() {
 async function loadStudio(scent, current) {
   if (scentMotion.matches) return useStillStudio();
   try {
-    const { mountScentStudio } = await import("./atelier-model.js?v=orbit-loop-1");
+    const { mountScentStudio } = await import("./atelier-model.js?v=card-art-1");
     if (session !== current || !dialog.open || scentMotion.matches) return;
     studio = mountScentStudio(viewer, scent, showScentNotes, () => {
       if (session !== current || !dialog.open) return;
@@ -221,7 +221,9 @@ scentMotion.addEventListener("change", () => {
 });
 
 function openScent(scent, source) {
+  scentOpener = document.activeElement;
   inspectedScent = scent;
+  updateAvailability();
   inspectedArtwork = source;
   closingStudio = false;
   const current = ++session;
@@ -232,13 +234,36 @@ function openScent(scent, source) {
   sprayButton.disabled = false;
   labelSpray(scentMotion.matches ? "View scent notes" : "Spray me");
   const art = dialog.querySelector(".scent-art");
-  art.src = `assets/scents/${scent.id}.webp`;
+  art.removeAttribute("src");
+  setCardArtwork(art, scent.id);
   updateScentCopy(scent);
+  setOptional(".checkout-note", "");
+  dialog.querySelector(".scent-packaging").open = false;
   dialog.showModal();
   dialog.scrollTop = 0;
   if (source) collectionMotion?.transferArtwork(dialog, source, viewer).catch(() => {});
   loadStudio(scent, current);
 }
+
+dialog.querySelector(".scent-packaging").addEventListener("toggle", event => {
+  if (event.target.open) renderPackaging(event.target.querySelector(".cart-photos"), inspectedScent);
+});
+
+function updateScentCartLink() {
+  dialog.querySelector(".scent-cart-link").hidden = !cartQuantity(inspectedScent.id);
+}
+
+dialog.querySelector(".scent-action").addEventListener("click", () => {
+  const added = addToCart(inspectedScent.id);
+  packagingSelection = inspectedScent.id;
+  updateScentCartLink();
+  setOptional(".checkout-note", t(added ? "{name} added to your cart." : "This fragrance has reached the cart quantity limit.", { name: inspectedScent.name }));
+});
+
+dialog.querySelector(".scent-cart-link").addEventListener("click", () => {
+  dialog.close();
+  openCart(scentOpener);
+});
 
 async function closeScent() {
   if (closingStudio) return;
@@ -276,12 +301,13 @@ function updateScentCopy(scent) {
   fillNotes(noteList, scent.notePyramid);
   setOptional(".scent-note-status", scent.notePyramid ? "" : t("Ask us for this fragrance’s note list."));
 
-  const canBuy = Boolean(scent.price && scent.checkoutUrl?.startsWith("https://"));
-  const action = dialog.querySelector(".scent-action");
-  action.href = canBuy ? scent.checkoutUrl : messageUrl;
-  action.textContent = t(canBuy ? "Continue to checkout" : "Ask on Instagram");
-  setOptional(".checkout-note", t(canBuy ? "You’ll continue to our checkout provider." : "Message us for pricing, availability, and ordering."));
+  updateScentCartLink();
+  if (dialog.querySelector(".scent-packaging").open) renderPackaging(dialog.querySelector(".cart-photos"), scent);
 }
+
+addEventListener("storage", event => {
+  if (dialog.open && (event.key === cartStorageKey || event.key === null)) updateScentCartLink();
+});
 
 document.addEventListener("nasaem:language", () => {
   cards.forEach((card, index) => {
@@ -292,5 +318,19 @@ document.addEventListener("nasaem:language", () => {
   if (dialog.open) {
     labelSpray(sprayCopy);
     updateScentCopy(inspectedScent);
+    setOptional(".checkout-note", "");
   }
+});
+
+function updateAvailability() {
+  const soldOut = isScentSoldOut(inspectedScent?.id);
+  dialog.querySelector(".scent-action").hidden = soldOut;
+  dialog.querySelector(".scent-availability").hidden = !soldOut;
+  dialog.querySelector(".scent-watch").hidden = !soldOut;
+}
+
+document.addEventListener("nasaem:availability", updateAvailability);
+dialog.querySelector(".scent-watch").addEventListener("click", () => {
+  dialog.close();
+  openAccount(scentOpener, inspectedScent.id);
 });

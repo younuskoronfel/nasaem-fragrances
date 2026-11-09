@@ -19,7 +19,6 @@ function scheduleScrollArt() {
 
 const sceneObserver = new IntersectionObserver(entries => {
   for (const entry of entries) {
-    entry.target.classList.toggle("art-in-view", entry.isIntersecting);
     if (entry.isIntersecting) visibleScenes.add(entry.target);
     else visibleScenes.delete(entry.target);
   }
