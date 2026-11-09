@@ -3,7 +3,7 @@ import {
   SphereGeometry, TubeGeometry, Vector3
 } from "./assets/atelier/three.js";
 
-function noteShape(note, tone, materials) {
+function noteShape(note, materials) {
   const sample = new Group();
   const piece = (geometry, color, x, y, z, scale, material = {}) => {
     const key = color + JSON.stringify(material);
@@ -58,9 +58,17 @@ function noteShape(note, tone, materials) {
         (i - 1) * .108, 0, (i - 1) * .07, [.09, .35 - .04 * i, .11],
         { roughness: .66, flatShading: true }).rotation.z = (i - 1) * .23 + .38;
     }
+  } else if (/saffron|cardamom|nutmeg/i.test(note)) {
+    const spice = /saffron/i.test(note) ? "#a84128" : /cardamom/i.test(note) ? "#78804b" : "#885d38";
+    const filament = /saffron/i.test(note);
+    for (let i = 0; i < 5; i++) {
+      const sprig = piece(sphere, spice, (i - 2) * .082, Math.sin(i * 2) * .075, (i % 3) * .068,
+        [filament ? .028 : .072, .17 + i * .019, filament ? .018 : .061], { roughness: .63 });
+      sprig.rotation.z = (i - 2) * .24;
+    }
   } else {
-    piece(sphere, tone, 0, 0, 0, [.23, .34, .22], { roughness: .12, metalness: .29, iridescence: .24 });
-    piece(sphere, "#f0ca91", .24, .11, -.08, [.071, .083, .07], { metalness: .72, roughness: .16 });
+    sphere.dispose();
+    return null;
   }
   if (!sample.children.some(mesh => mesh.geometry === sphere)) sphere.dispose();
   return sample;
@@ -103,34 +111,36 @@ export function createScentOrbit(scene, overlay) {
       if (scent.id === selected) return;
       selected = scent.id;
       clear();
-      const entries = scent.notePyramid
-        ? Object.values(scent.notePyramid).map((notes, index) => [stages[index], notes.split(/\s*&\s*|,\s*/)])
-        : scent.mood.split(", ").slice(0, 3).map(hint => ["Mood", [hint]]);
-      const tone = { bright: "#a3b57b", floral: "#d1a0a8", warm: "#d7a25c", deep: "#ac795e" }[scent.family];
-      samples = entries.map(([stage, notes]) => {
+      const entries = Object.values(scent.notePyramid ?? {});
+      samples = entries.flatMap((notes, stage) => {
         const mesh = new Group();
-        notes.forEach((note, index) => {
-          const piece = noteShape(stage === "Mood" ? "" : note, tone, materials);
+        const names = [];
+        for (const note of notes.split(/\s*&\s*|,\s*|\s+and\s+/i)) {
+          const piece = noteShape(note, materials);
+          if (!piece) continue;
+          const index = names.length;
           if (index) {
             const angle = index * 2.4;
             piece.position.set(Math.cos(angle) * .47, Math.sin(angle) * .35, -.22 - index * .08);
             piece.rotation.set(angle * .31, -angle * .42, angle * .22);
-            piece.scale.setScalar(.53 - index * .045);
+            piece.scale.setScalar(Math.max(.27, .53 - index * .045));
           }
           mesh.add(piece);
-        });
+          names.push(note);
+        }
+        if (!names.length) return [];
         group.add(mesh);
         const label = document.createElement("span");
         const kind = document.createElement("small");
-        kind.textContent = stage;
-        label.append(kind, document.createTextNode(notes[0]));
+        kind.textContent = stages[stage];
+        label.append(kind, document.createTextNode(names.slice(0, 2).join(" · ")));
         overlay.append(label);
-        return { mesh, label };
+        return [{ mesh, label }];
       });
     },
     update(camera, phase, reveal, radius) {
-      group.visible = reveal > .012;
-      overlay.hidden = reveal < .16;
+      group.visible = samples.length > 0 && reveal > .012;
+      overlay.hidden = !group.visible || reveal < .16;
       if (!group.visible) return;
       overlay.style.opacity = Math.min(1, (reveal - .16) * 2.2);
       track.scale.setScalar(radius);

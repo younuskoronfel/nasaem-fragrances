@@ -219,7 +219,7 @@
 .scent-dialog .scent-description { margin-top: .85rem }
 .scent-reveal { margin-top: 1.1rem; animation: arrive .44s var(--ease) both }
 .scent-reveal h3 { color: var(--gold); font-size: 1.65rem; line-height: 1.1 }
-.scent-hints { color: var(--muted); margin-top: .38rem }
+.scent-note-status { color: var(--muted); margin-top: .38rem }
 .atelier-orbit-guide {
   margin-top: .8rem;
   color: var(--gold);
@@ -237,3 +237,10 @@
   .scent-turn button { width: 2.5rem; height: 2.5rem }
   .scent-dialog .scent-copy { padding-top: 1.25rem }
 }
+
+.scent-viewer .scent-art { opacity: 1; transition: opacity .45s var(--ease) }
+.scent-viewer.is-rendered .scent-art { visibility: visible; opacity: 0; pointer-events: none }
+.scent-viewer.is-rendered.has-campaign-reveal .scent-art { z-index: 11; opacity: 1 }
+.scent-viewer.is-rendered.has-campaign-reveal canvas { opacity: 0; pointer-events: none }
+.scent-viewer.has-campaign-reveal .scent-turn { display: none }
+.scent-viewer canvas { transition: opacity .45s var(--ease) }

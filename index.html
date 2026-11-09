@@ -19,13 +19,13 @@
   <link rel="preload" href="assets/cormorant.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="atelier.css">
-  <link rel="stylesheet" href="crystal.css?v=scent-studio-2">
-  <link rel="stylesheet" href="film.css?v=scent-studio-2">
-  <link rel="stylesheet" href="gallery.css?v=scent-studio-2">
+  <link rel="stylesheet" href="crystal.css?v=ingredient-studio">
+  <link rel="stylesheet" href="film.css?v=ingredient-studio">
+  <link rel="stylesheet" href="gallery.css?v=ingredient-studio">
   <script src="scents.js" defer></script>
-  <script src="store.js?v=scent-studio-2" defer></script>
+  <script src="store.js?v=ingredient-studio" defer></script>
   <script src="journey.js" defer></script>
-  <script type="module" src="atelier.js?v=scent-studio-2"></script>
+  <script type="module" src="atelier.js?v=ingredient-studio"></script>
   <script src="scroll-art.js" defer></script>
   <script src="hero-film.js" defer></script>
 </head>
@@ -126,7 +126,7 @@
           <div class="atelier-chapter" id="bottle-notes" tabindex="-1">
             <h3>Golden Hour Bloom.</h3>
             <p class="atelier-mood">Radiant, feminine, unforgettable</p>
-            <p class="atelier-orbit-guide">Opening, heart and dry-down</p>
+            <p class="atelier-orbit-guide" hidden>Opening, heart and dry-down</p>
             <dl class="atelier-notes" hidden></dl>
             <img class="atelier-liner" src="assets/atelier/cards/golden-hour-bloom.jpg" width="768" height="960" alt="Golden Hour Bloom campaign card" loading="lazy" decoding="async">
             <div class="atelier-links">
@@ -223,7 +223,7 @@
         <div class="scent-reveal" aria-live="polite" hidden>
           <h3 class="scent-reveal-title">Scent notes</h3>
           <dl class="scent-notes" hidden></dl>
-          <p class="scent-hints" hidden></p>
+          <p class="scent-note-status" hidden></p>
         </div>
         <p class="scent-description"></p>
         <p class="scent-format" hidden></p>

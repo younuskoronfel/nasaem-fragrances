@@ -6,8 +6,8 @@ import {
   SRGBColorSpace, TubeGeometry, Vector3, WebGLRenderer
 } from "./assets/atelier/three.js";
 import { buildCrown, buildPackaging } from "./atelier-packaging.js";
-import { buildMacro } from "./atelier-macro.js?v=scent-studio-2";
-import { createScentOrbit } from "./scent-orbit.js?v=scent-studio-2";
+import { buildMacro } from "./atelier-macro.js?v=ingredient-studio";
+import { createScentOrbit } from "./scent-orbit.js?v=ingredient-studio";
 
 const clamp = value => Math.min(1, Math.max(0, value));
 const smooth = (from, to, value) => {

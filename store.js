@@ -91,8 +91,7 @@ function showFeaturedScent() {
   selectedScents[packaging] = featuredScent.id;
   atelier.dataset.scent = featuredScent.id;
   atelier.featuredScent = featuredScent;
-  featuredChapter.querySelector(".atelier-orbit-guide").textContent = featuredScent.notePyramid
-    ? "Opening, heart and dry-down" : "Mood and scent hints";
+  featuredChapter.querySelector(".atelier-orbit-guide").hidden = !featuredScent.notePyramid;
   featuredTitle.textContent = `${featuredScent.name}.`;
   featuredMood.textContent = featuredScent.mood;
   featuredNotes.replaceChildren();
@@ -142,6 +141,7 @@ scentPreview.addEventListener("click", () => {
 });
 
 function showScentNotes() {
+  viewer.classList.toggle("has-campaign-reveal", !inspectedScent.notePyramid);
   reveal.hidden = false;
   sprayButton.disabled = false;
   sprayButton.textContent = studio ? "Spray again" : "View scent notes";
@@ -157,7 +157,7 @@ function useStillStudio() {
 async function loadStudio(scent, current) {
   if (scentMotion.matches) return useStillStudio();
   try {
-    const { mountScentStudio } = await import("./atelier-model.js?v=scent-studio-2");
+    const { mountScentStudio } = await import("./atelier-model.js?v=ingredient-studio");
     if (session !== current || !dialog.open || scentMotion.matches) return;
     studio = mountScentStudio(viewer, scent, showScentNotes, () => {
       if (session !== current || !dialog.open) return;
@@ -173,6 +173,7 @@ async function loadStudio(scent, current) {
 
 sprayButton.addEventListener("click", () => {
   if (!studio) return showScentNotes();
+  viewer.classList.remove("has-campaign-reveal");
   reveal.hidden = true;
   sprayButton.disabled = true;
   sprayButton.textContent = "Spraying";
@@ -199,6 +200,7 @@ function openScent(scent) {
   const current = ++session;
   studio?.dispose();
   studio = undefined;
+  viewer.classList.remove("has-campaign-reveal");
   reveal.hidden = true;
   sprayButton.disabled = false;
   sprayButton.textContent = scentMotion.matches ? "View scent notes" : "Spray the bottle";
@@ -215,8 +217,7 @@ function openScent(scent) {
   noteList.replaceChildren();
   noteList.hidden = !scent.notePyramid;
   fillNotes(noteList, scent.notePyramid);
-  dialog.querySelector(".scent-reveal-title").textContent = scent.notePyramid ? "Scent notes" : "Scent hints";
-  setOptional(".scent-hints", scent.notePyramid ? "" : scent.mood);
+  setOptional(".scent-note-status", scent.notePyramid ? "" : "Ask us for this fragrance’s note list.");
 
   const canBuy = Boolean(scent.price && scent.checkoutUrl?.startsWith("https://"));
   const action = dialog.querySelector(".scent-action");
