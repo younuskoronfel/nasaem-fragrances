@@ -155,8 +155,9 @@
 .guide-list details {
   padding-inline: .8rem;
 }
+body { position: relative }
 .gold-dust {
-  position: fixed;
+  position: absolute;
   z-index: 4;
   inset: 0;
   width: auto;
@@ -168,7 +169,13 @@
   overflow: clip;
   pointer-events: none;
 }
-dialog > .gold-dust { position: absolute }
+body > .gold-dust {
+  display: grid;
+  grid-auto-rows: max(460px, 100svh);
+  align-content: start;
+}
+.dialog-dust { z-index: 22 }
+.glitter-band { position: relative }
 .glitter {
   position: absolute;
   width: var(--size);
@@ -187,6 +194,7 @@ dialog > .gold-dust { position: absolute }
   box-shadow: 0 0 7px 1px #ffd38da0;
   animation: glitter-drift var(--time) linear var(--delay) infinite;
 }
+.glitter-band:not(.is-visible) .glitter { animation-play-state: paused }
 @keyframes glitter-drift {
   0% { opacity: 0; transform: translate(0, 0) scale(.55) rotate(0deg) }
   28% { opacity: .98 }
@@ -221,5 +229,5 @@ dialog > .glitter-burst { position: absolute }
   .gold-dust .glitter:nth-child(4n) { display: none }
 }
 @media (prefers-reduced-motion: reduce) {
-  .gold-dust, .glitter-burst { display: none }
+  body > .gold-dust, .dialog-dust, .glitter-burst { display: none }
 }

@@ -2,54 +2,71 @@ const glitterMotion = matchMedia("(prefers-reduced-motion: no-preference)");
 const dust = document.querySelector(".gold-dust");
 const glintColors = ["#fff7de", "#ffe098", "#ffd9cb"];
 const bursts = [];
+const dialogDust = [...document.querySelectorAll("dialog")].map(dialog => {
+  const layer = document.createElement("div");
+  layer.className = "gold-dust dialog-dust";
+  layer.setAttribute("aria-hidden", "true");
+  dialog.append(layer);
+  return layer;
+});
 
-function scatterGlitter() {
-  dust.replaceChildren();
-  for (let index = 0; index < 24; index++) {
+function scatterGlitter(layer, columns, rows) {
+  for (let index = 0; index < columns * rows; index++) {
     const glitter = document.createElement("span");
     glitter.className = "glitter";
-    glitter.style.setProperty("--left", `${((index % 6) + .18 + Math.random() * .64) / 6 * 100}%`);
-    glitter.style.setProperty("--top", `${(Math.floor(index / 6) + .24 + Math.random() * .64) / 4 * 100}%`);
+    glitter.style.setProperty("--left", `${((index % columns) + .18 + Math.random() * .64) / columns * 100}%`);
+    glitter.style.setProperty("--top", `${(Math.floor(index / columns) + .24 + Math.random() * .64) / rows * 100}%`);
     glitter.style.setProperty("--dx", `${Math.random() * 64 - 32}px`);
     glitter.style.setProperty("--dy", `${-24 - Math.random() * 60}px`);
     glitter.style.setProperty("--size", `${index % 3 === 0 ? 10 : 3.5 + Math.random() * 2}px`);
     glitter.style.setProperty("--time", `${5 + Math.random() * 5}s`);
     glitter.style.setProperty("--delay", `${-Math.random() * 9}s`);
     glitter.style.setProperty("--glint", glintColors[index % glintColors.length]);
-    dust.append(glitter);
+    layer.append(glitter);
   }
 }
 
-function placeGlitter() {
-  const dialog = glitterMotion.matches && document.querySelector("dialog[open]");
-  if (typeof dust.showPopover !== "function") {
-    (dialog || document.body).append(dust);
-    return;
+const visibleBands = new IntersectionObserver(entries => {
+  for (const entry of entries) {
+    entry.target.classList.toggle("is-visible", entry.isIntersecting);
   }
-  if (dust.matches(":popover-open")) dust.hidePopover();
-  if (dialog) {
-    dust.setAttribute("popover", "manual");
-    dust.showPopover();
-  } else {
-    dust.removeAttribute("popover");
+}, { rootMargin: "100px 0px" });
+
+function fillPageGlitter() {
+  if (!glitterMotion.matches) return;
+  const bandHeight = parseFloat(getComputedStyle(dust).gridAutoRows);
+  if (!bandHeight) return;
+  const bandCount = Math.ceil(dust.clientHeight / bandHeight);
+
+  while (dust.childElementCount > bandCount) {
+    visibleBands.unobserve(dust.lastElementChild);
+    dust.lastElementChild.remove();
+  }
+  while (dust.childElementCount < bandCount) {
+    const band = document.createElement("div");
+    band.className = "glitter-band";
+    scatterGlitter(band, 6, 4);
+    dust.append(band);
+    visibleBands.observe(band);
   }
 }
 
 function releaseGlitter() {
-  placeGlitter();
-  if (glitterMotion.matches) scatterGlitter();
-  else {
+  if (glitterMotion.matches) {
+    fillPageGlitter();
+    for (const layer of dialogDust) scatterGlitter(layer, 4, 3);
+  } else {
+    visibleBands.disconnect();
     dust.replaceChildren();
+    for (const layer of dialogDust) layer.replaceChildren();
     for (const burst of bursts.splice(0)) burst.remove();
   }
 }
 
 releaseGlitter();
 glitterMotion.addEventListener("change", releaseGlitter);
-const dialogObserver = new MutationObserver(placeGlitter);
-for (const dialog of document.querySelectorAll("dialog")) {
-  dialogObserver.observe(dialog, { attributes: true, attributeFilter: ["open"] });
-}
+const glitterResize = new ResizeObserver(fillPageGlitter);
+glitterResize.observe(dust);
 
 document.addEventListener("click", event => {
   if (!glitterMotion.matches || !event.isTrusted || !(event.target instanceof Element)) return;
