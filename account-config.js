@@ -2,7 +2,7 @@
 const nasaemAccountConfig = {
   url: "https://xuzdtgxpcoinbwojglwp.supabase.co",
   publishableKey: "sb_publishable_3dCObie4utxrEG9o7kG7PA_IbCoaz-M",
-  emailSignIn: false,
+  emailSignIn: true,
   googleSignIn: false,
   emailUpdates: false,
   stripeCheckout: false
