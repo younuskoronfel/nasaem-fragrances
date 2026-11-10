@@ -224,7 +224,10 @@ renderCart();
 
 const cartReturn = new URL(location.href);
 if (cartReturn.searchParams.get("cart") === "open") {
-  cartReturn.searchParams.delete("cart");
-  history.replaceState(history.state, "", cartReturn);
-  openCart();
+  // Availability is provided by a later deferred script.
+  document.addEventListener("DOMContentLoaded", () => {
+    cartReturn.searchParams.delete("cart");
+    history.replaceState(history.state, "", cartReturn);
+    if (!cart.open) openCart();
+  }, { once: true });
 }
