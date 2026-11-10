@@ -137,6 +137,7 @@ function renderCart() {
       <div class="cart-item-details">
         <strong dir="auto"><a></a></strong>
         <span></span>
+        <span class="cart-line-price" hidden></span>
         <p class="cart-description"></p>
         <div class="cart-item-controls">
           <div class="cart-stepper">
@@ -166,6 +167,7 @@ function renderCart() {
     return row;
   }));
   showCartPackaging();
+  cart.dispatchEvent(new Event("nasaem:cart-rendered"));
   if (activeAction) {
     const row = [...cartItems.children].find(item => item.dataset.scentId === activeId)
       ?? [...cartItems.children].find(item => item.dataset.scentId === nextFocusId)
@@ -201,6 +203,7 @@ cartItems.addEventListener("click", event => {
 });
 
 function showCheckoutNotice() {
+  cartNotice.dataset.preview = "true";
   const heading = document.createElement("strong");
   heading.textContent = t("Checkout coming soon");
   const message = document.createElement("p");
@@ -208,11 +211,11 @@ function showCheckoutNotice() {
   cartNotice.replaceChildren(heading, message);
 }
 
-cart.querySelector(".cart-checkout").addEventListener("click", showCheckoutNotice);
+
 document.addEventListener("nasaem:availability", renderCart);
 document.addEventListener("nasaem:language", () => {
   renderCart();
-  if (cartNotice.hasChildNodes()) showCheckoutNotice();
+  if (cartNotice.dataset.preview === "true" && cartNotice.hasChildNodes()) showCheckoutNotice();
 });
 addEventListener("storage", event => {
   if (event.key !== cartStorageKey && event.key !== null) return;

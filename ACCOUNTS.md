@@ -35,4 +35,18 @@ select cron.schedule(
 - Change a fragrance's `inventory.status` in Supabase to `in_stock` or `sold_out`. Each transition into sold out queues an owner email. Moving from sold out to in stock emails customers who explicitly asked to watch that fragrance.
 - Customers can manage their restock alerts and opt in or out of launch and news emails from their account. A newsletter email includes an unsubscribe link and one-click unsubscribe headers. To queue a campaign, run `select public.queue_fragrance_news('unique-campaign-id', 'Subject', 'Plain-text message');` from the SQL editor. Use a new campaign ID for a new message.
 - `fragrance_mail` tracks queued, sent, expired and skipped messages. The worker retries transient failures for up to 20 hours. Check failed jobs before creating a replacement campaign.
-- Checkout remains a local cart preview. A future Stripe backend should update stock from confirmed inventory changes and validate items and prices server-side before creating a checkout session.
+
+
+## Google sign-in
+
+1. Open [Supabase New Project](https://database.new/) and create a project named `nasaem-fragrances`. Choose a region near your customers and store its database password in a password manager. Copy the project URL and publishable key from the project's **Connect** dialog.
+2. Link the project with `supabase link --project-ref YOUR_PROJECT_REF` and apply the inventory migration with `supabase db push`.
+3. Follow the [Supabase Google provider instructions](https://supabase.com/docs/guides/auth/social-sign-in/auth-google). Register the callback URL shown by Supabase in Google Cloud and set the Google client ID and secret in Supabase Auth. Add `https://younuskoronfel.github.io/nasaem-fragrances/?auth=google` to the Supabase redirect allow list. Use Google test users until the OAuth app is ready for customers.
+4. Set the public project URL and publishable key in `account-config.js`. Turn on `googleSignIn` once the provider is enabled, then verify a new account, a returning account, and sign-out. Configure SMTP and the email code templates before making email sign-in available to customers.
+
+## Stripe checkout
+
+1. In [Stripe](https://dashboard.stripe.com/), use test mode first. Create one product and one active, one-time Price per fragrance with the approved names, amounts, and currency. The inventory table already contains the sixteen matching scent IDs. Mark each sellable fragrance `in_stock`; unknown and sold-out stock cannot be checked out.
+2. In Supabase's Edge Function secrets, set `STRIPE_SECRET_KEY`, `NASAEM_STOREFRONT_URL`, `NASAEM_STRIPE_PRICES` (a JSON object mapping scent IDs to Stripe Price IDs), `NASAEM_SHIPPING_COUNTRIES` (comma-separated two-letter country codes), and `NASAEM_STRIPE_SHIPPING_RATE` (a Stripe shipping-rate ID, including a zero-cost rate if shipping is free). Enable `NASAEM_STRIPE_AUTOMATIC_TAX=true` only if Stripe Tax is configured. Use matching test or live IDs throughout. Keep secret keys out of GitHub and chat.
+3. Deploy `supabase functions deploy storefront-checkout`. The function supports guest carts, reads the catalog and stock on the server, calculates the subtotal from Stripe Prices, and creates a hosted payment page for the selected quantities. The public storefront keeps the payment controls in preview mode until `stripeCheckout` is enabled.
+4. Test a multi-scent order, declined payment, cancellation, and a sold-out item with Stripe test cards. On a confirmed return, the browser removes the purchased quantities. Enable Stripe receipts and use the Stripe Dashboard to verify paid orders and fulfill them, even when a customer closes the payment page before returning. Update stock as orders are fulfilled. This inventory table tracks stock status and does not reserve quantities.

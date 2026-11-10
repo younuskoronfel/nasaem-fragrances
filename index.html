@@ -17,12 +17,14 @@
   <meta property="og:url" content="https://younuskoronfel.github.io/nasaem-fragrances/">
   <meta property="og:title" content="Nasaem Fragrances — Where your soul finds its scent">
   <meta property="og:description" content="Sixteen fragrances, a scent finder, and an interactive unboxing.">
-  <meta property="og:image" content="https://younuskoronfel.github.io/nasaem-fragrances/assets/nasaem-share.jpg">
+  <meta property="og:image" content="https://younuskoronfel.github.io/nasaem-fragrances/assets/nasaem-garden-share.jpg">
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="The gold Nasaem Fragrances mark and wordmark on a dark background">
+  <meta property="og:image:alt" content="The Nasaem Fragrances logo beside a sunlit garden overlooking the sea">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://younuskoronfel.github.io/nasaem-fragrances/assets/nasaem-garden-share.jpg">
+  <meta name="twitter:image:alt" content="The Nasaem Fragrances logo beside a sunlit garden overlooking the sea">
   <link rel="canonical" href="https://younuskoronfel.github.io/nasaem-fragrances/">
   <title>Nasaem Fragrances — Where your soul finds its scent</title>
   <link rel="icon" href="assets/nasaem-icon.png" type="image/png" sizes="192x192">
@@ -33,13 +35,14 @@
   <link rel="stylesheet" href="crystal.css?v=unboxing-pace-1">
   <link rel="stylesheet" href="film.css?v=sticky-1">
   <link rel="stylesheet" href="gallery.css?v=sticky-1">
-  <link rel="stylesheet" href="cart.css?v=card-page-1">
-  <script src="language.js?v=unboxing-pace-1" defer></script>
+  <link rel="stylesheet" href="cart.css?v=commerce-1">
+  <script src="language.js?v=commerce-1" defer></script>
   <script src="scents.js?v=cart-1" defer></script>
   <script src="card-art.js?v=2" defer></script>
-  <script src="cart.js?v=portrait-1" defer></script>
-  <script src="account-config.js?v=1" defer></script>
-  <script src="account.js?v=1" defer></script>
+  <script src="cart.js?v=commerce-1" defer></script>
+  <script src="account-config.js?v=commerce-1" defer></script>
+  <script src="account.js?v=commerce-1" defer></script>
+  <script src="checkout.js?v=1" defer></script>
   <script src="store.js?v=unboxing-pace-1" defer></script>
   <script src="journey.js?v=card-art-1" defer></script>
   <script type="module" src="atelier.js?v=unboxing-pace-1"></script>
@@ -337,9 +340,12 @@
           <div class="cart-photos"></div>
         </section>
       </div>
-      <div class="cart-footer" hidden>
-        <p>Prices will be shown when checkout opens.</p>
-        <button class="button cart-checkout" type="button">Checkout</button>
+      <div class="cart-bottom">
+        <div class="cart-footer" hidden>
+          <p class="cart-prices-hint">Prices will be shown when checkout opens.</p>
+          <p class="cart-subtotal" hidden></p>
+          <button class="button cart-checkout" type="button">Checkout</button>
+        </div>
         <div class="cart-notice" role="status"></div>
       </div>
     </div>
@@ -355,6 +361,7 @@
       </header>
       <div class="cart-content account-content">
         <p class="account-unavailable">Accounts and email updates are coming soon.</p>
+        <button class="button cart-checkout account-google" type="button" hidden>Continue with Google</button>
         <form class="account-email-form" hidden>
           <p>Enter your email to create an account or sign in.</p>
           <label for="account-email">Email address</label>

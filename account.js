@@ -1,6 +1,7 @@
 const account = document.querySelector("#account");
 const accountToggle = document.querySelector(".account-toggle");
 const unavailable = account.querySelector(".account-unavailable");
+const googleButton = account.querySelector(".account-google");
 const emailForm = account.querySelector(".account-email-form");
 const codeForm = account.querySelector(".account-code-form");
 const profile = account.querySelector(".account-profile");
@@ -37,7 +38,7 @@ function prepareAccount() {
     script.onerror = reject;
     document.head.append(script);
   }).then(async () => {
-    accountClient = window.supabase.createClient(nasaemAccountConfig.url, nasaemAccountConfig.publishableKey);
+    accountClient = window.supabase.createClient(nasaemAccountConfig.url, nasaemAccountConfig.publishableKey, { auth: { flowType: "pkce" } });
     const [sessionResult, stockResult] = await Promise.all([
       accountClient.auth.getSession(),
       accountClient.from("inventory").select("scent_id,status")
@@ -59,6 +60,7 @@ function prepareAccount() {
 
 function showAccount() {
   unavailable.hidden = Boolean(accountClient);
+  googleButton.hidden = !nasaemAccountConfig.googleSignIn || !accountClient || Boolean(accountUser || requestedEmail);
   emailForm.hidden = !accountClient || Boolean(accountUser || requestedEmail);
   codeForm.hidden = !accountClient || Boolean(accountUser) || !requestedEmail;
   profile.hidden = !accountClient || !accountUser;
@@ -138,6 +140,21 @@ account.querySelector(".close").addEventListener("click", () => account.close())
 account.addEventListener("close", () => {
   codeForm.reset();
   (accountOpener?.isConnected ? accountOpener : accountToggle).focus({ preventScroll: true });
+});
+
+googleButton.addEventListener("click", async () => {
+  if (!accountClient || !nasaemAccountConfig.googleSignIn) return;
+  googleButton.disabled = true;
+  accountMessage();
+  try {
+    const redirectTo = new URL("./?auth=google", location.href);
+    try { sessionStorage.setItem("nasaem-google-scent", restockRequest ?? ""); } catch {}
+    const { error } = await accountClient.auth.signInWithOAuth({ provider: "google", options: { redirectTo: redirectTo.href } });
+    if (error) throw error;
+  } catch {
+    accountMessage("Google sign-in didn’t finish. Please try again.");
+    googleButton.disabled = false;
+  }
 });
 
 emailForm.addEventListener("submit", async event => {
@@ -224,3 +241,16 @@ document.addEventListener("nasaem:language", () => {
   if (account.open && accountUser) refreshAccount().catch(() => {});
 });
 if (accountConfigured) prepareAccount().catch(() => {});
+
+if (accountConfigured && nasaemAccountConfig.googleSignIn && new URL(location.href).searchParams.get("auth") === "google") {
+  document.addEventListener("DOMContentLoaded", async () => {
+    let scentId;
+    try {
+      scentId = sessionStorage.getItem("nasaem-google-scent");
+      sessionStorage.removeItem("nasaem-google-scent");
+    } catch {}
+    await openAccount(accountToggle, scents.some(({ id }) => id === scentId) ? scentId : undefined);
+    if (!accountUser) accountMessage("Google sign-in didn’t finish. Please try again.");
+    history.replaceState(history.state, "", new URL("./", location.href));
+  }, { once: true });
+}

@@ -1,6 +1,16 @@
 const languageCopy = new Map(`
 Preparing the unboxing…|جارٍ تجهيز فتح العلبة…|Preparando la apertura…
 Cart|السلة|Carrito
+Continue with Google|المتابعة باستخدام Google|Continuar con Google
+Google sign-in didn’t finish. Please try again.|لم يكتمل تسجيل الدخول باستخدام Google. حاول مرة أخرى.|No se completó el inicio de sesión con Google. Inténtalo de nuevo.
+Checking prices…|جارٍ التحقق من الأسعار…|Comprobando precios…
+Subtotal: {amount}|المجموع الفرعي: {amount}|Subtotal: {amount}
+Shipping and taxes are shown at checkout.|تظهر تكاليف الشحن والضرائب عند الدفع.|El envío y los impuestos se muestran al finalizar la compra.
+Some fragrances in your cart are unavailable.|بعض العطور في سلتك غير متاحة.|Algunos perfumes de tu carrito no están disponibles.
+We couldn’t load checkout. Please try again.|تعذر فتح صفحة الدفع. حاول مرة أخرى.|No pudimos abrir el pago. Inténtalo de nuevo.
+Your cart changed. Review it and try again.|تغيرت سلتك. راجعها وحاول مرة أخرى.|Tu carrito cambió. Revísalo e inténtalo de nuevo.
+Payment confirmed. Thank you for your order.|تم تأكيد الدفع. شكرًا لطلبك.|Pago confirmado. Gracias por tu pedido.
+Payment couldn’t be confirmed yet. Check your email for your receipt.|لم يتم تأكيد الدفع بعد. تحقق من بريدك الإلكتروني لمعرفة ما إذا وصلك الإيصال.|Aún no se pudo confirmar el pago. Revisa tu correo para encontrar el recibo.
 Your cart|سلتك|Tu carrito
 Close cart|إغلاق السلة|Cerrar carrito
 View fragrance|عرض العطر|Ver perfume

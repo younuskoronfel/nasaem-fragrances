@@ -135,8 +135,12 @@
 }
 .cart-footer > p { color: var(--muted); font-size: .85rem }
 .cart-checkout { width: 100%; }
+.cart-checkout:disabled { opacity: .65; cursor: wait }
+.cart-footer .cart-subtotal, .cart-item-details .cart-line-price { color: var(--ink); font-weight: 600 }
+.cart-line-price { display: block; font-variant-numeric: tabular-nums }
+.account-google { margin-bottom: 1rem }
 .cart-notice:empty { display: none }
-.cart-notice { padding: .52rem .7rem; border-radius: .45rem; background: var(--surface); font-size: .86rem }
+.cart-notice { margin: 0 1.25rem .85rem; padding: .52rem .7rem; border-radius: .45rem; background: var(--surface); font-size: .86rem }
 .cart-notice strong { color: var(--gold) }
 .cart-notice p { color: var(--muted) }
 .scent-actions .scent-cart-link { min-height: 2.75rem; color: var(--gold) }
