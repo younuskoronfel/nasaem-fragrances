@@ -1073,6 +1073,7 @@ export function mountScentStudio(viewer, scent, onReveal, onFallback) {
   const { renderer, scene, camera, optics, map, lightAngle } = createStudio(canvas, schedule);
   const { body, bottleStyle, atomizer, outlet, cap, crownFinish, labelTexture, fill, meniscus } =
     buildFlacon(scene, optics, canvas, schedule, scent.name);
+  body.scale.set(1.09, 1, 1.07);
   const spray = makeSpray(optics.uniforms);
   scene.add(spray.cloud, spray.plume);
   const orbit = createScentOrbit(scene, viewer.querySelector(".orbit-labels"));
@@ -1121,7 +1122,10 @@ export function mountScentStudio(viewer, scent, onReveal, onFallback) {
     if (Math.abs(canvas.width - area.width * density) > 2 || Math.abs(canvas.height - area.height * density) > 2) {
       renderer.setPixelRatio(density);
       renderer.setSize(area.width, area.height, false);
-      camera.aspect = area.width / area.height;
+    }
+    const aspect = area.width / area.height;
+    if (camera.aspect !== aspect) {
+      camera.aspect = aspect;
       camera.updateProjectionMatrix();
     }
     optics.update(area, viewer, area, canvas);
@@ -1157,9 +1161,9 @@ export function mountScentStudio(viewer, scent, onReveal, onFallback) {
     const liquidTilt = Math.sin(seconds * 12) * .022 * near;
     fill.rotation.z = meniscus.rotation.z = liquidTilt;
 
-    const bottleDistance = area.width <= 480 ? 7.8 : 7.45;
+    const bottleDistance = area.width <= 480 ? 8.25 : 7.9;
     camera.position.set(.02, .68 + lift * .66,
-      Math.max(bottleDistance + impression * .42 + lift * 1.05, (5.12 + impression * .72 + lift * .38) / camera.aspect));
+      Math.max(bottleDistance + impression * .42 + lift * 1.05, (5.55 + impression * .72 + lift * .38) / aspect));
     focus.y = .49 + lift * .35;
     camera.lookAt(focus);
     lightAngle(.19 * near - .15 * Math.sin(rotation));

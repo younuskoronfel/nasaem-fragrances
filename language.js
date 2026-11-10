@@ -166,7 +166,7 @@ Turn the bottle|دوّر الزجاجة|Girar el frasco
 Turn bottle left|دوّر الزجاجة إلى اليسار|Girar el frasco a la izquierda
 Turn bottle right|دوّر الزجاجة إلى اليمين|Girar el frasco a la derecha
 Drag to turn|اسحب للتدوير|Arrastra para girar
-Spray me|جرّب الرش|Prueba el spray
+Spray to reveal notes|رُشّ العطر لاكتشاف نوتاته|Pulveriza para descubrir las notas
 Spraying|جارٍ الرش|Pulverizando
 Spray again|رش مرة أخرى|Pulverizar de nuevo
 View scent notes|عرض النوتات العطرية|Ver notas del perfume

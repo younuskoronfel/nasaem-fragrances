@@ -159,7 +159,7 @@ scentPreview.addEventListener("click", () => {
   destination.scrollIntoView({ block: "start" });
 });
 
-let sprayCopy = "Spray me";
+let sprayCopy = "Spray to reveal notes";
 function labelSpray(key) {
   sprayCopy = key;
   sprayButton.textContent = t(key);
@@ -182,7 +182,7 @@ function useStillStudio() {
 async function loadStudio(scent, current) {
   if (scentMotion.matches) return useStillStudio();
   try {
-    const { mountScentStudio } = await import("./atelier-model.js?v=unboxing-pace-1");
+    const { mountScentStudio } = await import("./atelier-model.js?v=gallery-fit-1");
     if (session !== current || !dialog.open || scentMotion.matches) return;
     studio = mountScentStudio(viewer, scent, showScentNotes, () => {
       if (session !== current || !dialog.open) return;
@@ -190,7 +190,7 @@ async function loadStudio(scent, current) {
       useStillStudio();
       if (shouldReveal) showScentNotes();
     });
-    labelSpray("Spray me");
+    labelSpray("Spray to reveal notes");
   } catch {
     if (session === current) useStillStudio();
   }
@@ -232,7 +232,7 @@ function openScent(scent, source) {
   viewer.classList.remove("has-campaign-reveal");
   reveal.hidden = true;
   sprayButton.disabled = false;
-  labelSpray(scentMotion.matches ? "View scent notes" : "Spray me");
+  labelSpray(scentMotion.matches ? "View scent notes" : "Spray to reveal notes");
   const art = dialog.querySelector(".scent-art");
   art.removeAttribute("src");
   setCardArtwork(art, scent.id);
