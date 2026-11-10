@@ -49,7 +49,6 @@
   inset: 0;
   background: radial-gradient(ellipse at 53% 52%, #dfae745e, #c0844b29 44%, transparent 73%);
 }
-.atelier-poster,
 .atelier-canvas {
   position: absolute;
   inset: 0;
@@ -57,14 +56,23 @@
   width: 100%;
   height: 100%;
 }
-.atelier-poster {
-  object-fit: contain;
-  opacity: .98;
-  mix-blend-mode: multiply;
-  mask-image: radial-gradient(ellipse 51% 48%, #000 54%, #000b 72%, transparent 100%);
+.atelier-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #ffe9cc;
+  font-size: .85rem;
+  text-shadow: 0 2px 12px #160e09;
+  visibility: hidden;
+  opacity: 0;
+}
+.atelier-stage.is-preparing .atelier-loading {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity .2s .28s ease-out;
 }
 .atelier-canvas { visibility: hidden }
-.atelier-stage.is-rendered .atelier-poster { visibility: hidden }
 .atelier-stage.is-rendered .atelier-canvas { visibility: visible }
 .atelier-chapters { grid-column: 1; grid-row: 1 }
 .atelier-chapter {
@@ -72,13 +80,13 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  min-height: 68svh;
+  min-height: 108svh;
   padding-block: 3rem;
 }
-.atelier-chapter:first-child { min-height: 98svh }
+.atelier-chapter:first-child { min-height: 155svh }
 .atelier-chapter:last-child { min-height: 100svh }
-#bottle-mist { min-height: 64svh; padding-block: 1.75rem }
-#bottle-leaf { min-height: 152svh }
+#bottle-mist { min-height: 100svh; padding-block: 1.75rem }
+#bottle-leaf { min-height: 215svh }
 .atelier-chapter h2, .atelier-chapter h3 {
   font-size: clamp(3.65rem, 7.1vw, 6rem);
   font-weight: 500;
@@ -128,14 +136,14 @@
   .atelier-chapters { padding-inline: max(1.25rem, 4.5vw) }
   .atelier-chapter {
     justify-content: flex-start;
-    min-height: 52svh;
+    min-height: 84svh;
     scroll-margin-top: var(--atelier-stage-height);
     padding-block: 1.6rem 2.5rem;
   }
-  .atelier-chapter:first-child { min-height: 69svh }
+  .atelier-chapter:first-child { min-height: 110svh }
   .atelier-chapter:last-child { min-height: calc(100svh - var(--header-height) - var(--atelier-stage-height) + 1rem) }
-  #bottle-mist { min-height: 54svh; padding-block: 1.6rem 1.2rem }
-  #bottle-leaf { min-height: 120svh; padding-block: 1.6rem 1.2rem }
+  #bottle-mist { min-height: 85svh; padding-block: 1.6rem 1.2rem }
+  #bottle-leaf { min-height: 175svh; padding-block: 1.6rem 1.2rem }
   .atelier-chapter h2, .atelier-chapter h3 { font-size: clamp(3.1rem, 11vw, 4.7rem) }
 }
 @media (max-width: 720px) and (prefers-reduced-motion: no-preference) {
@@ -155,7 +163,8 @@
   .header-inner nav a { font-size: .73rem }
 }
 @media (prefers-reduced-motion: reduce) {
-  .atelier-stage { position: relative; height: min(70svh, 38rem) }
+  .atelier-layout { display: block }
+  .atelier-stage { display: none }
   .atelier-chapter, .atelier-chapter:first-child, .atelier-chapter:last-child { min-height: auto; padding-block: 2.2rem; scroll-margin-top: 0 }
   .atelier-liner { display: block }
 }
@@ -255,7 +264,8 @@
   .card-button:hover .card-art, .card-button:focus-visible .card-art { transform: none }
 }
 
-.atelier.is-static .atelier-stage { position: relative; height: min(70svh, 38rem) }
+.atelier.is-static .atelier-layout { display: block }
+.atelier.is-static .atelier-stage { display: none }
 .atelier.is-static .atelier-chapter { min-height: auto; scroll-margin-top: 0 }
 .atelier.is-static .atelier-chapter:not(:first-child):not(:last-child) { display: none }
 @media (prefers-reduced-motion: no-preference) {

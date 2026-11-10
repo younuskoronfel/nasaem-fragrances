@@ -856,7 +856,7 @@ export function mountBottle(exhibit, stage) {
     const before = shownProgress ?? targetProgress;
     const distance = targetProgress - before;
     const frameTime = now - lastFrame;
-    const easing = 1 - Math.exp(-Math.max(12, frameTime) / 89);
+    const easing = 1 - Math.exp(-Math.max(12, frameTime) / 130);
     shownProgress = Math.abs(distance) > .31 || Math.abs(distance) < .00065
       ? targetProgress : before + distance * easing;
     lastFrame = now;
@@ -1008,6 +1008,7 @@ export function mountBottle(exhibit, stage) {
     orbit.update(camera, -.60 + finish * 1.65 + finaleOrbit, smooth(.28, 1, finish) * orbitBlend,
       camera.aspect < 1 ? 1.52 : 1.83);
     renderer.render(scene, camera);
+    stage.classList.remove("is-preparing");
     stage.classList.add("is-rendered");
     if (progress !== targetProgress || selection || circling) schedule();
   }

@@ -1,4 +1,5 @@
 const languageCopy = new Map(`
+Preparing the unboxing…|جارٍ تجهيز فتح العلبة…|Preparando la apertura…
 Cart|السلة|Carrito
 Your cart|سلتك|Tu carrito
 Close cart|إغلاق السلة|Cerrar carrito

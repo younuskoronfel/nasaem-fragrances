@@ -59,7 +59,6 @@ body { background: var(--paper) }
 .atelier-frame::before {
   background: radial-gradient(ellipse at 54% 69%, #a46b3030, transparent 63%);
 }
-.atelier-poster { mix-blend-mode: normal }
 .atelier-controls { padding-bottom: .35rem }
 .atelier-variants, .atelier-scent {
   color: var(--ink);
