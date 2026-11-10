@@ -192,24 +192,6 @@
 .unsubscribe-page h1 { font-size: clamp(2.9rem, 8vw, 4.4rem); color: var(--gold) }
 .unsubscribe-page a { width: fit-content }
 
-.card-page {
-  min-height: 100svh;
-  display: grid;
-  justify-items: center;
-  align-content: center;
-  gap: 1rem;
-  padding: 1.25rem 1rem 2rem;
-  background: radial-gradient(ellipse at top, #533827, #231814 76%);
-  color: #ffedd3;
-}
-.card-page h1 { font: 600 clamp(2.25rem, 6vw, 3.8rem)/1 Cormorant, Georgia, serif; text-align: center }
-.card-page img { width: min(100%, 30rem, 54svh); height: auto; border-radius: .35rem; box-shadow: 0 12px 45px #11090580 }
-.card-page > a { min-height: 2.75rem; display: grid; align-items: center; color: inherit }
-
 .cart-description { margin-top: .22rem; font-size: .85rem; color: var(--muted) }
-.card-page p { max-width: 34rem; text-align: center }
-.card-page > .button { color: #382316 }
-.card-page [hidden] { display: none }
-
 .cart-item-details strong a { text-decoration: none }
 .cart-item-details strong a:hover { text-decoration: underline }

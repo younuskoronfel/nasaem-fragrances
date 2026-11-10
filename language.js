@@ -5,6 +5,12 @@ Your cart|سلتك|Tu carrito
 Close cart|إغلاق السلة|Cerrar carrito
 View fragrance|عرض العطر|Ver perfume
 Return to cart|العودة إلى السلة|Volver al carrito
+Campaign artwork|العمل الفني للعطر|Ilustración del perfume
+Loading artwork…|جارٍ تحميل العمل الفني…|Cargando la ilustración…
+Artwork unavailable. Try again.|العمل الفني غير متاح. حاول مرة أخرى.|Ilustración no disponible. Inténtalo de nuevo.
+Try the interactive bottle|جرّب الزجاجة التفاعلية|Prueba el frasco interactivo
+Black glass Nasaem bottle|زجاجة نسائم من الزجاج الأسود|Frasco Nasaem de vidrio negro
+Amber glass Nasaem bottle|زجاجة نسائم من الزجاج العنبري|Frasco Nasaem de vidrio ámbar
 Fragrance card unavailable|بطاقة العطر غير متاحة|Tarjeta de perfume no disponible
 Your cart is empty|سلتك فارغة|Tu carrito está vacío
 Add a fragrance from the collection to start your selection.|أضف عطراً من المجموعة لتبدأ اختيارك.|Añade un perfume de la colección para empezar tu selección.

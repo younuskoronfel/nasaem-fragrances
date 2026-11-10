@@ -4,22 +4,52 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
-  <title>Fragrance card — Nasaem Fragrances</title>
+  <title>Fragrance — Nasaem Fragrances</title>
   <link rel="icon" href="assets/nasaem-icon.png">
   <link rel="stylesheet" href="styles.css?v=sticky-1">
-  <link rel="stylesheet" href="cart.css?v=card-page-1">
-  <script src="language.js?v=card-page-1" defer></script>
+  <link rel="stylesheet" href="card-page.css?v=portrait-1">
+  <script src="language.js?v=portrait-1" defer></script>
   <script src="scents.js?v=cart-1" defer></script>
   <script src="card-art.js?v=2" defer></script>
-  <script src="card-page.js" defer></script>
+  <script src="card-page.js?v=portrait-1" defer></script>
 </head>
-<body>
-  <main class="card-page">
-    <a href="./?cart=open">Return to cart</a>
-    <h1 dir="auto">Fragrance card unavailable</h1>
-    <img width="1080" height="1350" alt="" hidden>
-    <p hidden></p>
-    <a class="button" hidden>View fragrance</a>
+<body class="fragrance-page">
+  <header class="fragrance-header wrap">
+    <a class="fragrance-back" href="./?cart=open">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20 12H4m6-6-6 6 6 6"/></svg>
+      <span>Return to cart</span>
+    </a>
+    <a class="wordmark" href="./" aria-label="Nasaem Fragrances home">
+      <img src="assets/nasaem-wordmark.webp" width="175" height="228" alt="">
+    </a>
+  </header>
+  <main class="wrap">
+    <h1 class="fragrance-unavailable">Fragrance card unavailable</h1>
+    <article class="fragrance-layout" hidden>
+      <header class="fragrance-intro">
+        <h1 class="fragrance-name" dir="auto"></h1>
+        <p class="fragrance-identity"></p>
+        <p class="fragrance-description"></p>
+      </header>
+      <figure class="fragrance-portrait">
+        <div class="fragrance-frame" id="fragrance-frame">
+          <div class="fragrance-scene">
+            <span class="fragrance-backdrop" aria-hidden="true"></span>
+            <img class="fragrance-bottle" width="560" height="860" alt="">
+          </div>
+          <img class="fragrance-art" width="1080" height="1350" alt="" aria-hidden="true">
+        </div>
+        <figcaption>
+          <button class="fragrance-art-toggle" type="button" aria-pressed="false" aria-controls="fragrance-frame">Campaign artwork</button>
+          <span class="fragrance-art-status" role="status"></span>
+        </figcaption>
+      </figure>
+      <section class="fragrance-notes" aria-labelledby="fragrance-notes-heading">
+        <h2 id="fragrance-notes-heading">Scent notes</h2>
+        <dl></dl>
+        <a class="button fragrance-explore">Try the interactive bottle</a>
+      </section>
+    </article>
   </main>
 </body>
 </html>

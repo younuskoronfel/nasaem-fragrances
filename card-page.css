@@ -1,0 +1,129 @@
+.fragrance-page {
+  min-height: 100svh;
+  color: #ffedd3;
+  background:
+    radial-gradient(ellipse at 75% 0%, #513525 0%, transparent 62%),
+    #1b1411;
+  color-scheme: dark;
+}
+.fragrance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 5.3rem;
+  padding-block: .4rem;
+}
+.fragrance-header .wordmark { width: 3.05rem }
+.fragrance-header .wordmark img { filter: url("assets/wordmark-filter.svg?v=3#champagne-ink") }
+.fragrance-back {
+  display: inline-flex;
+  align-items: center;
+  gap: .65rem;
+  min-height: 2.75rem;
+  color: #f2d4af;
+  font-size: .86rem;
+}
+[dir="rtl"] .fragrance-back svg { transform: scaleX(-1) }
+.fragrance-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr);
+  grid-template-areas: "portrait intro" "portrait notes";
+  grid-template-rows: auto 1fr;
+  column-gap: clamp(2rem, 6vw, 6rem);
+  align-items: start;
+  padding-block: clamp(.8rem, 2vw, 2rem) clamp(2.5rem, 7vw, 6rem);
+}
+.fragrance-intro { grid-area: intro; padding-top: clamp(.6rem, 2vw, 1.8rem) }
+.fragrance-name { font-size: clamp(3.35rem, 6.15vw, 6rem); overflow-wrap: anywhere }
+.fragrance-identity {
+  margin-block: .9rem 1rem;
+  color: #e9bd8c;
+  font-size: .92rem;
+  font-weight: 600;
+}
+.fragrance-description { max-width: 45ch; color: #f1d9bf }
+.fragrance-portrait { grid-area: portrait; margin: 0 }
+.fragrance-frame {
+  position: relative;
+  isolation: isolate;
+  aspect-ratio: 1 / 1.02;
+  max-height: clamp(24rem, calc(100svh - 10rem), 43rem);
+  overflow: hidden;
+  border-radius: .8rem;
+  background: radial-gradient(ellipse at 46% 42%, #62432b, #241712 68%, #170f0d);
+  box-shadow: 0 1.25rem 3rem #11090580;
+}
+.fragrance-scene, .fragrance-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity .36s ease, transform .55s var(--ease);
+}
+.fragrance-backdrop {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  height: 100%;
+  aspect-ratio: 4 / 5;
+  background: url("assets/packaging/scent-backdrops.webp?v=1") 0 0 / 400% 400% no-repeat;
+  mask-image: linear-gradient(90deg, transparent, #000 33%);
+  opacity: .72;
+}
+[dir="rtl"] .fragrance-backdrop { mask-image: linear-gradient(270deg, transparent, #000 33%) }
+.fragrance-scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, #1b100cc4, transparent 43%);
+}
+.fragrance-bottle {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 6%;
+  inset-inline-start: 6%;
+  width: 70%;
+  height: 91%;
+  object-fit: contain;
+  filter: drop-shadow(.45rem .9rem 1.2rem #100905c9);
+}
+.fragrance-art { padding: clamp(.5rem, 2vw, 1.1rem); object-fit: contain; opacity: 0; transform: translateY(.6rem) }
+.shows-artwork .fragrance-art { opacity: 1; transform: none }
+.shows-artwork .fragrance-scene { opacity: 0; transform: scale(.985) }
+.fragrance-portrait figcaption { display: flex; align-items: center; flex-wrap: wrap; gap: 0 .85rem; margin-top: .35rem }
+.fragrance-art-toggle {
+  min-height: 2.75rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #e9bd8c;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: .26em;
+  font-size: .86rem;
+}
+.fragrance-art-toggle[aria-pressed="true"] { color: #fff0d8 }
+.fragrance-art-status { color: #f1d9bf; font-size: .8rem }
+.fragrance-notes { grid-area: notes; padding-top: clamp(1.65rem, 4vw, 3rem) }
+.fragrance-notes h2 { font-size: clamp(1.95rem, 3vw, 2.7rem) }
+.fragrance-notes dl { margin-block: .7rem 1.45rem }
+.fragrance-notes dl div {
+  display: grid;
+  grid-template-columns: minmax(5.25rem, 22%) minmax(0, 1fr);
+  gap: .6rem;
+  padding-block: .68rem;
+  border-bottom: 1px solid #f4cc8e35;
+}
+.fragrance-notes dt { color: #e9bd8c; font-weight: 600 }
+.fragrance-notes dd { margin: 0; color: #ffedd3 }
+.fragrance-explore { background: #f3d2a3; color: #382316 }
+.fragrance-explore:hover { background: #ffe7c5 }
+.fragrance-unavailable { margin-block: 2rem; font-size: clamp(2.3rem, 6vw, 4rem) }
+@media (max-width: 720px) {
+  .fragrance-header { min-height: 4.3rem }
+  .fragrance-layout { grid-template-columns: 1fr; grid-template-areas: "intro" "portrait" "notes"; grid-template-rows: auto }
+  .fragrance-intro { padding-block: 0 1.25rem }
+  .fragrance-frame { max-height: 32rem }
+  .fragrance-identity { margin-block: .6rem .65rem }
+  .fragrance-notes { padding-top: 1.25rem }
+}
