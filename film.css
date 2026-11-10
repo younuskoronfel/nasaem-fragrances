@@ -6,7 +6,7 @@
   isolation: isolate;
   overflow: clip;
   color: #fff0d6;
-  background: var(--paper);
+  background: #100e0e;
 }
 .film-set, .film-set::after, .film-video, .film-light {
   position: absolute;
@@ -15,11 +15,22 @@
   height: 100%;
   pointer-events: none;
 }
-.film-set { z-index: -1 }
+.film-set {
+  z-index: -1;
+  top: var(--header-height);
+  height: auto;
+  overflow: clip;
+}
+@media (min-width: 701px) {
+  .film-set {
+    left: auto;
+    width: min(100%, max(32rem, calc((min(100svh, 68rem) - var(--header-height)) * 2.12)));
+    mask-image: linear-gradient(90deg, transparent, #000 18%);
+  }
+}
 .film-video {
   object-fit: cover;
   object-position: 64% 49%;
-  transform: translate3d(0, calc(var(--film-travel) * 48px), 0) scale(1.08);
 }
 .film-light {
   transform: translate3d(0, calc(var(--film-travel) * 24px), 0) scale(1.08);
@@ -122,9 +133,10 @@
 .journey .journey-inner { padding-block: clamp(3.8rem, 9vw, 7rem); min-height: min(44rem, 96svh) }
 @media (max-width: 700px) {
   .film-hero { min-height: min(52rem, 93svh) }
+  .film-set { bottom: 30% }
   .film-video { object-position: 81% 36% }
   .film-set::after {
-    background: linear-gradient(180deg, #201209bd 0, #26160c16 26%, #27170e27 40%, #21120cda 67%, #100e0e 100%);
+    background: linear-gradient(180deg, #201209bd 0, #26160c16 26%, #27170e27 57%, #21120c9e 84%, #100e0e 100%);
   }
   .film-copy { align-self: end; padding-block: 10rem 5.7rem }
   .film-copy h1 { font-size: clamp(3.4rem, 13.3vw, 6.4rem) }
@@ -134,7 +146,7 @@
   .about-inner h2 { max-width: 13ch }
 }
 @media (prefers-reduced-motion: reduce) {
-  .film-video, .film-light, .film-copy { transform: none }
+  .film-light, .film-copy { transform: none }
 }
 
 /* Small points of candlelight sit around the artwork and text. */
