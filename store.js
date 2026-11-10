@@ -332,7 +332,7 @@ function updateAvailability() {
   const soldOut = isScentSoldOut(inspectedScent?.id);
   dialog.querySelector(".scent-action").hidden = soldOut;
   dialog.querySelector(".scent-availability").hidden = !soldOut;
-  dialog.querySelector(".scent-watch").hidden = !soldOut;
+  dialog.querySelector(".scent-watch").hidden = !soldOut || !emailUpdatesAvailable;
 }
 
 document.addEventListener("nasaem:availability", updateAvailability);

@@ -10,6 +10,9 @@ const news = account.querySelector(".account-updates input");
 const watches = account.querySelector(".account-watches");
 const stock = new Map();
 const accountConfigured = nasaemAccountConfig.url.startsWith("https://") && nasaemAccountConfig.publishableKey.startsWith("sb_publishable_");
+const emailSignInAvailable = accountConfigured && nasaemAccountConfig.emailSignIn === true;
+const googleSignInAvailable = accountConfigured && nasaemAccountConfig.googleSignIn === true;
+const emailUpdatesAvailable = (emailSignInAvailable || googleSignInAvailable) && nasaemAccountConfig.emailUpdates === true;
 let accountReady;
 let accountClient;
 let accountUser;
@@ -59,16 +62,19 @@ function prepareAccount() {
 }
 
 function showAccount() {
-  unavailable.hidden = Boolean(accountClient);
-  googleButton.hidden = !nasaemAccountConfig.googleSignIn || !accountClient || Boolean(accountUser || requestedEmail);
-  emailForm.hidden = !accountClient || Boolean(accountUser || requestedEmail);
-  codeForm.hidden = !accountClient || Boolean(accountUser) || !requestedEmail;
+  unavailable.hidden = Boolean(accountUser || (accountClient && (emailSignInAvailable || googleSignInAvailable)));
+  googleButton.hidden = !googleSignInAvailable || !accountClient || Boolean(accountUser || requestedEmail);
+  emailForm.hidden = !emailSignInAvailable || !accountClient || Boolean(accountUser || requestedEmail);
+  codeForm.hidden = !emailSignInAvailable || !accountClient || Boolean(accountUser) || !requestedEmail;
   profile.hidden = !accountClient || !accountUser;
+  profile.querySelector(".account-email-settings").hidden = !emailUpdatesAvailable;
 }
 
 async function refreshAccount() {
   showAccount();
   if (!accountUser) return;
+  profile.querySelector(".account-address").textContent = accountUser.email;
+  if (!emailUpdatesAvailable) return;
   const userId = accountUser.id;
   const [settings, alerts] = await Promise.all([
     accountClient.from("email_preferences").select("news").eq("user_id", userId).maybeSingle(),
@@ -79,7 +85,6 @@ async function refreshAccount() {
     accountMessage("We couldn’t update your account. Please try again.");
     return;
   }
-  profile.querySelector(".account-address").textContent = accountUser.email;
   news.checked = Boolean(settings.data?.news);
   watches.replaceChildren(...alerts.data.map(({ scent_id }) => {
     const name = scents.find(scent => scent.id === scent_id)?.name ?? scent_id;
@@ -104,7 +109,7 @@ async function refreshAccount() {
 }
 
 async function saveRestockRequest() {
-  if (!restockRequest || !accountUser) return;
+  if (!emailUpdatesAvailable || !restockRequest || !accountUser) return;
   const scentId = restockRequest;
   const scent = scents.find(({ id }) => id === scentId);
   const { error } = await accountClient.from("restock_watches")
@@ -143,7 +148,7 @@ account.addEventListener("close", () => {
 });
 
 googleButton.addEventListener("click", async () => {
-  if (!accountClient || !nasaemAccountConfig.googleSignIn) return;
+  if (!accountClient || !googleSignInAvailable) return;
   googleButton.disabled = true;
   accountMessage();
   try {
@@ -159,6 +164,7 @@ googleButton.addEventListener("click", async () => {
 
 emailForm.addEventListener("submit", async event => {
   event.preventDefault();
+  if (!emailSignInAvailable || !accountClient) return;
   const button = emailForm.querySelector("button");
   const email = emailForm.elements.email.value.trim();
   button.disabled = true;
@@ -179,6 +185,7 @@ emailForm.addEventListener("submit", async event => {
 
 codeForm.addEventListener("submit", async event => {
   event.preventDefault();
+  if (!emailSignInAvailable || !accountClient || !requestedEmail) return;
   const button = codeForm.querySelector('[type="submit"]');
   button.disabled = true;
   try {
@@ -192,7 +199,7 @@ codeForm.addEventListener("submit", async event => {
     accountMessage();
     await saveRestockRequest();
     await refreshAccount();
-    if (account.open) news.focus();
+    if (account.open) (emailUpdatesAvailable ? news : profile.querySelector(".account-signout")).focus();
   } catch {
     accountMessage("This code couldn’t be verified. Check it or request a new one.");
   } finally {
@@ -209,7 +216,7 @@ account.querySelector(".account-change-email").addEventListener("click", () => {
 });
 
 news.addEventListener("change", async () => {
-  if (!accountUser) return;
+  if (!emailUpdatesAvailable || !accountUser) return;
   const checked = news.checked;
   news.disabled = true;
   try {
@@ -233,7 +240,7 @@ account.querySelector(".account-signout").addEventListener("click", async () => 
   emailForm.reset();
   accountMessage();
   showAccount();
-  emailForm.elements.email.focus();
+  (emailSignInAvailable ? emailForm.elements.email : googleButton).focus();
 });
 
 document.addEventListener("nasaem:language", () => {
@@ -242,7 +249,7 @@ document.addEventListener("nasaem:language", () => {
 });
 if (accountConfigured) prepareAccount().catch(() => {});
 
-if (accountConfigured && nasaemAccountConfig.googleSignIn && new URL(location.href).searchParams.get("auth") === "google") {
+if (googleSignInAvailable && new URL(location.href).searchParams.get("auth") === "google") {
   document.addEventListener("DOMContentLoaded", async () => {
     let scentId;
     try {

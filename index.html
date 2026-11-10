@@ -40,10 +40,10 @@
   <script src="scents.js?v=cart-1" defer></script>
   <script src="card-art.js?v=2" defer></script>
   <script src="cart.js?v=commerce-1" defer></script>
-  <script src="account-config.js?v=commerce-1" defer></script>
-  <script src="account.js?v=commerce-1" defer></script>
+  <script src="account-config.js?v=supabase-1" defer></script>
+  <script src="account.js?v=supabase-1" defer></script>
   <script src="checkout.js?v=1" defer></script>
-  <script src="store.js?v=unboxing-pace-1" defer></script>
+  <script src="store.js?v=supabase-1" defer></script>
   <script src="journey.js?v=card-art-1" defer></script>
   <script type="module" src="atelier.js?v=unboxing-pace-1"></script>
   <script src="scroll-art.js?v=gold-dust-2" defer></script>
@@ -377,14 +377,16 @@
         </form>
         <section class="account-profile" hidden>
           <p class="account-address" dir="auto"></p>
-          <h3>Email preferences</h3>
-          <label class="account-updates">
-            <input type="checkbox">
-            <span>Send me fragrance launches and Nasaem news.</span>
-          </label>
-          <h3>Restock alerts</h3>
-          <p class="account-no-watches">You have no restock alerts.</p>
-          <ul class="account-watches"></ul>
+          <div class="account-email-settings" hidden>
+            <h3>Email preferences</h3>
+            <label class="account-updates">
+              <input type="checkbox">
+              <span>Send me fragrance launches and Nasaem news.</span>
+            </label>
+            <h3>Restock alerts</h3>
+            <p class="account-no-watches">You have no restock alerts.</p>
+            <ul class="account-watches"></ul>
+          </div>
           <button class="text-link account-signout" type="button">Sign out</button>
         </section>
         <p class="account-status" role="status"></p>

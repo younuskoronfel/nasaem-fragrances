@@ -4,6 +4,11 @@ GitHub Pages continues to serve the storefront. Supabase provides passwordless e
 
 ## Connect the services
 
+The hosted project is `xuzdtgxpcoinbwojglwp`. Its initial schema was applied through the SQL Editor and all sixteen inventory rows were verified. When first linking the CLI, mark migration `202611090001` as already applied using `supabase migration repair 202611090001 --status applied` before pushing subsequent migrations.
+
+Use Resend for both Auth SMTP and the email worker. After verifying an owned domain in Resend, configure [SMTP](https://resend.com/docs/send-with-smtp) in Supabase with host `smtp.resend.com`, port `465`, username `resend`, and a Resend sending key as the password. Set a sender on the verified domain. Leave `emailSignIn` off until both templates and real code delivery have been tested. Leave `emailUpdates` off until the scheduled worker and unsubscribe flow are tested.
+
+
 1. Create the Supabase project and verify an owned sending domain with your email provider. Configure [custom SMTP](https://supabase.com/docs/guides/auth/auth-smtp) in Supabase Auth so sign-in codes can reach customers. Enable email signups and confirmation, and put `{{ .Token }}` in the confirmation and magic-link email templates in place of the sign-in link. Test that a brand-new email address and a returning account both receive a usable code.
 2. Link the Supabase CLI to the project and run `supabase db push`. The migration creates all sixteen fragrances with unknown stock status. Apply `supabase/tests/stock_alerts.sql` on an isolated test project to verify stock transitions and the queue lease.
 3. Set the Edge Function secrets `RESEND_API_KEY`, `NASAEM_FROM_EMAIL`, `NASAEM_OWNER_EMAIL`, `NASAEM_STOREFRONT_URL` (include the trailing slash), and `NASAEM_JOBS_KEY` (a separate randomly generated secret). Deploy `supabase functions deploy fragrance-email`. The sender must be on your verified domain. Keep these values in the provider dashboards or your secret store.
