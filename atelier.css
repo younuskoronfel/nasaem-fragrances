@@ -80,13 +80,13 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  min-height: 108svh;
+  min-height: 86svh;
   padding-block: 3rem;
 }
-.atelier-chapter:first-child { min-height: 155svh }
+.atelier-chapter:first-child { min-height: 124svh }
 .atelier-chapter:last-child { min-height: 100svh }
-#bottle-mist { min-height: 100svh; padding-block: 1.75rem }
-#bottle-leaf { min-height: 215svh }
+#bottle-mist { min-height: 80svh; padding-block: 1.75rem }
+#bottle-leaf { min-height: 172svh }
 .atelier-chapter h2, .atelier-chapter h3 {
   font-size: clamp(3.65rem, 7.1vw, 6rem);
   font-weight: 500;
@@ -136,14 +136,14 @@
   .atelier-chapters { padding-inline: max(1.25rem, 4.5vw) }
   .atelier-chapter {
     justify-content: flex-start;
-    min-height: 84svh;
+    min-height: 67svh;
     scroll-margin-top: var(--atelier-stage-height);
     padding-block: 1.6rem 2.5rem;
   }
-  .atelier-chapter:first-child { min-height: 110svh }
+  .atelier-chapter:first-child { min-height: 88svh }
   .atelier-chapter:last-child { min-height: calc(100svh - var(--header-height) - var(--atelier-stage-height) + 1rem) }
-  #bottle-mist { min-height: 85svh; padding-block: 1.6rem 1.2rem }
-  #bottle-leaf { min-height: 175svh; padding-block: 1.6rem 1.2rem }
+  #bottle-mist { min-height: 68svh; padding-block: 1.6rem 1.2rem }
+  #bottle-leaf { min-height: 140svh; padding-block: 1.6rem 1.2rem }
   .atelier-chapter h2, .atelier-chapter h3 { font-size: clamp(3.1rem, 11vw, 4.7rem) }
 }
 @media (max-width: 720px) and (prefers-reduced-motion: no-preference) {
