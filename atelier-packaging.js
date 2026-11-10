@@ -341,7 +341,7 @@ export function buildCrown(cap, part, gold, polished) {
     return Math.pow(.5 + .5 * Math.cos(angle * 8), 5);
   }
   function crownPoint(angle, height, relief = 0) {
-    const radius = (.35 + .13 * height) * crestRadius(angle, height) + relief;
+    const radius = (.344 + .138 * (1 - (1 - height) ** 2.1)) * crestRadius(angle, height) + relief;
     const y = -.301 + .65 * height + .119 * crestHeight(angle) * height ** 6;
     return new Vector3(Math.cos(angle) * radius, y, Math.sin(angle) * radius);
   }
@@ -359,7 +359,7 @@ export function buildCrown(cap, part, gold, polished) {
   part(cap, new CylinderGeometry(.365, .397, .108, 72), stamped, 0, -.332, 0);
   part(cap, new CylinderGeometry(.369, .369, .018, 72), champagne, 0, -.275, 0);
   part(cap, new CylinderGeometry(.395, .399, .017, 72), gold, 0, -.385, 0);
-  part(cap, new SphereGeometry(.436, 48, 24), dark, 0, .28, 0).scale.y = .47;
+  part(cap, new SphereGeometry(.422, 48, 24), dark, 0, .321, 0).scale.y = .52;
   for (let i = 0; i < 8; i++) {
     const angle = i * Math.PI / 4;
     const points = [[.14, -.20], [.33, -.08], [.54, .10], [.73, .09], [.98, 0]]

@@ -26,31 +26,31 @@
   <link rel="canonical" href="https://younuskoronfel.github.io/nasaem-fragrances/">
   <title>Nasaem Fragrances — Where your soul finds its scent</title>
   <link rel="icon" href="assets/nasaem-icon.png" type="image/png" sizes="192x192">
-  <link rel="preload" href="assets/hero/nasaem-poster.webp" as="image" fetchpriority="high">
+  <link rel="preload" href="assets/hero/nasaem-poster.jpg" as="image" fetchpriority="high">
   <link rel="preload" href="assets/cormorant.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=cart-1">
-  <link rel="stylesheet" href="atelier.css?v=citrus-lens-1">
+  <link rel="stylesheet" href="styles.css?v=sticky-1">
+  <link rel="stylesheet" href="atelier.css?v=sticky-1">
   <link rel="stylesheet" href="crystal.css?v=clear-water-2">
-  <link rel="stylesheet" href="film.css?v=glitter-3">
-  <link rel="stylesheet" href="gallery.css?v=studio-finish-1">
-  <link rel="stylesheet" href="cart.css?v=studio-finish-1">
-  <script src="language.js?v=studio-finish-1" defer></script>
+  <link rel="stylesheet" href="film.css?v=sticky-1">
+  <link rel="stylesheet" href="gallery.css?v=sticky-1">
+  <link rel="stylesheet" href="cart.css?v=card-page-1">
+  <script src="language.js?v=card-page-1" defer></script>
   <script src="scents.js?v=cart-1" defer></script>
   <script src="card-art.js?v=2" defer></script>
-  <script src="cart.js?v=studio-finish-1" defer></script>
+  <script src="cart.js?v=card-page-1" defer></script>
   <script src="account-config.js?v=1" defer></script>
   <script src="account.js?v=1" defer></script>
-  <script src="store.js?v=studio-finish-2" defer></script>
+  <script src="store.js?v=reference-flacon-1" defer></script>
   <script src="journey.js?v=card-art-1" defer></script>
-  <script type="module" src="atelier.js?v=studio-finish-2"></script>
+  <script type="module" src="atelier.js?v=reference-flacon-1"></script>
   <script src="scroll-art.js?v=gold-dust-2" defer></script>
   <script src="glitter.js?v=3" defer></script>
   <script src="hero-film.js?v=language-1" defer></script>
 </head>
-<body>
+<body id="top">
   <div class="gold-dust" aria-hidden="true"></div>
   <a class="skip" href="#main">Skip to content</a>
-  <header class="site-header" id="top">
+  <header class="site-header">
     <div class="header-inner wrap">
       <a class="wordmark" href="#top" aria-label="Nasaem Fragrances home"><img src="assets/nasaem-wordmark.webp" width="175" height="228" alt=""></a>
       <nav aria-label="Main navigation">
@@ -79,7 +79,7 @@
   <main id="main">
     <section class="film-hero" aria-labelledby="hero-title">
       <div class="film-set" aria-hidden="true">
-        <video class="film-video" data-src="assets/hero/nasaem-film.mp4" poster="assets/hero/nasaem-poster.webp" autoplay muted loop playsinline preload="none" width="1920" height="1080"></video>
+        <video class="film-video" data-src="assets/hero/nasaem-film.mp4?v=reference-flacon-1" poster="assets/hero/nasaem-poster.jpg" autoplay muted loop playsinline preload="none" width="1920" height="1080"></video>
         <div class="film-light"></div>
       </div>
       <div class="film-copy wrap">
@@ -142,7 +142,7 @@
       <div class="atelier-layout wrap">
         <div class="atelier-stage">
           <div class="atelier-frame" aria-hidden="true">
-            <img class="atelier-poster" src="assets/hero/nasaem-poster.webp" alt="" width="1920" height="1080" loading="lazy" decoding="async">
+            <img class="atelier-poster" src="assets/hero/nasaem-poster.jpg" alt="" width="1920" height="1080" loading="lazy" decoding="async">
             <canvas class="atelier-canvas"></canvas>
             <div class="orbit-labels" hidden></div>
           </div>
@@ -264,6 +264,7 @@
       <a class="wordmark" href="#top" aria-label="Nasaem Fragrances, back to top"><img src="assets/nasaem-wordmark.webp" width="175" height="228" alt=""></a>
       <a href="#collection">Collection</a>
       <a href="https://www.instagram.com/nasaem.fragrances/">@nasaem.fragrances</a>
+      <a href="mailto:nasaem.fragrances@gmail.com" dir="ltr">nasaem.fragrances@gmail.com</a>
     </div>
   </footer>
 
@@ -342,15 +343,6 @@
         <div class="cart-notice" role="status"></div>
       </div>
     </div>
-  </dialog>
-  <dialog class="cart-card-preview" aria-labelledby="cart-card-title">
-    <h2 id="cart-card-title"></h2>
-    <form method="dialog">
-      <button class="close" type="submit" aria-label="Close card preview" autofocus>
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
-      </button>
-    </form>
-    <img width="768" height="960" alt="">
   </dialog>
   <dialog class="cart-dialog account-dialog" id="account" aria-labelledby="account-title">
     <div class="cart-shell">

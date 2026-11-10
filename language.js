@@ -2,7 +2,9 @@ const languageCopy = new Map(`
 Cart|السلة|Carrito
 Your cart|سلتك|Tu carrito
 Close cart|إغلاق السلة|Cerrar carrito
-Close card preview|إغلاق معاينة البطاقة|Cerrar vista de la tarjeta
+View fragrance|عرض العطر|Ver perfume
+Return to cart|العودة إلى السلة|Volver al carrito
+Fragrance card unavailable|بطاقة العطر غير متاحة|Tarjeta de perfume no disponible
 Your cart is empty|سلتك فارغة|Tu carrito está vacío
 Add a fragrance from the collection to start your selection.|أضف عطراً من المجموعة لتبدأ اختيارك.|Añade un perfume de la colección para empezar tu selección.
 Selected fragrances|العطور المختارة|Perfumes seleccionados
@@ -286,14 +288,14 @@ function setSiteLanguage(value) {
   siteLanguage = ["en", "ar", "es"].includes(value) ? value : "en";
   document.documentElement.lang = siteLanguage;
   document.documentElement.dir = siteLanguage === "ar" ? "rtl" : "ltr";
-  languageSelect.value = siteLanguage;
+  if (languageSelect) languageSelect.value = siteLanguage;
   staticCopy.forEach(update => update());
   document.dispatchEvent(new Event("nasaem:language"));
 }
 
 try { setSiteLanguage(localStorage.getItem("nasaem-language")); } catch {}
-languageSelect.hidden = false;
-languageSelect.addEventListener("change", () => {
+if (languageSelect) languageSelect.hidden = false;
+languageSelect?.addEventListener("change", () => {
   setSiteLanguage(languageSelect.value);
   try { localStorage.setItem("nasaem-language", siteLanguage); } catch {}
 });

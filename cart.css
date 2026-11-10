@@ -87,27 +87,6 @@
 }
 .cart-thumb img { width: 100%; height: 100%; object-fit: cover }
 .cart-thumb:hover img { opacity: .86 }
-.cart-card-preview {
-  padding: .75rem;
-  border: 1px solid var(--seam);
-  border-radius: .8rem;
-  color: var(--ink);
-  background: var(--surface);
-  box-shadow: 0 20px 70px #0805039c;
-}
-.cart-card-preview::backdrop { background: #100b09a8 }
-.cart-card-preview h2 {
-  font-size: 1.65rem;
-  padding: .25rem 3.25rem .75rem .25rem;
-}
-.cart-card-preview > img {
-  display: block;
-  width: min(26rem, 84vw, 60svh);
-  height: auto;
-  aspect-ratio: 4 / 5;
-  border-radius: .4rem;
-  background: var(--surface-raised);
-}
 .cart-item-details strong { display: block; font: 600 1.65rem/1.08 Cormorant, Georgia, serif; overflow-wrap: anywhere }
 .cart-item-details > span { color: var(--muted); font-size: .83rem }
 .cart-item-controls { display: flex; flex-wrap: wrap; gap: .25rem .85rem; align-items: center; margin-top: .4rem }
@@ -137,7 +116,7 @@
 .cart-photos { display: grid; grid-template-columns: repeat(auto-fit, minmax(5.7rem, 1fr)); gap: .5rem }
 .cart-photos figure { margin: 0; min-width: 0 }
 .cart-photos :is(img, .packaging-interior) { display: block; width: 100%; height: auto; aspect-ratio: 1; border-radius: .4rem }
-.packaging-interior { background-image: url(assets/packaging/interiors.jpg?v=studio-2); background-size: 400% 400% }
+.packaging-interior { background-image: url(assets/packaging/interiors.jpg?v=reference-flacon-1); background-size: 400% 400% }
 .cart-preview-picker { display: flex; flex-wrap: wrap; gap: .4rem; margin-block: .25rem .65rem }
 .cart-preview-picker button {
   min-height: 2.75rem; padding-inline: .72rem; border: 1px solid var(--seam); border-radius: 2rem;
@@ -212,3 +191,25 @@
 .unsubscribe-page img { width: 3.5rem; height: auto; border-radius: .45rem }
 .unsubscribe-page h1 { font-size: clamp(2.9rem, 8vw, 4.4rem); color: var(--gold) }
 .unsubscribe-page a { width: fit-content }
+
+.card-page {
+  min-height: 100svh;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 1rem;
+  padding: 1.25rem 1rem 2rem;
+  background: radial-gradient(ellipse at top, #533827, #231814 76%);
+  color: #ffedd3;
+}
+.card-page h1 { font: 600 clamp(2.25rem, 6vw, 3.8rem)/1 Cormorant, Georgia, serif; text-align: center }
+.card-page img { width: min(100%, 30rem, 54svh); height: auto; border-radius: .35rem; box-shadow: 0 12px 45px #11090580 }
+.card-page > a { min-height: 2.75rem; display: grid; align-items: center; color: inherit }
+
+.cart-description { margin-top: .22rem; font-size: .85rem; color: var(--muted) }
+.card-page p { max-width: 34rem; text-align: center }
+.card-page > .button { color: #382316 }
+.card-page [hidden] { display: none }
+
+.cart-item-details strong a { text-decoration: none }
+.cart-item-details strong a:hover { text-decoration: underline }

@@ -4,6 +4,7 @@
 
 :root {
   color-scheme: light;
+  --header-height: 7.05rem;
   --silk: #f0d4a7;
   --paper: #f4dfbe;
   --ink: #382316;
@@ -32,11 +33,13 @@ button, summary { cursor:pointer }
 .skip { position:fixed; top:.5rem; left:.5rem; z-index:10; background:var(--paper); padding:.5rem 1rem; transform:translateY(-180%) }
 .skip:focus { transform:none }
 
-.site-header { position:absolute; z-index:2; inset:0 0 auto }
-.header-inner { height:7.05rem; display:grid; grid-template-columns:1fr auto 1fr; gap:1rem; align-items:center }
+.site-header { position:fixed; z-index:2; inset:0 0 auto }
+:is(#main, #about, #collection, #journey, #atelier) { scroll-margin-block-start: var(--header-height) }
+@media (max-width: 720px) { :root { --header-height: 6.2rem } }
+.header-inner { height:var(--header-height); display:grid; grid-template-columns:1fr auto 1fr; gap:1rem; align-items:center }
 .wordmark { display:block; width:5rem }
 .wordmark img { height:auto; filter:url(assets/wordmark-filter.svg?v=2#gold-ink) }
-.header-inner nav { display:flex; gap:clamp(1.3rem,4vw,3.1rem); align-items:center }
+.header-inner nav { white-space:nowrap; display:flex; gap:clamp(1.3rem,4vw,3.1rem); align-items:center }
 .header-inner nav a,.header-social,.footer a:not(.wordmark) { text-decoration:none; font-weight:600; font-size:.9rem }
 .header-inner nav a:hover,.header-social:hover,.footer a:hover { text-decoration:underline }
 .header-social { justify-self:end; display:flex; align-items:center; gap:.55rem }
@@ -183,7 +186,7 @@ details[open] .plus::after { transform:none }
   .guide-inner { grid-template-columns:1fr; gap:1.9rem }
   .guide-mark { top:.1rem; right:5% }
   .footer-inner { display:grid; grid-template-columns:1fr auto; gap:.85rem }
-  .footer-inner .wordmark { grid-row:span 2 }
+  .footer-inner .wordmark { grid-row:span 3 }
   .dialog-shell { grid-template-columns:1fr }
   .scent-art { aspect-ratio:4/5; height:auto; max-height:45svh }
   .scent-copy { padding:1.25rem 1.4rem 1.65rem }
@@ -213,11 +216,11 @@ details[open] .plus::after { transform:none }
 [dir="rtl"] :is(.card-text strong,.match strong) { font-family:Cormorant, Georgia, serif }
 [dir="rtl"] .art-veil { transform:scaleX(-1) }
 [dir="rtl"] .close { inset-inline-end:.75rem; right:auto }
-@media (max-width:620px) {
+@media (max-width:720px) {
   .header-inner {
     grid-template-columns:auto 1fr auto;
     grid-template-areas:"mark . tools" "nav nav nav";
-    height:auto;
+    height:var(--header-height);
     padding-block:.35rem;
     row-gap:0;
   }

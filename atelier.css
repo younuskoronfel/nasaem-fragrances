@@ -26,12 +26,12 @@
 }
 .atelier-stage {
   position: sticky;
-  top: 0;
+  top: var(--header-height);
   grid-column: 2;
   grid-row: 1;
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
-  height: 100svh;
+  height: calc(100svh - var(--header-height));
   max-height: 64rem;
   margin: 0;
   align-self: start;
@@ -133,7 +133,7 @@
     padding-block: 1.6rem 2.5rem;
   }
   .atelier-chapter:first-child { min-height: 69svh }
-  .atelier-chapter:last-child { min-height: calc(100svh - var(--atelier-stage-height) + 1rem) }
+  .atelier-chapter:last-child { min-height: calc(100svh - var(--header-height) - var(--atelier-stage-height) + 1rem) }
   #bottle-mist { min-height: 54svh; padding-block: 1.6rem 1.2rem }
   #bottle-leaf { min-height: 120svh; padding-block: 1.6rem 1.2rem }
   .atelier-chapter h2, .atelier-chapter h3 { font-size: clamp(3.1rem, 11vw, 4.7rem) }
@@ -141,7 +141,7 @@
 @media (max-width: 720px) and (prefers-reduced-motion: no-preference) {
   .atelier:not(.is-static) .atelier-chapter:not(:last-child) :is(h2, h3) {
     position: sticky;
-    top: calc(var(--atelier-stage-height) + 1rem);
+    top: calc(var(--header-height) + var(--atelier-stage-height) + 1rem);
   }
 }
 @media (max-width: 720px) and (max-height: 500px) {

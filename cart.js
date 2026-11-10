@@ -1,5 +1,4 @@
 const cart = document.querySelector("#cart");
-const cartCardPreview = document.querySelector(".cart-card-preview");
 const cartToggle = document.querySelector(".cart-toggle");
 const cartItems = cart.querySelector(".cart-items");
 const cartSummary = cart.querySelector(".cart-summary");
@@ -110,7 +109,7 @@ cartPreviewPicker.addEventListener("click", event => {
 });
 
 function bottleStill(scent) {
-  return scent.collection === "Masculine" ? "assets/packaging/onyx-bottle.webp" : "assets/packaging/amber-bottle.webp";
+  return scent.collection === "Masculine" ? "assets/packaging/onyx-bottle.webp?v=reference-flacon-1" : "assets/packaging/amber-bottle.webp?v=reference-flacon-1";
 }
 
 function renderCart() {
@@ -132,12 +131,13 @@ function renderCart() {
     const row = document.createElement("li");
     row.dataset.scentId = id;
     row.innerHTML = `
-      <button class="cart-thumb" type="button" aria-haspopup="dialog">
+      <a class="cart-thumb">
         <img width="72" height="90" alt="">
-      </button>
+      </a>
       <div class="cart-item-details">
-        <strong dir="auto"></strong>
+        <strong dir="auto"><a></a></strong>
         <span></span>
+        <p class="cart-description"></p>
         <div class="cart-item-controls">
           <div class="cart-stepper">
             <button type="button" data-cart-action="less"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10h10"/></svg></button>
@@ -150,15 +150,11 @@ function renderCart() {
     const thumb = row.querySelector(".cart-thumb");
     thumb.setAttribute("aria-label", t("{name} campaign artwork", { name: scent.name }));
     setCardArtwork(thumb.querySelector("img"), id);
-    thumb.addEventListener("click", () => {
-      const art = cartCardPreview.querySelector("img");
-      art.removeAttribute("src");
-      art.alt = t("{name} campaign artwork", { name: scent.name });
-      setCardArtwork(art, id, true);
-      cartCardPreview.querySelector("h2").textContent = scent.name;
-      cartCardPreview.showModal();
-    });
-    row.querySelector("strong").textContent = scent.name;
+    thumb.href = `card.html?scent=${encodeURIComponent(id)}`;
+    const product = row.querySelector("strong a");
+    product.textContent = scent.name;
+    product.href = `./?scent=${encodeURIComponent(id)}#collection`;
+    row.querySelector(".cart-description").textContent = scentText(scent, "description");
     const soldOut = isScentSoldOut(id);
     row.querySelector("span").textContent = soldOut ? `${t(scent.collection)} · ${t("Sold out")}` : t(scent.collection);
     row.querySelector("bdi").textContent = new Intl.NumberFormat(siteLanguage).format(quantity);
@@ -225,3 +221,10 @@ addEventListener("storage", event => {
   renderCart();
 });
 renderCart();
+
+const cartReturn = new URL(location.href);
+if (cartReturn.searchParams.get("cart") === "open") {
+  cartReturn.searchParams.delete("cart");
+  history.replaceState(history.state, "", cartReturn);
+  openCart();
+}

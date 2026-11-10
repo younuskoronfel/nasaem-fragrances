@@ -182,7 +182,7 @@ function useStillStudio() {
 async function loadStudio(scent, current) {
   if (scentMotion.matches) return useStillStudio();
   try {
-    const { mountScentStudio } = await import("./atelier-model.js?v=studio-finish-2");
+    const { mountScentStudio } = await import("./atelier-model.js?v=reference-flacon-1");
     if (session !== current || !dialog.open || scentMotion.matches) return;
     studio = mountScentStudio(viewer, scent, showScentNotes, () => {
       if (session !== current || !dialog.open) return;
@@ -340,3 +340,6 @@ dialog.querySelector(".scent-watch").addEventListener("click", () => {
   dialog.close();
   openAccount(scentOpener, inspectedScent.id);
 });
+
+const linkedScent = cartCatalog.get(new URLSearchParams(location.search).get("scent"));
+if (linkedScent && !cart.open) openScent(linkedScent);

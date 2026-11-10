@@ -5,7 +5,7 @@ import {
   PlaneGeometry, PMREMGenerator, Points, Quaternion, Scene, ShaderMaterial, SphereGeometry,
   SRGBColorSpace, TubeGeometry, Vector3, WebGLRenderer
 } from "./assets/atelier/three.js";
-import { buildCrown, buildPackaging } from "./atelier-packaging.js?v=studio-finish-1";
+import { buildCrown, buildPackaging } from "./atelier-packaging.js?v=reference-flacon-1";
 import { buildMacro } from "./atelier-macro.js?v=citrus-lens-1";
 import { createScentOrbit } from "./scent-orbit.js?v=language-1";
 
@@ -145,6 +145,8 @@ const plateFragment = `
   vec3 linearColor(vec3 rgb) {
     return pow(rgb, vec3(2.2));
   }
+
+  float gaussian(float x) { return exp(-x * x); }
 
   vec3 studioPlate(vec2 point) {
     vec2 scenePoint = sceneRect.xy + point * sceneRect.zw;
@@ -286,16 +288,17 @@ function makeLabel(redraw, scentName) {
     ink.clearRect(0, 0, art.width, art.height);
     if (mark) {
       ink.imageSmoothingQuality = "high";
-      ink.drawImage(mark, 7, 55, 158, 111, 79, 50, 610, 424);
-      const glyph = ink.getImageData(79, 50, 610, 424);
+      // Keep the full alif and use the same ink mask as the header wordmark.
+      ink.drawImage(mark, 8, 53, 157, 115, 59, 14, 650, 476);
+      const glyph = ink.getImageData(59, 14, 650, 476);
       for (let i = 0; i < glyph.data.length; i += 4) {
-        const coverage = clamp((190 - glyph.data[i]) / 52);
+        const coverage = clamp(2.50 - 2.8 * glyph.data[i] / 255);
         glyph.data[i] = 242;
         glyph.data[i + 1] = 195;
         glyph.data[i + 2] = 113;
         glyph.data[i + 3] = coverage * 255;
       }
-      ink.putImageData(glyph, 79, 50);
+      ink.putImageData(glyph, 59, 14);
     }
     ink.fillStyle = "#edc175";
     engrave("NASAEM", 573, "66px Georgia", 20);
@@ -529,7 +532,7 @@ function contactShadow(scene, width, depth, squared = false) {
       void main() {
         vec2 point = abs(footprint);
         float round = length(point);
-        float block = pow(pow(point.x, 4.) + pow(point.y, 4.), .25);
+        float block = pow(pow(abs(point.x), 4.) + pow(abs(point.y), 4.), .25);
         float radius = mix(round, block, square);
         float core = exp(-radius * radius * 11.);
         float penumbra = exp(-radius * radius * 3.5);
@@ -582,7 +585,7 @@ function buildFlacon(scene, optics, canvas, redraw, scentName) {
     shader.fragmentShader = "varying vec3 glassLocal; uniform float bottleStyle; uniform float beddingLight;\n" + plateFragment + shader.fragmentShader;
     shader.fragmentShader = shader.fragmentShader.replace("#include <transmission_fragment>", `
       #include <transmission_fragment>
-      float top = smoothstep(-.98, .78, glassLocal.y);
+      float top = smoothstep(-.86, .87, glassLocal.y);
       float skirt = smoothstep(.50, .81, abs(glassLocal.x));
       float heel = 1. - smoothstep(-1.20, -.78, glassLocal.y);
       vec3 amberDye = vec3(.155, .052, .017);
@@ -594,33 +597,37 @@ function buildFlacon(scene, optics, canvas, redraw, scentName) {
       float handPolish = sin(glassLocal.x * 33. + glassLocal.y * 16.) * sin(glassLocal.y * 42.);
       vec2 bend = normal.xy * .068 + vec2(glassLocal.x * .028 + handPolish * .0015, .082);
       vec3 throughHeel = studioPlate(screen + bend);
-      float secondaryRim = exp(-pow(abs((glassLocal.y + 1.118) * 26.), 2.));
+      float secondaryRim = gaussian((glassLocal.y + 1.118) * 26.);
       float neutralHeel = dot(throughHeel, vec3(.2126, .7152, .0722));
       throughHeel = mix(throughHeel * vec3(1., .98, .94), mix(throughHeel, vec3(neutralHeel), .58), bottleStyle);
       throughHeel *= 1. - secondaryRim * (.54 + .23 * skirt);
-      float window = exp(-pow((glassLocal.x + .35 + .15 * glassLocal.y) * 2.4, 2.));
+      float window = gaussian((glassLocal.x + .35 + .15 * glassLocal.y) * 2.4);
       vec3 crystalLight = mix(vec3(.65, .51, .35), vec3(.53, .56, .61), bottleStyle);
       totalDiffuse = mix(totalDiffuse, throughHeel, .52 * heel);
       totalDiffuse += crystalLight * heel * (.09 + .19 * window);
     `);
     shader.fragmentShader = shader.fragmentShader.replace("#include <opaque_fragment>", `
-      float incidence = max(0., dot(normal, normalize(vViewPosition)));
+      float incidence = clamp(dot(normal, normalize(vViewPosition)), 0., 1.);
       float outline = pow(1. - incidence, 3.0);
       float heelLine = exp(-70. * abs(glassLocal.y + 1.125));
       float bottomLine = exp(-85. * abs(glassLocal.y + 1.294));
       float shoulder = smoothstep(.72, 1.16, glassLocal.y);
       float flute = abs(glassLocal.x) - (.681 - .27 * shoulder);
-      float tallStrip = exp(-pow(flute * 66., 2.));
-      float facetGlint = exp(-pow((flute - .086) * 39., 2.));
-      float darkCrease = exp(-pow((flute + .034) * 58., 2.));
+      float tallStrip = gaussian(flute * 66.);
+      float facetGlint = gaussian((flute - .086) * 39.);
+      float darkCrease = gaussian((flute + .034) * 58.);
       float stripMask = smoothstep(-1.15, -.99, glassLocal.y) * (1. - smoothstep(.65, .91, glassLocal.y));
       vec3 edgeLight = mix(vec3(1., .69, .36), vec3(.85, .92, 1.), bottleStyle);
       outgoingLight *= 1. - darkCrease * stripMask * .15;
       // Warm trim and satin illuminate the clear heel even inside the dark box.
       float bedFade = 1. - smoothstep(-1.31, .34, glassLocal.y);
-      float bedPool = exp(-pow((glassLocal.x - .16) * 1.25, 2.));
-      vec3 reflectedBed = mix(vec3(.61, .33, .13), vec3(.47, .47, .49), bottleStyle);
-      outgoingLight += reflectedBed * beddingLight * bedFade * (.17 + .45 * bedPool + .16 * outline);
+      float bedPool = gaussian((glassLocal.x - .16) * 1.25);
+      vec3 reflectedBed = mix(vec3(.67, .36, .15), vec3(.51, .55, .61), bottleStyle);
+      // A reflected strip and the refracted plate remain visible on a dark set.
+      float heelWindow = gaussian((glassLocal.x + .31 + .16 * glassLocal.y) * 2.7);
+      float glassFloor = bedFade * (.055 + .17 * heelWindow + .10 * outline);
+      outgoingLight += reflectedBed * (glassFloor + beddingLight * bedFade * (.13 + .32 * bedPool));
+      outgoingLight += reflectedBed * heelLine * (.09 + .12 * beddingLight);
       outgoingLight += edgeLight * (outline * .13 + heelLine * .13 + bottomLine * .10
         + (tallStrip * .19 + facetGlint * .052) * stripMask);
       #include <opaque_fragment>
@@ -641,7 +648,7 @@ function buildFlacon(scene, optics, canvas, redraw, scentName) {
     shader.fragmentShader = shader.fragmentShader.replace("#include <opaque_fragment>", `
       vec2 screen = vec2(gl_FragCoord.x / resolution.x, 1. - gl_FragCoord.y / resolution.y);
       float top = smoothstep(-.95, .75, fluidLocal.y);
-      float edge = pow(1. - max(0., dot(normal, normalize(vViewPosition))), 2.);
+      float edge = pow(1. - clamp(dot(normal, normalize(vViewPosition)), 0., 1.), 2.);
       float pathLength = .16 + top * 1.83 + edge * .72;
       vec3 amber = exp(-vec3(.33, .72, 1.57) * pathLength);
       vec3 smoke = exp(-vec3(1.25, 1.20, 1.16) * pathLength);
@@ -649,7 +656,9 @@ function buildFlacon(scene, optics, canvas, redraw, scentName) {
       float windowLight = exp(-5.0 * dot(fluidLocal.xy - vec2(.08, -.65), fluidLocal.xy - vec2(.08, -.65)));
       vec3 concentrated = mix(vec3(.57, .265, .047), vec3(.28, .30, .33), bottleStyle);
       outgoingLight = refraction * mix(amber, smoke, bottleStyle) + concentrated * windowLight * .46 + totalSpecular * .44;
-      outgoingLight += concentrated * beddingLight * (1. - top) * (.14 + .28 * windowLight);
+      float clearLower = 1. - smoothstep(-.96, .38, fluidLocal.y);
+      float strip = gaussian((fluidLocal.x + .27 + fluidLocal.y * .16) * 2.2);
+      outgoingLight += concentrated * clearLower * (.10 + .28 * strip + beddingLight * (.18 + .22 * windowLight));
       #include <opaque_fragment>
     `);
   };
@@ -658,11 +667,11 @@ function buildFlacon(scene, optics, canvas, redraw, scentName) {
   const ivory = new MeshPhysicalMaterial({ color: "#211812", roughness: .28, clearcoat: .35 });
   const ink = new MeshStandardMaterial({ color: "#3f2315", roughness: .55 });
   part(body, flacon([
-    [-1.37, .592, .333, .088], [-1.345, .626, .366, .098],
-    [-1.26, .691, .416, .113], [-1.17, .770, .461, .120],
-    [-1.122, .805, .473, .129], [-1.055, .835, .482, .139],
-    [-.98, .850, .488, .151], [.75, .850, .488, .151],
-    [.86, .825, .474, .143], [1.00, .665, .415, .117],
+    [-1.37, .570, .329, .084], [-1.345, .600, .357, .094],
+    [-1.26, .668, .408, .112], [-1.17, .746, .455, .125],
+    [-1.122, .787, .470, .137], [-1.055, .810, .482, .147],
+    [-.98, .820, .488, .154], [.82, .820, .488, .154],
+    [.91, .795, .474, .146], [1.03, .651, .414, .119],
     [1.135, .487, .328, .083], [1.185, .435, .300, .072],
     [1.245, .415, .295, .070]
   ]), glass, 0, 0, 0).onBeforeRender = () => {
@@ -722,7 +731,7 @@ function buildFlacon(scene, optics, canvas, redraw, scentName) {
   gold.bumpMap = brushed.bumpMap = crownFinish;
   gold.bumpScale = .0008;
   brushed.bumpScale = .0014;
-  cap.scale.set(1.26, 1.25, 1.26);
+  cap.scale.set(1.31, 1.47, 1.31);
 
   const { texture: labelTexture, setName: setEngraving } = makeLabel(redraw, scentName);
   const foil = new MeshStandardMaterial({
@@ -730,7 +739,7 @@ function buildFlacon(scene, optics, canvas, redraw, scentName) {
     roughness: .24, depthWrite: false, envMapIntensity: 1.10,
     emissive: "#b58243", emissiveMap: labelTexture, emissiveIntensity: .57
   });
-  part(body, new PlaneGeometry(1.06, 1.31), foil, 0, -.10, .491).renderOrder = 5;
+  part(body, new PlaneGeometry(.93, 1.15), foil, 0, -.06, .490).renderOrder = 5;
   return { body, part, bottleStyle, beddingLight, fill, meniscus, atomizer, outlet, outletAngle, cap, crownFinish, labelTexture, setEngraving, foil };
 }
 
