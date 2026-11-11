@@ -1,10 +1,10 @@
 # Nasaem accounts and email
 
-GitHub Pages continues to serve the storefront. Supabase provides passwordless email accounts and storage for inventory, email consent, and restock alerts. The server sends through Resend. The storefront shows an account coming-soon message until `account-config.js` is configured.
+GitHub Pages serves the storefront. Supabase provides email and password accounts, optional sign-in codes, and private customer profiles. New customers verify their email once. Existing customers can sign in with a code and set a password in Account. The session is saved in the browser and refreshed as needed.
 
 ## Connect the services
 
-The hosted project is `xuzdtgxpcoinbwojglwp`. Its initial schema was applied through the SQL Editor and all sixteen inventory rows were verified. When first linking the CLI, mark migration `202611090001` as already applied using `supabase migration repair 202611090001 --status applied` before pushing subsequent migrations.
+The hosted project is `xuzdtgxpcoinbwojglwp`. Its inventory and profile migrations were applied through the SQL Editor. When first linking the CLI, mark `202611090001` and `202611100001` as already applied using `supabase migration repair <version> --status applied` before pushing subsequent migrations. Each account can create and switch between up to five named profiles. The last selection is remembered on the current browser.
 
 Use Resend for both Auth SMTP and the email worker. After verifying an owned domain in Resend, configure [SMTP](https://resend.com/docs/send-with-smtp) in Supabase with host `smtp.resend.com`, port `465`, username `resend`, and a Resend sending key as the password. Set a sender on the verified domain. Leave `emailSignIn` off until both templates and real code delivery have been tested. Leave `emailUpdates` off until the scheduled worker and unsubscribe flow are tested.
 

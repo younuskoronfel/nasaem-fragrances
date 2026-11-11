@@ -30,24 +30,23 @@
   <link rel="icon" href="assets/nasaem-icon.png" type="image/png" sizes="192x192">
   <link rel="preload" href="assets/hero/nasaem-poster.jpg" as="image" fetchpriority="high">
   <link rel="preload" href="assets/cormorant.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=section-stop-2">
+  <link rel="stylesheet" href="styles.css?v=native-scroll-1">
   <link rel="stylesheet" href="atelier.css?v=unboxing-pace-3">
   <link rel="stylesheet" href="crystal.css?v=unboxing-pace-1">
   <link rel="stylesheet" href="film.css?v=hero-fit-1">
   <link rel="stylesheet" href="gallery.css?v=sticky-1">
-  <link rel="stylesheet" href="cart.css?v=commerce-1">
-  <script src="language.js?v=spray-label-1" defer></script>
+  <link rel="stylesheet" href="cart.css?v=profiles-1">
+  <script src="language.js?v=profiles-1" defer></script>
   <script src="scents.js?v=cart-1" defer></script>
   <script src="card-art.js?v=2" defer></script>
   <script src="cart.js?v=commerce-1" defer></script>
   <script src="account-config.js?v=email-1" defer></script>
-  <script src="account.js?v=supabase-1" defer></script>
+  <script src="account.js?v=profiles-1" defer></script>
   <script src="checkout.js?v=1" defer></script>
   <script src="store.js?v=gallery-fit-1" defer></script>
   <script src="journey.js?v=card-art-1" defer></script>
   <script type="module" src="atelier.js?v=gallery-fit-1"></script>
   <script src="scroll-art.js?v=gold-dust-2" defer></script>
-  <script src="section-stops.js?v=1" defer></script>
   <script src="glitter.js?v=3" defer></script>
   <script src="hero-film.js?v=language-1" defer></script>
 </head>
@@ -259,7 +258,7 @@
     <section class="contact wrap" aria-labelledby="contact-title">
       <h2 id="contact-title">Need help choosing?</h2>
       <p>Ask us about a fragrance, availability, or ordering.</p>
-      <a class="button dark" href="https://ig.me/m/nasaem.fragrances">Message us on Instagram <span aria-hidden="true">↗</span></a>
+      <a class="button dark" href="https://www.instagram.com/nasaem.fragrances/" target="_blank" rel="noopener noreferrer">Message us on Instagram <span aria-hidden="true">↗</span></a>
     </section>
   </main>
 
@@ -361,13 +360,19 @@
         </button>
       </header>
       <div class="cart-content account-content">
-        <p class="account-unavailable">Accounts and email updates are coming soon.</p>
+        <p class="account-unavailable">Loading your account…</p>
         <button class="button cart-checkout account-google" type="button" hidden>Continue with Google</button>
         <form class="account-email-form" hidden>
-          <p>Enter your email to create an account or sign in.</p>
+          <div class="account-modes" role="group" aria-label="Account options">
+            <button type="button" data-account-mode="signin" aria-pressed="true">Sign in</button>
+            <button type="button" data-account-mode="signup" aria-pressed="false">Create an account</button>
+          </div>
           <label for="account-email">Email address</label>
           <input id="account-email" name="email" type="email" autocomplete="email" maxlength="254" dir="ltr" required>
-          <button class="button cart-checkout" type="submit">Send sign-in code</button>
+          <label for="account-password" class="account-password-label">Password</label>
+          <input id="account-password" name="password" type="password" autocomplete="current-password" maxlength="72" required>
+          <button class="button cart-checkout account-submit" type="submit">Sign in</button>
+          <button class="text-link account-switch-code" type="button">Use an email code instead</button>
         </form>
         <form class="account-code-form" hidden>
           <p>Enter the one-time code we sent to your email.</p>
@@ -378,6 +383,27 @@
         </form>
         <section class="account-profile" hidden>
           <p class="account-address" dir="auto"></p>
+          <section class="account-household" aria-labelledby="account-profiles-title">
+            <h3 id="account-profiles-title">Who’s browsing?</h3>
+            <div class="account-profile-picker"></div>
+            <form class="account-profile-form" hidden>
+              <label for="account-profile-name">Profile name</label>
+              <input id="account-profile-name" name="profileName" maxlength="32" required dir="auto">
+              <button class="button cart-checkout" type="submit">Save profile</button>
+            </form>
+            <div class="account-profile-actions">
+              <button class="text-link account-profile-add" type="button" hidden>Add profile</button>
+              <button class="text-link account-profile-edit" type="button" hidden>Edit profile</button>
+            </div>
+          </section>
+          <details class="account-password-settings">
+            <summary>Set or change password</summary>
+            <form class="account-password-form">
+              <label for="account-new-password">New password</label>
+              <input id="account-new-password" name="password" type="password" autocomplete="new-password" minlength="8" maxlength="72" required>
+              <button class="button cart-checkout" type="submit">Save password</button>
+            </form>
+          </details>
           <div class="account-email-settings" hidden>
             <h3>Email preferences</h3>
             <label class="account-updates">

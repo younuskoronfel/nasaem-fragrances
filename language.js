@@ -50,6 +50,29 @@ Account|الحساب|Cuenta
 Your account|حسابك|Tu cuenta
 Close account|إغلاق الحساب|Cerrar cuenta
 Accounts and email updates are coming soon.|الحسابات والتحديثات عبر البريد الإلكتروني قريبًا.|Las cuentas y las novedades por correo llegarán pronto.
+Loading your account…|جارٍ تحميل حسابك…|Cargando tu cuenta…
+We couldn’t load your account. Close this panel and try again.|تعذر تحميل حسابك. أغلق هذه النافذة وحاول مجددًا.|No pudimos cargar tu cuenta. Cierra este panel e inténtalo de nuevo.
+Account options|خيارات الحساب|Opciones de la cuenta
+Sign in|تسجيل الدخول|Iniciar sesión
+Create an account|إنشاء حساب|Crear una cuenta
+Password|كلمة المرور|Contraseña
+Use an email code instead|استخدم رمز البريد الإلكتروني بدلًا من ذلك|Usar un código por correo
+Use a password instead|استخدم كلمة المرور بدلًا من ذلك|Usar una contraseña
+Who’s browsing?|من يتصفح؟|¿Quién está explorando?
+Profile name|اسم الملف الشخصي|Nombre del perfil
+Add profile|إضافة ملف شخصي|Añadir perfil
+Edit profile|تعديل الملف الشخصي|Editar perfil
+Save profile|حفظ الملف الشخصي|Guardar perfil
+Profile saved.|تم حفظ الملف الشخصي.|Perfil guardado.
+We couldn’t load your profiles. Please try again.|تعذر تحميل ملفاتك الشخصية. حاول مجددًا.|No pudimos cargar tus perfiles. Inténtalo de nuevo.
+We couldn’t save your profile. Please try again.|تعذر حفظ ملفك الشخصي. حاول مجددًا.|No pudimos guardar tu perfil. Inténtalo de nuevo.
+Set or change password|تعيين كلمة المرور أو تغييرها|Crear o cambiar contraseña
+New password|كلمة المرور الجديدة|Nueva contraseña
+Save password|حفظ كلمة المرور|Guardar contraseña
+Password saved.|تم حفظ كلمة المرور.|Contraseña guardada.
+We couldn’t save your password. Sign in with an email code and try again.|تعذر حفظ كلمة المرور. سجّل الدخول برمز البريد الإلكتروني وحاول مجددًا.|No pudimos guardar tu contraseña. Inicia sesión con un código por correo e inténtalo de nuevo.
+We couldn’t create the account. Check your email and use at least 8 characters for your password.|تعذر إنشاء الحساب. راجع بريدك الإلكتروني واستخدم كلمة مرور من 8 أحرف على الأقل.|No pudimos crear la cuenta. Revisa tu correo y usa una contraseña de al menos 8 caracteres.
+We couldn’t sign you in. Check your password or use an email code.|تعذر تسجيل الدخول. تحقق من كلمة المرور أو استخدم رمز البريد الإلكتروني.|No pudimos iniciar sesión. Revisa tu contraseña o usa un código por correo.
 Enter your email to create an account or sign in.|أدخل بريدك الإلكتروني لإنشاء حساب أو تسجيل الدخول.|Introduce tu correo para crear una cuenta o iniciar sesión.
 Email address|البريد الإلكتروني|Correo electrónico
 Send sign-in code|إرسال رمز الدخول|Enviar código de acceso
