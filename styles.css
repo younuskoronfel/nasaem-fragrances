@@ -85,6 +85,7 @@ button, summary { cursor:pointer }
 .section-intro h2,.contact h2 { font-size:clamp(3.65rem,7vw,5.6rem); color:#543018 }
 .section-intro p { color:var(--muted); max-width:32ch }
 .collection-bar { display:flex; align-items:center; justify-content:space-between; gap:.8rem; padding-bottom:1.5rem }
+#browse-fragrances { scroll-margin-block-start:.85rem }
 .filters { display:flex; gap:.45rem; flex-wrap:wrap }
 .filters button { background:#e8c89b; border:0; border-radius:4rem; min-height:2.65rem; padding:.35rem .96rem; font-size:.82rem; font-weight:600; transition:background .2s ease,color .2s ease }
 .filters button:hover { background:#e4b77e }

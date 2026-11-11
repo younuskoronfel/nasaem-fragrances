@@ -42,7 +42,7 @@
     linear-gradient(90deg, #100e0ef5, #100e0ed9 28%, #17100b6b 50%, transparent 76%),
     linear-gradient(180deg, #1c100ab8, transparent 25%, transparent 76%, #100e0e);
 }
-.site-header { color: #ffedd3; z-index: 6; background: linear-gradient(#1e1410, #211612f2); box-shadow: 0 6px 24px #160c092e }
+.site-header { color: #ffedd3; z-index: 6; background: linear-gradient(#1e1410, #211612); box-shadow: 0 6px 24px #160c092e }
 .site-header .wordmark img { filter: url("assets/wordmark-filter.svg?v=3#champagne-ink") }
 .film-copy {
   align-self: center;

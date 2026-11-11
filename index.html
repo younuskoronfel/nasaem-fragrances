@@ -22,10 +22,10 @@
   <link rel="icon" href="assets/nasaem-icon.png" type="image/png" sizes="192x192">
   <link rel="preload" href="assets/hero/nasaem-poster.jpg" as="image" fetchpriority="high">
   <link rel="preload" href="assets/cormorant.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=scroll-alignment-1">
+  <link rel="stylesheet" href="styles.css?v=collection-entry-1">
   <link rel="stylesheet" href="atelier.css?v=scroll-alignment-1">
   <link rel="stylesheet" href="crystal.css?v=unboxing-pace-1">
-  <link rel="stylesheet" href="film.css?v=hero-fit-1">
+  <link rel="stylesheet" href="film.css?v=collection-entry-1">
   <link rel="stylesheet" href="gallery.css?v=sticky-1">
   <link rel="stylesheet" href="cart.css?v=profiles-1">
   <script src="language.js?v=profiles-1" defer></script>
@@ -81,7 +81,7 @@
         <h1 id="hero-title">Nasaem<br><em>Fragrances.</em></h1>
         <p>Where your soul finds its scent.</p>
         <div class="film-actions">
-          <a class="button" href="#collection">Explore the collection <span aria-hidden="true">↗</span></a>
+          <a class="button" href="#browse-fragrances">Explore the collection <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 4v15m-5-5 5 5 5-5"/></svg></a>
           <a class="text-link" href="#journey">Find my scent</a>
         </div>
       </div>
@@ -170,7 +170,7 @@
             <img class="atelier-liner" width="768" height="960" alt="Golden Hour Bloom campaign card" loading="lazy" decoding="async">
             <div class="atelier-links">
               <button class="atelier-next atelier-detail" type="button" aria-haspopup="dialog" hidden>View fragrance</button>
-              <a class="atelier-next" href="#collection">Explore the collection <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M12 4v15m-5-5 5 5 5-5"/></svg></a>
+              <a class="atelier-next" href="#browse-fragrances">Explore the collection <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 4v15m-5-5 5 5 5-5"/></svg></a>
             </div>
           </div>
         </div>
@@ -183,7 +183,7 @@
           <h2 id="collection-title">The collection</h2>
           <p>Open any fragrance to turn its bottle, try a spray, and discover how it unfolds.</p>
         </div>
-        <div class="collection-bar">
+        <div class="collection-bar" id="browse-fragrances" tabindex="-1" aria-labelledby="collection-title">
           <div class="filters" role="group" aria-label="Filter fragrances by mood" hidden>
             <button type="button" data-filter="all" aria-pressed="true">All scents</button>
             <button type="button" data-filter="bright" aria-pressed="false">Bright &amp; fresh</button>
@@ -250,7 +250,7 @@
     <section class="contact wrap" aria-labelledby="contact-title">
       <h2 id="contact-title">Need help choosing?</h2>
       <p>Ask us about a fragrance, availability, or ordering.</p>
-      <a class="button dark" href="https://www.instagram.com/nasaem.fragrances/" target="_blank" rel="noopener noreferrer">Message us on Instagram <span aria-hidden="true">↗</span></a>
+      <a class="button dark" href="https://www.instagram.com/nasaem.fragrances/" target="_blank" rel="noopener noreferrer">Message us on Instagram <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a>
     </section>
   </main>
 
@@ -322,7 +322,7 @@
         <div class="cart-empty">
           <h3>Your cart is empty</h3>
           <p>Add a fragrance from the collection to start your selection.</p>
-          <a class="button" href="#collection">Explore the collection</a>
+          <a class="button" href="#browse-fragrances">Explore the collection</a>
         </div>
         <ul class="cart-items" aria-label="Selected fragrances"></ul>
         <section class="cart-packaging" aria-labelledby="cart-packaging-title" hidden>
