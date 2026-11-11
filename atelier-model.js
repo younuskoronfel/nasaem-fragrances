@@ -811,9 +811,11 @@ export function mountBottle(exhibit, stage) {
   const focusState = [];
   let notesState;
   let chapterOffsets;
+  let stageTop;
   function measureChapters() {
     const start = panels[0].offsetTop;
     chapterOffsets = [...panels].map(panel => panel.offsetTop - start);
+    stageTop = parseFloat(getComputedStyle(stage).top) || 0;
   }
   measureChapters();
 
@@ -844,7 +846,7 @@ export function mountBottle(exhibit, stage) {
     if (!area.width || !area.height) return;
     sizeRenderer(area);
     optics.update(section, stage, area, canvas);
-    const scroll = -section.top;
+    const scroll = stageTop - section.top;
     let targetProgress = 1;
     for (let i = 1; i < chapterOffsets.length; i++) {
       const previous = chapterOffsets[i - 1];

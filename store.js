@@ -155,6 +155,8 @@ scentPreview.addEventListener("click", () => {
   showAtelierPackaging(packaging);
   dialog.close();
   const destination = atelier.querySelector("#bottle-form");
+  const hash = `#${destination.id}`;
+  if (location.hash !== hash) history.pushState(history.state, "", hash);
   destination.focus({ preventScroll: true });
   destination.scrollIntoView({ block: "start" });
 });
@@ -182,7 +184,7 @@ function useStillStudio() {
 async function loadStudio(scent, current) {
   if (scentMotion.matches) return useStillStudio();
   try {
-    const { mountScentStudio } = await import("./atelier-model.js?v=gallery-fit-1");
+    const { mountScentStudio } = await import("./atelier-model.js?v=scroll-alignment-1");
     if (session !== current || !dialog.open || scentMotion.matches) return;
     studio = mountScentStudio(viewer, scent, showScentNotes, () => {
       if (session !== current || !dialog.open) return;

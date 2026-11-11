@@ -3,14 +3,6 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <script>
-    if (!location.hash) {
-      if ("scrollRestoration" in history) history.scrollRestoration = "manual";
-      addEventListener("pageshow", () => {
-        if (!location.hash) scrollTo({ top: 0, behavior: "instant" });
-      });
-    }
-  </script>
   <meta name="theme-color" content="#100e0e">
   <meta name="description" content="Explore sixteen Nasaem perfumes, find a fragrance by mood, and experience the unboxing.">
   <meta property="og:type" content="website">
@@ -30,8 +22,8 @@
   <link rel="icon" href="assets/nasaem-icon.png" type="image/png" sizes="192x192">
   <link rel="preload" href="assets/hero/nasaem-poster.jpg" as="image" fetchpriority="high">
   <link rel="preload" href="assets/cormorant.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=mobile-header-1">
-  <link rel="stylesheet" href="atelier.css?v=unboxing-pace-3">
+  <link rel="stylesheet" href="styles.css?v=scroll-alignment-1">
+  <link rel="stylesheet" href="atelier.css?v=scroll-alignment-1">
   <link rel="stylesheet" href="crystal.css?v=unboxing-pace-1">
   <link rel="stylesheet" href="film.css?v=hero-fit-1">
   <link rel="stylesheet" href="gallery.css?v=sticky-1">
@@ -43,9 +35,9 @@
   <script src="account-config.js?v=google-1" defer></script>
   <script src="account.js?v=profiles-1" defer></script>
   <script src="checkout.js?v=1" defer></script>
-  <script src="store.js?v=gallery-fit-1" defer></script>
+  <script src="store.js?v=scroll-alignment-1" defer></script>
   <script src="journey.js?v=card-art-1" defer></script>
-  <script type="module" src="atelier.js?v=gallery-fit-1"></script>
+  <script type="module" src="atelier.js?v=scroll-alignment-1"></script>
   <script src="scroll-art.js?v=gold-dust-2" defer></script>
   <script src="glitter.js?v=3" defer></script>
   <script src="hero-film.js?v=language-1" defer></script>
